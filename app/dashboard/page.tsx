@@ -601,7 +601,7 @@ const filterSummary = [
 
   const filterButtonClass = (active: boolean, tone: "user" | "card") =>
     [
-      "inline-flex h-10 min-w-[82px] px-3 items-center justify-center gap-1.5 rounded-[18px] border text-[13px] font-black transition-all duration-200",
+      "inline-flex h-9 min-w-[68px] items-center justify-center gap-1.5 rounded-[16px] border px-2.5 text-[12px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:rounded-[18px] sm:px-3 sm:text-[13px]",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
@@ -610,7 +610,7 @@ const filterSummary = [
     ].join(" ");
 
   const filterIconClass =
-    "flex h-6 w-6 shrink-0 items-center justify-center rounded-[10px] bg-white ring-1 ring-slate-200";
+    "flex h-5 w-5 shrink-0 items-center justify-center rounded-[9px] bg-white ring-1 ring-slate-200 sm:h-6 sm:w-6 sm:rounded-[10px]";
   return (
     <main className="min-h-screen bg-white pb-12">
       {loading ? (
@@ -629,7 +629,7 @@ const filterSummary = [
       ) : (
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-          <div className="mx-auto max-w-6xl px-6 py-8">
+          <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
             <div className="py-2">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
@@ -640,16 +640,16 @@ const filterSummary = [
                 </div>
 
                 <div>
-                  <h1 className="text-[34px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[30px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-3 text-[14px] font-medium text-[#7a6335]">
+                  <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
                   {/* 👇 홈 버튼 위치와 동일한 자리 */}
-                  <div className="mt-6 flex items-center gap-3">
+                  <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
                     
                     {/* 이전 */}
                     <button
@@ -705,8 +705,8 @@ const filterSummary = [
             </div>
           </div>
         </section>
-        <div className="mx-auto max-w-6xl px-6 pt-5">
-          <div className="flex flex-wrap items-center gap-5 rounded-[30px] border border-slate-200 bg-white px-5 py-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+        <div className="mx-auto max-w-6xl overflow-x-auto px-4 pt-3 sm:px-6 sm:pt-5">
+          <div className="flex w-max min-w-full flex-nowrap items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-3 py-2 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:w-auto sm:flex-wrap sm:gap-5 sm:rounded-[30px] sm:px-5 sm:py-3">
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-black text-[#9b7d3e]">사용자</span>
 
