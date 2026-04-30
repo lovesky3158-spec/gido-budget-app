@@ -1146,62 +1146,56 @@ accountSummary.map((item) => {
                                   : "bg-[#fff9df]",
                               ].join(" ")}
                             >
-                              <div className="grid gap-3 md:grid-cols-[1fr_130px] md:items-center">
-                                <div className="min-w-0">
-                                  <div className="flex items-center gap-3">
-                                    <div className="min-w-0">
-                                      <div className="flex items-center gap-2">
-                                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b]">
-                                          TOP {index + 1}
-                                        </span>
-                                        <span className="truncate text-[15px] font-black text-[#2a2112]">
-                                          {row.description || "-"}
-                                        </span>
-                                      </div>
-
-                                      <div className="mt-1.5 flex items-center gap-2 text-[11px] font-semibold text-[#9b7d3e]">
-                                        <span>{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-
-                                        {userIcon ? (
-                                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
-                                            {isImageIcon(userIcon) ? (
-                                              <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
-                                            ) : (
-                                              <span className="text-[12px]">{userIcon}</span>
-                                            )}
-                                          </span>
-                                        ) : null}
-                                        <span>{userName}</span>
-
-                                        <span className="flex items-center gap-1">
-                                          {accountIcon ? (
-                                            isImageIcon(accountIcon) ? (
-                                              <img src={accountIcon} alt="" className="h-4 w-4 object-contain" />
-                                            ) : (
-                                              <span className="text-[13px]">{accountIcon}</span>
-                                            )
-                                          ) : (
-                                            <span>{accountName[0]}</span>
-                                          )}
-                                          <span className="max-w-[54px] truncate text-[11px] font-bold text-[#9b7d3e]">
-                                            {accountName}
-                                          </span>
-                                        </span>
-                                      </div>
-                                    </div>
+                              <div className="space-y-1.5">
+                                <div className="flex min-w-0 items-center justify-between gap-2">
+                                  <div className="flex min-w-0 items-center gap-2">
+                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b]">
+                                      TOP {index + 1}
+                                    </span>
+                                    <span className="truncate text-[13px] font-black leading-tight text-[#2a2112] sm:text-[15px]">
+                                      {row.description || "-"}
+                                    </span>
                                   </div>
-                                </div>
 
-                                <div className="shrink-0 text-left md:text-right">
-                                  <div className="text-[18px] font-black text-rose-600">
+                                  <span className="shrink-0 whitespace-nowrap text-[15px] font-black text-rose-600 sm:text-[18px]">
                                     -{formatAbsMoney(amount)}
-                                  </div>
-                                  <div className="mt-0.5 text-[12px] font-black text-[#9b7d3e]">
-                                    그룹 {percentOfGroup}%
-                                  </div>
+                                  </span>
                                 </div>
-                              </div>
-                            </div>
+
+                                <div className="flex min-w-0 items-center justify-between gap-2 text-[10px] font-bold text-[#9b7d3e] sm:text-[11px]">
+                                  <div className="flex min-w-0 items-center gap-1.5">
+                                    <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
+
+                                    {userIcon ? (
+                                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+                                        {isImageIcon(userIcon) ? (
+                                          <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
+                                        ) : (
+                                          <span className="text-[12px]">{userIcon}</span>
+                                        )}
+                                      </span>
+                                    ) : null}
+                                    <span className="shrink-0">{userName}</span>
+
+                                    <span className="flex min-w-0 items-center gap-1">
+                                      {accountIcon ? (
+                                        isImageIcon(accountIcon) ? (
+                                          <img src={accountIcon} alt="" className="h-4 w-4 shrink-0 object-contain" />
+                                        ) : (
+                                          <span className="shrink-0 text-[13px]">{accountIcon}</span>
+                                        )
+                                      ) : (
+                                        <span className="shrink-0">{accountName[0]}</span>
+                                      )}
+                                      <span className="max-w-[58px] truncate font-bold text-[#9b7d3e]">
+                                        {accountName}
+                                      </span>
+                                    </span>
+                                  </div>
+
+                                  <span className="shrink-0">그룹 {percentOfGroup}%</span>
+                                </div>
+                              </div>                            </div>
                           );
                         })                  
                   )}

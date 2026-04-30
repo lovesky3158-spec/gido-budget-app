@@ -45,6 +45,14 @@ function formatNumberWithComma(value: string | number) {
   return Number(num).toLocaleString();
 }
 
+function formatCompactWon(value: number) {
+  const abs = Math.abs(value);
+  const sign = value < 0 ? "-" : "";
+  if (abs >= 100000000) return `${sign}${(abs / 100000000).toFixed(abs % 100000000 === 0 ? 0 : 1)}억`;
+  if (abs >= 10000) return `${sign}${Math.round(abs / 10000).toLocaleString()}만`;
+  return `${sign}${abs.toLocaleString()}`;
+}
+
 
 function formatTxDateTime(row: TransactionRow) {
   const date = parseShortDate(row.tx_date)?.display ?? row.tx_date ?? "-";
@@ -188,6 +196,7 @@ export default function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDateFilter, setSelectedDateFilter] = useState<string | null>(null);
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [openFilterPanel, setOpenFilterPanel] = useState<"user" | "card" | "category" | null>(null);
 
   const [editing, setEditing] = useState<EditForm | null>(null);
@@ -518,6 +527,32 @@ export default function TransactionsPage() {
     ? formatMonthLabel(monthFilter)
     : { year: "", month: "전체" };
 
+  const activeFilterCount = [
+    userFilter !== "all",
+    cardFilter !== "all",
+    categoryFilter !== "all",
+    Boolean(search.trim()),
+    Boolean(selectedDateFilter),
+  ].filter(Boolean).length;
+
+  const filterSummary = [
+    userFilter !== "all" ? userFilter : null,
+    cardFilter !== "all" ? cardFilter : null,
+    categoryFilter !== "all" ? categoryFilter : null,
+    selectedDateFilter ? "날짜" : null,
+    search.trim() ? "검색" : null,
+  ].filter(Boolean).join(" · ");
+
+  const resetFilters = () => {
+    setUserFilter("all");
+    setAccountFilter("all");
+    setCardFilter("all");
+    setCategoryFilter("all");
+    setSearch("");
+    setSelectedDateFilter(null);
+    setOpenFilterPanel(null);
+  };
+
   const openEdit = (row: TransactionRow) => {
     setEditing(makeEditForm(row));
   };
@@ -610,11 +645,11 @@ export default function TransactionsPage() {
             </div>
 
             <div className="mt-3">
-              <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+              <h1 className="text-[24px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
-              <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+              <p className="mt-1.5 text-[9px] font-medium leading-relaxed sm:text-[14px] text-white/80">
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
@@ -663,267 +698,151 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="border-b border-slate-100 bg-white">
-  <div className="mx-auto flex max-w-6xl w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain px-3 py-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
-
-    {/* 사용자 */}
-    <div className="relative">
+  <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-4">
+    <div className="flex items-center gap-2">
       <button
         type="button"
-        onClick={() =>
-          setOpenFilterPanel(openFilterPanel === "user" ? null : "user")
-        }
-        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
-          userFilter === "all"
-            ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
-        }`}
+        onClick={() => {
+          setShowFilterSheet((v) => !v);
+          setOpenFilterPanel(null);
+        }}
+        className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#21bdb7] px-3 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(33,189,183,0.22)] sm:h-10 sm:px-4 sm:text-sm"
       >
-        {userFilter === "기린" ? (
-          <img src="/icons/girin.png" className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
-        ) : userFilter === "짱구" ? (
-          <img src="/icons/zzangu.png" className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
-        ) : (
-          <span>👥</span>
-        )}
-        <span className="truncate">{userFilter === "all" ? "사용자" : userFilter}</span>
-        <span className="text-[8px] opacity-60">▼</span>
+        <span>☰</span>
+        <span>필터</span>
+        {activeFilterCount > 0 ? (
+          <span className="ml-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] text-[#0f766e]">
+            {activeFilterCount}
+          </span>
+        ) : null}
       </button>
 
-      {openFilterPanel === "user" ? (
-        <div className="absolute left-0 top-[46px] z-[80] w-[300px] rounded-[24px] border border-slate-100 bg-white p-4 shadow-[0_22px_60px_rgba(15,23,42,0.16)]">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <div className="text-sm font-black text-slate-800">사용자 선택</div>
-              <div className="mt-0.5 text-xs font-medium text-slate-400">
-                거래 사용자 기준으로 필터링해요
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpenFilterPanel(null)}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-400 transition hover:bg-slate-200"
-            >
-              ×
-            </button>
-          </div>
+      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
+        <span className="truncate text-[11px] font-extrabold text-slate-500 sm:text-sm">
+          {filterSummary || "전체 조건"}
+        </span>
+      </div>
 
- <div className="grid grid-cols-3 gap-2">
-  {[
-    { key: "all", label: "전체", icon: "👥" },
-    { key: "기린", label: "기린", icon: "/icons/girin.png" },
-    { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
-  ].map((user) => (
-    <button
-      key={user.key}
-      type="button"
-      onClick={() => {
-        setUserFilter(user.key);
-        setOpenFilterPanel(null);
-      }}
-      className={`flex h-10 items-center justify-center gap-1.5 rounded-full text-xs font-black transition ${
-        userFilter === user.key
-          ? "bg-[#21bdb7] text-white shadow-sm"
-          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-      }`}
-    >
-      {user.icon.startsWith("/") ? (
-        <img src={user.icon} className="h-4 w-4 object-contain" />
-      ) : (
-        <span>{user.icon}</span>
-      )}
-      <span>{user.label}</span>
-    </button>
-  ))}
-</div>
-        </div>
-      ) : null}
-    </div>
-
-    {/* 카드 */}
-    <div className="relative">
       <button
         type="button"
-        onClick={() =>
-          setOpenFilterPanel(openFilterPanel === "card" ? null : "card")
-        }
-        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
-          cardFilter === "all"
-            ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
-        }`}
+        onClick={resetFilters}
+        className="flex h-9 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm sm:h-10 sm:text-sm"
       >
-        {cardFilter === "all" ? (
-          <span>💳</span>
-        ) : (
-          renderIcon("accounts", cardFilter, "h-5 w-5 object-contain")
-        )}
-        <span className="truncate">{cardFilter === "all" ? "카드" : cardFilter}</span>
-        <span className="text-[8px] opacity-60">▼</span>
+        초기화
       </button>
-
-      {openFilterPanel === "card" ? (
-        <div className="absolute left-0 top-[46px] z-[80] w-[340px] rounded-[24px] border border-slate-100 bg-white p-4 shadow-[0_22px_60px_rgba(15,23,42,0.16)]">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <div className="text-sm font-black text-slate-800">카드 선택</div>
-              <div className="mt-0.5 text-xs font-medium text-slate-400">
-                카드사 또는 결제수단을 선택해요
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpenFilterPanel(null)}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-400 transition hover:bg-slate-200"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setCardFilter("all");
-                setOpenFilterPanel(null);
-              }}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black transition ${
-                cardFilter === "all"
-                  ? "bg-violet-500 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              }`}
-            >
-              <span>💳</span>
-              전체
-            </button>
-
-            {cardOptions.map((card) => (
-              <button
-                key={card}
-                type="button"
-                onClick={() => {
-                  setCardFilter(card);
-                  setOpenFilterPanel(null);
-                }}
-                className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black transition ${
-                  cardFilter === card
-                    ? "bg-[#21bdb7] text-white shadow-sm"
-                    : "bg-[#effffe] text-[#0f766e] hover:bg-[#d8f3f1]"
-                }`}
-              >
-                {renderIcon("accounts", card)}
-                {card}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
     </div>
 
-    {/* 카테고리 */}
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() =>
-          setOpenFilterPanel(openFilterPanel === "category" ? null : "category")
-        }
-        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
-          categoryFilter === "all"
-            ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
-        }`}
-      >
-        <span>🏷️</span>
-        <span className="truncate">{categoryFilter === "all" ? "카테" : categoryFilter}</span>
-        <span className="text-[8px] opacity-60">▼</span>
-      </button>
-
-      {openFilterPanel === "category" ? (
-        <div className="absolute left-0 top-[46px] z-[80] w-[320px] rounded-[24px] border border-slate-100 bg-white p-4 shadow-[0_22px_60px_rgba(15,23,42,0.16)]">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <div className="text-sm font-black text-slate-800">카테고리 선택</div>
-              <div className="mt-0.5 text-xs font-medium text-slate-400">
-                원하는 항목을 눌러 필터링해요
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpenFilterPanel(null)}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-400 transition hover:bg-slate-200"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setCategoryFilter("all");
-                setOpenFilterPanel(null);
-              }}
-              className={`rounded-full px-3 py-2 text-xs font-black transition ${
-                categoryFilter === "all"
-                  ? "bg-[#21bdb7] text-white shadow-sm"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              }`}
-            >
-              전체
-            </button>
-
-            {categoryOptions.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => {
-                  setCategoryFilter(category);
-                  setOpenFilterPanel(null);
-                }}
-                className={`rounded-full px-3 py-2 text-xs font-black transition ${
-                  categoryFilter === category
-                    ? "bg-[#21bdb7] text-white shadow-sm"
-                    : "bg-[#effffe] text-[#0f766e] hover:bg-[#d8f3f1]"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </div>
-
-    {/* 검색 */}
-    <div className="flex h-7 min-w-[118px] shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 sm:h-auto sm:min-w-[240px] sm:gap-2 sm:px-4 sm:py-2">
+    <div className="mt-2 flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 shadow-sm sm:h-10 sm:px-4">
       <span className="text-sm text-slate-400">🔍</span>
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="검색"
-        className="w-full min-w-0 flex-1 bg-transparent text-[10px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
+        placeholder="거래명 검색"
+        className="w-full min-w-0 flex-1 bg-transparent text-[12px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
       />
     </div>
 
-    {/* 초기화 */}
-    <button
-      type="button"
-      onClick={() => {
-        setUserFilter("all");
-        setAccountFilter("all");
-        setCardFilter("all");
-        setCategoryFilter("all");
-        setSearch("");
-        setSelectedDateFilter(null);
-        setOpenFilterPanel(null);
-      }}
-      className="flex h-7 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2 text-[9px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
-    >
-      ↺ 초기화
-    </button>
+    {showFilterSheet ? (
+      <div className="mt-2 rounded-[24px] border border-slate-100 bg-white p-3 shadow-[0_14px_40px_rgba(15,23,42,0.08)] sm:p-4">
+        <div className="grid gap-3">
+          <div>
+            <div className="mb-1.5 text-[11px] font-black text-slate-400">사용자</div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {[
+                { key: "all", label: "전체", icon: "👥" },
+                { key: "기린", label: "기린", icon: "/icons/girin.png" },
+                { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
+              ].map((user) => (
+                <button
+                  key={user.key}
+                  type="button"
+                  onClick={() => setUserFilter(user.key)}
+                  className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${
+                    userFilter === user.key
+                      ? "bg-[#21bdb7] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {user.icon.startsWith("/") ? (
+                    <img src={user.icon} className="h-4 w-4 object-contain" />
+                  ) : (
+                    <span>{user.icon}</span>
+                  )}
+                  <span>{user.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
+          <div>
+            <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                type="button"
+                onClick={() => setCardFilter("all")}
+                className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                  cardFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                💳 전체
+              </button>
+              {cardOptions.map((card) => (
+                <button
+                  key={card}
+                  type="button"
+                  onClick={() => setCardFilter(card)}
+                  className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                    cardFilter === card ? "bg-[#21bdb7] text-white" : "bg-[#effffe] text-[#0f766e]"
+                  }`}
+                >
+                  {renderIcon("accounts", card, "h-4 w-4 object-contain")}
+                  {card}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                type="button"
+                onClick={() => setCategoryFilter("all")}
+                className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
+                  categoryFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                전체
+              </button>
+              {categoryOptions.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setCategoryFilter(category)}
+                  className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
+                    categoryFilter === category ? "bg-[#21bdb7] text-white" : "bg-[#fff7d6] text-[#8a5b00]"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {selectedDateFilter ? (
+            <button
+              type="button"
+              onClick={() => setSelectedDateFilter(null)}
+              className="h-9 rounded-full bg-rose-50 px-3 text-[11px] font-black text-rose-500"
+            >
+              날짜 필터 해제 · {selectedDateFilter}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    ) : null}
   </div>
 </div>
-
 
 <main className="bg-[#f6fbfb] px-4 pt-5 sm:px-6 sm:pt-8">
         {errorMessage ? (
@@ -1140,22 +1059,22 @@ export default function TransactionsPage() {
               <div className="mt-3 grid grid-cols-3 gap-1.5 sm:gap-3">
                 <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">수입</span>
-                  <span className="truncate text-[12px] font-black text-sky-500 sm:text-[18px]">
-                    +{calendarSummary.income.toLocaleString()}
+                  <span className="truncate text-[11px] font-black text-sky-500 sm:text-[18px]">
+                    +{formatCompactWon(calendarSummary.income)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">지출</span>
-                  <span className="truncate text-[12px] font-black text-rose-500 sm:text-[18px]">
-                    -{calendarSummary.expense.toLocaleString()}
+                  <span className="truncate text-[11px] font-black text-rose-500 sm:text-[18px]">
+                    -{formatCompactWon(calendarSummary.expense)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">순흐름</span>
-                  <span className="truncate text-[12px] font-black text-slate-800 sm:text-[18px]">
-                    {(calendarSummary.income - calendarSummary.expense).toLocaleString()}
+                  <span className="truncate text-[11px] font-black text-slate-800 sm:text-[18px]">
+                    {formatCompactWon(calendarSummary.income - calendarSummary.expense)}
                   </span>
                 </div>
               </div>
@@ -1208,13 +1127,13 @@ export default function TransactionsPage() {
                       <div className="mt-1 space-y-0.5 sm:mt-3 sm:space-y-1">
                         {cell.income > 0 ? (
                           <div className="truncate text-[8px] font-black text-sky-500 sm:text-[11px]">
-                            +{cell.income.toLocaleString()}
+                            +{formatCompactWon(cell.income)}
                           </div>
                         ) : null}
 
                         {cell.expense > 0 ? (
                           <div className="truncate text-[8px] font-black text-rose-500 sm:text-[11px]">
-                            -{cell.expense.toLocaleString()}
+                            -{formatCompactWon(cell.expense)}
                           </div>
                         ) : null}
 
