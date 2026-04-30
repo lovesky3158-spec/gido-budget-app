@@ -590,7 +590,7 @@ export default function TransactionsPage() {
   return (
     <div className="min-h-screen bg-white">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-6 py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
               <span>
@@ -602,15 +602,15 @@ export default function TransactionsPage() {
             </div>
 
             <div className="mt-4">
-              <h1 className="text-[30px] font-black tracking-[-0.05em] text-white sm:text-[38px]">
+              <h1 className="text-[34px] font-black tracking-[-0.05em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
-              <p className="mt-2 text-[13px] font-medium leading-relaxed text-white/80 sm:mt-3 sm:text-[14px]">
+              <p className="mt-3 text-[14px] font-medium text-white/80">
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
+              <div className="mt-6 flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
@@ -655,7 +655,7 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="border-b border-slate-100 bg-white">
-  <div className="mx-auto flex max-w-6xl flex-nowrap items-center gap-2 overflow-x-auto px-4 py-3 sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
+  <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-6 py-4">
 
     {/* 사용자 */}
     <div className="relative">
@@ -925,7 +925,7 @@ export default function TransactionsPage() {
 </div>
 
 
-<main className="bg-[#f6fbfb] px-4 pt-5 sm:px-6 sm:pt-8">
+<main className="bg-[#f6fbfb] pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}

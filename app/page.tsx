@@ -380,11 +380,6 @@ export default function HomePage() {
     return { x: padX + step * idx, y: baseY - ((m.net + trendMax) / (trendMax * 2)) * innerHeight };
   });
 
-  const quickLinks = [
-    { href: "/upload", title: "업로드", sub: "엑셀/CSV 불러오기", emoji: "📤" },
-    { href: "/transactions", title: "거래내역", sub: "수정 · 삭제 · 월별 확인", emoji: "🧾" },
-    { href: "/dashboard", title: "대시보드", sub: "월별 분석 보기", emoji: "📊" },
-  ] as const;
 
   const summaryCards = [
     { label: "순현금흐름", value: formatSignedMoney(netAmount), tone: amountTone(netAmount) },
@@ -418,7 +413,7 @@ export default function HomePage() {
         <>
           <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
         <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
-          <div className="py-2">
+          <div>
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                 <span>{formatMonthTitle(currentMonth)} 요약</span>
@@ -426,29 +421,14 @@ export default function HomePage() {
               </div>
 
               <div className="mt-3">
-                <h1 className="text-[28px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                <h1 className="text-[30px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                   기린 도연 가계부
                 </h1>
                 <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
-                  우리 럭키비키를 위해 돈모으쟈,,,, 기도쀼 화이팅!!
+                  우리 럭키비키를 위해 돈모으자,,,, 기도쀼 화이팅!!
                 </p>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2.5 sm:mt-6">
-                <Link
-                  href="/upload"
-                  className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-black text-[#2a2112] shadow-sm transition hover:-translate-y-0.5 hover:bg-white/95"
-                >
-                  새 내역 업로드
-                </Link>
-
-                <Link
-                  href="/dashboard"
-                  className="inline-flex h-11 items-center justify-center rounded-full border border-white/40 bg-white/25 px-5 text-sm font-black text-[#2a2112] transition hover:-translate-y-0.5 hover:bg-white/35"
-                >
-                  리포트 보기
-                </Link>
-              </div>
             </div>
 
           </div>
@@ -459,7 +439,7 @@ export default function HomePage() {
   <div className="grid gap-3 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
-    <div className="flex flex-col justify-between rounded-[26px] bg-[#fff9df] px-6 py-5 min-h-[140px]">
+    <div className="flex min-h-[120px] flex-col justify-between rounded-[24px] bg-[#fff9df] px-5 py-4 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
 
       {/* 현금흐름 */}
       <div>
@@ -467,7 +447,7 @@ export default function HomePage() {
           {formatMonthTitle(currentMonth)} 얼마 모으려나
         </div>
 
-        <div className={`mt-2 text-[32px] font-black tracking-[-0.05em] ${amountTone(netAmount)}`}>
+        <div className={`mt-2 text-[28px] font-black tracking-[-0.05em] sm:text-[32px] ${amountTone(netAmount)}`}>
           {formatSignedMoney(netAmount)}
         </div>
       </div>
@@ -476,14 +456,14 @@ export default function HomePage() {
       <div className="mt-4 grid grid-cols-2 gap-3">
         <div>
           <div className="text-[13px] text-[#7a6335]">수입</div>
-          <div className="text-[20px] font-black text-[#2a2112]">
+          <div className="text-[18px] font-black text-[#2a2112] sm:text-[20px]">
             {formatMoney(totalIncome)}
           </div>
         </div>
 
         <div>
           <div className="text-[13px] text-[#7a6335]">지출</div>
-          <div className="text-[20px] font-black text-[#2a2112]">
+          <div className="text-[18px] font-black text-[#2a2112] sm:text-[20px]">
             {formatMoney(totalExpense)}
           </div>
         </div>
@@ -592,7 +572,7 @@ export default function HomePage() {
 
 
 
-      <section className="mx-auto max-w-6xl px-6 pt-6">
+      <section className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 sm:pt-6">
         {errorMessage ? (
           <div className="mb-6 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}
@@ -663,47 +643,6 @@ export default function HomePage() {
               </div>
             </section>
 
-            <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
-              <div>
-                <h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[#2a2112]">
-                  빠른 이동
-                </h2>
-                <p className="mt-1 text-[13px] text-[#7a6335]">
-                  자주 쓰는 메뉴 바로가기
-                </p>
-              </div>
-
-              <div className="mt-5 grid gap-3">
-                {quickLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="group rounded-[20px] border border-slate-200 px-4 py-3.5 transition hover:-translate-y-0.5 hover:border-[rgba(17,185,174,0.25)] hover:bg-slate-50 hover:shadow-[0_10px_20px_rgba(15,23,42,0.05)]"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--teal-50)] text-lg">
-                          {item.emoji}
-                        </div>
-
-                        <div>
-                          <div className="text-[14px] font-semibold text-[#2a2112]">
-                            {item.title}
-                          </div>
-                          <div className="mt-0.5 text-[12px] text-[#7a6335]">
-                            {item.sub}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-lg font-medium text-[var(--teal-700)] transition group-hover:translate-x-0.5">
-                        →
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
           </div>
         )}
       </section>

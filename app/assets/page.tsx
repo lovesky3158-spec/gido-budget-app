@@ -1284,7 +1284,7 @@ const jjangguTrend = useMemo(() => {
   return (
     <main className="min-h-screen bg-white pb-12">
     <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-      <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-6xl px-6 py-8">
         <div className="py-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
             <span>{monthFilter ? getMonthLabel(monthFilter) : "월 선택"} 자산 분석</span>
@@ -1294,15 +1294,15 @@ const jjangguTrend = useMemo(() => {
           </div>
 
           <div className="mt-4">
-            <h1 className="text-[30px] font-black tracking-[-0.05em] text-white sm:text-[38px]">
+            <h1 className="text-[34px] font-black tracking-[-0.05em] text-white sm:text-[38px]">
               기린 · 짱구 자산현황
             </h1>
 
-            <p className="mt-2 text-[13px] font-medium leading-relaxed text-white/80 sm:mt-3 sm:text-[14px]">
+            <p className="mt-3 text-[14px] font-medium text-white/80">
               전월 자산 자동 이월과 수동 보정 카드로 월말 자산 흐름을 확인해요.
             </p>
 
-            <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
+            <div className="mt-6 flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -1321,7 +1321,7 @@ const jjangguTrend = useMemo(() => {
                 <select
                   value={monthFilter}
                   onChange={(e) => setMonthFilter(e.target.value)}
-                  className="h-10 appearance-none rounded-full border border-white/60 bg-white px-5 pr-9 text-sm font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10"
+                  className="h-11 appearance-none rounded-full border border-white/60 bg-white px-6 pr-10 text-sm font-black text-white shadow-sm outline-none cursor-pointer"
                 >
                   {monthOptions
                     .slice()
@@ -1357,7 +1357,7 @@ const jjangguTrend = useMemo(() => {
       </div>
     </section>
 
-    <section className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
+    <section className="mx-auto max-w-6xl px-6 py-8">
       {loading ? (
         <div className="rounded-[28px] bg-white p-10 text-center text-sm text-slate-500 shadow-sm ring-1 ring-slate-100">
           불러오는 중...

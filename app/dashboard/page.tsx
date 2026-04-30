@@ -174,8 +174,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-6">
-      <div className="mb-5">
+    <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
+      <div className="mb-3 sm:mb-5">
         <div className="text-[20px] font-black tracking-[-0.04em] text-[#2a2112]">{title}</div>
         {sub ? <div className="mt-1 text-[13px] font-semibold text-[#9b7d3e]">{sub}</div> : null}
       </div>
@@ -548,10 +548,6 @@ export default function DashboardPage() {
     });
   }, [monthlyExpenses]);
 
-  const userBase = Math.max(...userSummary.map((item) => item.amount), 1);
-  const accountBase = Math.max(...accountSummary.map((item) => item.amount), 1);
-  const largestExpense = bigExpenseRows[0] ? Math.abs(getNormalizedAmount(bigExpenseRows[0])) : 0;
-  const avgExpense = expenseRows.length > 0 ? Math.round(totalExpense / expenseRows.length) : 0;
   const topCategory = categorySummary[0];
   const selectedBudget = monthFilter ? Number(budgetMap[monthFilter] ?? 0) : 0;
   const budgetRate = selectedBudget > 0 ? Math.round((totalExpense / selectedBudget) * 100) : 0;
@@ -601,7 +597,7 @@ const filterSummary = [
 
   const filterButtonClass = (active: boolean, tone: "user" | "card") =>
     [
-      "inline-flex h-9 min-w-[68px] items-center justify-center gap-1.5 rounded-[16px] border px-2.5 text-[12px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:rounded-[18px] sm:px-3 sm:text-[13px]",
+      "inline-flex h-9 min-w-[66px] items-center justify-center gap-1.5 rounded-[16px] border px-2.5 text-[12px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:rounded-[18px] sm:px-3 sm:text-[13px]",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
@@ -630,7 +626,7 @@ const filterSummary = [
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
           <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
-            <div className="py-2">
+            <div>
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                   <span>{getMonthLabel(monthFilter)} 지출 분석</span>
@@ -661,7 +657,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
-                      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ◀
                     </button>
@@ -671,7 +667,7 @@ const filterSummary = [
                       <select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
-                        className="h-11 appearance-none rounded-full border border-white/60 bg-white px-6 pr-10 text-sm font-black text-[#2a2112] shadow-sm outline-none cursor-pointer"
+                        className="h-9 appearance-none rounded-full border border-white/60 bg-white px-4 pr-8 text-[13px] font-black text-[#2a2112] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                       >
                         {monthOptions.map((month) => (
                           <option key={month} value={month}>
@@ -695,7 +691,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
-                      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ▶
                     </button>
@@ -776,8 +772,8 @@ const filterSummary = [
           </div>
           </div>
         </div>
-        <div className="mx-auto max-w-6xl px-6 pt-4">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+        <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-4">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -787,27 +783,27 @@ const filterSummary = [
                   <span className="text-[12px] font-bold text-[#9b7d3e]">{filterSummary}</span>
                 </div>
 
-                <div className="mt-2 text-[22px] font-black tracking-[-0.04em] text-[#2a2112]">
+                <div className="mt-2 text-[20px] font-black tracking-[-0.04em] text-[#2a2112] sm:text-[22px]">
                   {reportTitle}
                 </div>
                 <p className="mt-1 text-[13px] font-semibold text-[#7a6335]">{reportMessage}</p>
               </div>
 
-              <div className="grid shrink-0 grid-cols-3 gap-2 sm:min-w-[460px]">
-                <div className="rounded-[22px] bg-[#fff9df] px-4 py-3 ring-1 ring-[#f0df9b]">
+              <div className="grid min-w-0 shrink-0 grid-cols-3 gap-2 sm:min-w-[460px]">
+                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
                   <div className="text-[11px] font-black text-[#9b7d3e]">지출</div>
-                  <div className="mt-1 text-[17px] font-black text-[#2a2112]">{formatAbsMoney(totalExpense)}</div>
+                  <div className="mt-1 truncate text-[15px] font-black text-[#2a2112] sm:text-[17px]">{formatAbsMoney(totalExpense)}</div>
                 </div>
-                <div className="rounded-[22px] bg-[#fff9df] px-4 py-3 ring-1 ring-[#f0df9b]">
+                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
                   <div className="text-[11px] font-black text-[#9b7d3e]">예산</div>
-                  <div className="mt-1 text-[17px] font-black text-[#2a2112]">
+                  <div className="mt-1 truncate text-[15px] font-black text-[#2a2112] sm:text-[17px]">
                     {selectedBudget > 0 ? formatAbsMoney(selectedBudget) : "미설정"}
                   </div>
                 </div>
-                <div className="rounded-[22px] bg-[#fff9df] px-4 py-3 ring-1 ring-[#f0df9b]">
+                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
                   <div className="text-[11px] font-black text-[#9b7d3e]">예산대비</div>
                   <div className={[
-                    "mt-1 text-[17px] font-black",
+                    "mt-1 truncate text-[15px] font-black sm:text-[17px]",
                     selectedBudget > 0 && budgetGap < 0 ? "text-rose-600" : "text-emerald-600",
                   ].join(" ")}>
                     {selectedBudget > 0 ? budgetRate + "%" : "-"}
@@ -840,16 +836,16 @@ const filterSummary = [
 
 
 
-          <section className="mx-auto max-w-6xl px-6 py-7">
+          <section className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
             {errorMessage ? (
               <div className="mb-6 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-bold text-rose-600">
                 {errorMessage}
               </div>
             ) : null}
 
-        <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+        <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <SectionCard title="최근 6개월 지출 트렌드" sub="월별 지출 흐름을 확인해요">
-            <div className="rounded-[26px] bg-slate-50 px-4 py-3 ring-1 ring-slate-200">
+            <div className="rounded-[22px] bg-slate-50 px-2 py-1 ring-1 ring-slate-200 sm:rounded-[26px] sm:px-4 sm:py-3">
               {monthlyExpenses.length === 0 ? (
                 <div className="py-16 text-center text-sm font-bold text-[#9b7d3e]">
                   표시할 지출 데이터가 없습니다.
@@ -857,7 +853,7 @@ const filterSummary = [
               ) : (
 <svg
   viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-  className="h-[300px] w-full overflow-visible"
+  className="h-[190px] w-full overflow-visible sm:h-[300px]"
 >
   {[0, 0.25, 0.5, 0.75, 1].map((rate) => {
     const y = baseY - rate * innerHeight;
@@ -1043,7 +1039,7 @@ accountSummary.map((item) => {
           </SectionCard>
         </div>
 
-            <div className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+            <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-[0.9fr_1.1fr]">
               <SectionCard
                 title="카테고리 소비 분석"
                 sub="이번 달 지출이 어디에 몰렸는지 한눈에 확인해요"
@@ -1060,7 +1056,7 @@ accountSummary.map((item) => {
                       <button
                           type="button"
                           onClick={() => setActiveCategory(null)}
-                          className="mb-2 w-full rounded-[18px] bg-[#fff4c7] px-4 py-3 ring-1 ring-[#f0df9b]"
+                          className="mb-2 w-full rounded-[16px] bg-[#fff4c7] px-3 py-2.5 ring-1 ring-[#f0df9b] sm:rounded-[18px] sm:px-4 sm:py-3"
                         >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1082,26 +1078,26 @@ accountSummary.map((item) => {
                             type="button"
                             onClick={() => setActiveCategory(item.category)}
                             className={[
-                              "w-full rounded-[18px] px-4 py-3 text-left transition",
+                              "w-full rounded-[16px] px-3 py-2.5 text-left transition sm:rounded-[18px] sm:px-4 sm:py-3",
                               selected
                               ? "bg-[#fff4c7] ring-1 ring-[#f0df9b]"
                               : "bg-[#fff9df] hover:bg-[#fff4c7]"
                             ].join(" ")}
                           >
-                    <div className="grid grid-cols-[140px_1fr_120px] items-center gap-3">
+                    <div className="grid grid-cols-[86px_1fr_94px] items-center gap-2 sm:grid-cols-[140px_1fr_120px] sm:gap-3">
                       <div className="flex items-center gap-2">
                         <span className="text-[18px]">{item.emoji}</span>
-                        <span className="text-[14px] font-black text-[#2a2112]">{item.category}</span>
+                        <span className="truncate text-[13px] font-black text-[#2a2112] sm:text-[14px]">{item.category}</span>
                       </div>
 
-                      <div className="h-2 overflow-hidden rounded-full bg-white">
+                      <div className="h-3 overflow-hidden rounded-full bg-white ring-1 ring-[#dff6f2]">
                         <div
-                          className="h-full rounded-full bg-[#14b8a6]"
+                          className="h-full min-w-[6px] rounded-full bg-[#14b8a6]"
                           style={{ width: `${item.percent}%` }}
                         />
                       </div>
 
-                      <span className="text-right text-[14px] font-black text-[#2a2112]">
+                      <span className="text-right text-[13px] font-black text-[#2a2112] sm:text-[14px]">
                         {formatAbsMoney(item.amount)}
                       </span>
                     </div>
@@ -1124,11 +1120,8 @@ accountSummary.map((item) => {
                     </div>
                   ) : (
                         bigExpenseRows.slice(0, 7).map((row, index) => {
-                          const meta = splitType(row.type);
                           const amount = Math.abs(getNormalizedAmount(row));
-                          const width = largestExpense > 0 ? (amount / largestExpense) * 100 : 0;
                           const percentOfGroup = totalExpense > 0 ? Math.round((amount / totalExpense) * 100) : 0;
-                          const category = meta.category || "기타";
 
                           const userName = normalizeUserTag(row.user_type) || "미지정";
                           const userIcon = resolveOptionIcon("users", userName, optionIcons);
@@ -1140,60 +1133,56 @@ accountSummary.map((item) => {
                             <div
                               key={row.id}
                               className={[
-                                "w-full rounded-[20px] px-4 py-2.5 text-left transition",
+                                "w-full rounded-[18px] px-3 py-2.5 text-left transition sm:rounded-[20px] sm:px-4",
                                 index === 0
                                   ? "bg-[linear-gradient(135deg,#fff4c7,#fff9df)] ring-1 ring-[#f0df9b]"
                                   : "bg-[#fff9df]",
                               ].join(" ")}
                             >
-                              <div className="grid gap-3 md:grid-cols-[1fr_130px] md:items-center">
-                                <div className="min-w-0">
-                                  <div className="flex items-center gap-3">
-                                    <div className="min-w-0">
-                                      <div className="flex items-center gap-2">
-                                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b]">
-                                          TOP {index + 1}
-                                        </span>
-                                        <span className="truncate text-[15px] font-black text-[#2a2112]">
-                                          {row.description || "-"}
-                                        </span>
-                                      </div>
-
-                                      <div className="mt-1.5 flex items-center gap-2 text-[11px] font-semibold text-[#9b7d3e]">
-                                        <span>{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-
-                                        {userIcon ? (
-                                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
-                                            {isImageIcon(userIcon) ? (
-                                              <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
-                                            ) : (
-                                              <span className="text-[12px]">{userIcon}</span>
-                                            )}
-                                          </span>
-                                        ) : null}
-                                        <span>{userName}</span>
-
-                                        {accountIcon ? (
-                                          isImageIcon(accountIcon) ? (
-                                            <img src={accountIcon} alt="" className="h-4 w-4 object-contain" />
-                                          ) : (
-                                            <span className="text-[13px]">{accountIcon}</span>
-                                          )
-                                        ) : (
-                                          <span>{accountName[0]}</span>
-                                        )}
-                                      </div>
-                                    </div>
+                              <div className="space-y-2">
+                                <div className="flex min-w-0 items-center justify-between gap-2">
+                                  <div className="flex min-w-0 items-center gap-2">
+                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b] sm:text-[11px]">
+                                      TOP {index + 1}
+                                    </span>
+                                    <span className="truncate text-[14px] font-black text-[#2a2112] sm:text-[15px]">
+                                      {row.description || "-"}
+                                    </span>
                                   </div>
+
+                                  <span className="shrink-0 text-[16px] font-black text-rose-600 sm:text-[18px]">
+                                    -{formatAbsMoney(amount)}
+                                  </span>
                                 </div>
 
-                                <div className="shrink-0 text-left md:text-right">
-                                  <div className="text-[18px] font-black text-rose-600">
-                                    -{formatAbsMoney(amount)}
+                                <div className="flex min-w-0 items-center justify-between gap-2 text-[11px] font-bold text-[#9b7d3e]">
+                                  <div className="flex min-w-0 items-center gap-1.5">
+                                    <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
+
+                                    {userIcon ? (
+                                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+                                        {isImageIcon(userIcon) ? (
+                                          <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
+                                        ) : (
+                                          <span className="text-[12px]">{userIcon}</span>
+                                        )}
+                                      </span>
+                                    ) : null}
+
+                                    <span className="shrink-0">{userName}</span>
+
+                                    {accountIcon ? (
+                                      isImageIcon(accountIcon) ? (
+                                        <img src={accountIcon} alt="" className="h-4 w-4 shrink-0 object-contain" />
+                                      ) : (
+                                        <span className="shrink-0 text-[13px]">{accountIcon}</span>
+                                      )
+                                    ) : (
+                                      <span className="shrink-0">{accountName[0]}</span>
+                                    )}
                                   </div>
-                                  <div className="mt-0.5 text-[12px] font-black text-[#9b7d3e]">
-                                    선택그룹의 {percentOfGroup}%
-                                  </div>
+
+                                  <span className="shrink-0">그룹 {percentOfGroup}%</span>
                                 </div>
                               </div>
                             </div>
