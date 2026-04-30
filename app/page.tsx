@@ -380,7 +380,6 @@ export default function HomePage() {
     return { x: padX + step * idx, y: baseY - ((m.net + trendMax) / (trendMax * 2)) * innerHeight };
   });
 
-
   const summaryCards = [
     { label: "순현금흐름", value: formatSignedMoney(netAmount), tone: amountTone(netAmount) },
     { label: "총수입", value: formatMoney(totalIncome), tone: "text-blue-600" },
@@ -413,7 +412,7 @@ export default function HomePage() {
         <>
           <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
         <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
-          <div>
+          <div className="py-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                 <span>{formatMonthTitle(currentMonth)} 요약</span>
@@ -421,11 +420,11 @@ export default function HomePage() {
               </div>
 
               <div className="mt-3">
-                <h1 className="text-[30px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                <h1 className="text-[28px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                   기린 도연 가계부
                 </h1>
                 <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
-                  우리 럭키비키를 위해 돈모으자,,,, 기도쀼 화이팅!!
+                  돈 열심히 모아서 이사가고 차사고 놀러가고 먹으러다니자!!
                 </p>
               </div>
 
@@ -439,7 +438,7 @@ export default function HomePage() {
   <div className="grid gap-3 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
-    <div className="flex min-h-[120px] flex-col justify-between rounded-[24px] bg-[#fff9df] px-5 py-4 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
+    <div className="flex min-h-[124px] flex-col justify-between rounded-[24px] bg-[#fff9df] px-4 py-4 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
 
       {/* 현금흐름 */}
       <div>
@@ -447,7 +446,7 @@ export default function HomePage() {
           {formatMonthTitle(currentMonth)} 얼마 모으려나
         </div>
 
-        <div className={`mt-2 text-[28px] font-black tracking-[-0.05em] sm:text-[32px] ${amountTone(netAmount)}`}>
+        <div className={`mt-2 text-[28px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:text-[32px]`}>
           {formatSignedMoney(netAmount)}
         </div>
       </div>
@@ -456,14 +455,14 @@ export default function HomePage() {
       <div className="mt-4 grid grid-cols-2 gap-3">
         <div>
           <div className="text-[13px] text-[#7a6335]">수입</div>
-          <div className="text-[18px] font-black text-[#2a2112] sm:text-[20px]">
+          <div className="text-[20px] font-black text-[#2a2112]">
             {formatMoney(totalIncome)}
           </div>
         </div>
 
         <div>
           <div className="text-[13px] text-[#7a6335]">지출</div>
-          <div className="text-[18px] font-black text-[#2a2112] sm:text-[20px]">
+          <div className="text-[20px] font-black text-[#2a2112]">
             {formatMoney(totalExpense)}
           </div>
         </div>
@@ -471,7 +470,7 @@ export default function HomePage() {
     </div>
 
     {/* 기린 (3) */}
-    <div className="flex items-center gap-4 rounded-[26px] bg-emerald-50 px-6 py-5 min-h-[140px]">
+    <div className="flex min-h-[116px] items-center gap-3 rounded-[24px] bg-emerald-50 px-4 py-4 sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
       <img src="/icons/girin.png" className="h-[56px] w-[56px] object-contain" />
 
       <div className="min-w-0 flex-1">
@@ -521,7 +520,7 @@ export default function HomePage() {
     </div>
 
     {/* 짱구 (3) */}
-    <div className="flex items-center gap-4 rounded-[26px] bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-6 py-5 min-h-[140px] border border-yellow-200 shadow-[0_10px_22px_rgba(255,191,31,0.20)]">
+    <div className="flex min-h-[116px] items-center gap-3 rounded-[24px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-4 py-4 shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
       <img src="/icons/zzangu.png" className="h-[70px] w-[70px] object-contain" />
         <div className="min-w-0 flex-1">
           <div className="text-[15px] font-bold text-[#b45309]">짱구</div>
@@ -584,8 +583,8 @@ export default function HomePage() {
             표시할 월 데이터가 없습니다.
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-            <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <section className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:rounded-[30px] sm:p-6">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[#2a2112]">
@@ -642,6 +641,7 @@ export default function HomePage() {
                 )}
               </div>
             </section>
+
 
           </div>
         )}

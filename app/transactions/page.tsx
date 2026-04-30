@@ -590,7 +590,7 @@ export default function TransactionsPage() {
   return (
     <div className="min-h-screen bg-white">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-        <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
               <span>
@@ -610,12 +610,12 @@ export default function TransactionsPage() {
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
                   disabled={currentMonthIndex >= monthOptions.length - 1 || currentMonthIndex < 0}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-white transition hover:bg-white/50 disabled:opacity-30"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ◀
                 </button>
@@ -624,7 +624,7 @@ export default function TransactionsPage() {
                   <select
                     value={monthFilter}
                     onChange={(e) => setMonthFilter(e.target.value)}
-                    className="h-11 appearance-none rounded-full border border-white/60 bg-white px-6 pr-10 text-sm font-black text-[#0f766e] shadow-sm outline-none cursor-pointer"
+                    className="h-9 appearance-none rounded-full border border-white/60 bg-white px-4 pr-8 text-[13px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                   >
                     {monthOptions.map((month) => {
                       const label = formatMonthLabel(month);
@@ -645,7 +645,7 @@ export default function TransactionsPage() {
                   type="button"
                   onClick={() => moveMonth("next")}
                   disabled={currentMonthIndex <= 0}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-white transition hover:bg-white/50 disabled:opacity-30"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ▶
                 </button>
@@ -655,7 +655,7 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="border-b border-slate-100 bg-white">
-  <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-6 py-4">
+  <div className="mx-auto flex max-w-6xl flex-nowrap items-center gap-2 overflow-x-auto px-4 py-3 sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
 
     {/* 사용자 */}
     <div className="relative">
@@ -925,7 +925,7 @@ export default function TransactionsPage() {
 </div>
 
 
-<main className="bg-[#f6fbfb] pt-8">
+<main className="bg-[#f6fbfb] px-4 pt-5 sm:px-6 sm:pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}

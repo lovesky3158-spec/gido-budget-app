@@ -1206,7 +1206,7 @@ const appendManualForm = () => {
   return (
     <div className="min-h-screen bg-[#f6fbfb]">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white">
-        <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
               <span>수입·지출 등록</span>
@@ -1256,7 +1256,7 @@ const appendManualForm = () => {
         </div>
       </section>
 
-      <main className={`px-6 py-8 transition-all duration-300 ${showRawModal ? "mr-[46vw]" : ""}`}>
+      <main className={`px-4 py-5 transition-all duration-300 sm:px-6 sm:py-8 ${showRawModal ? "lg:mr-[46vw]" : ""}`}>
         <div className="mx-auto max-w-6xl space-y-6">
           {error ? (
             <div className="rounded-[22px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">

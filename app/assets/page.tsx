@@ -1284,7 +1284,7 @@ const jjangguTrend = useMemo(() => {
   return (
     <main className="min-h-screen bg-white pb-12">
     <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-      <div className="mx-auto max-w-6xl px-6 py-8">
+      <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
         <div className="py-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
             <span>{monthFilter ? getMonthLabel(monthFilter) : "월 선택"} 자산 분석</span>
@@ -1302,7 +1302,7 @@ const jjangguTrend = useMemo(() => {
               전월 자산 자동 이월과 수동 보정 카드로 월말 자산 흐름을 확인해요.
             </p>
 
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -1312,7 +1312,7 @@ const jjangguTrend = useMemo(() => {
                   }
                 }}
                 disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-white transition hover:bg-white/50 disabled:opacity-30"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ◀
               </button>
@@ -1321,7 +1321,7 @@ const jjangguTrend = useMemo(() => {
                 <select
                   value={monthFilter}
                   onChange={(e) => setMonthFilter(e.target.value)}
-                  className="h-11 appearance-none rounded-full border border-white/60 bg-white px-6 pr-10 text-sm font-black text-white shadow-sm outline-none cursor-pointer"
+                  className="h-9 appearance-none rounded-full border border-white/60 bg-white px-4 pr-8 text-[13px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                 >
                   {monthOptions
                     .slice()
@@ -1347,7 +1347,7 @@ const jjangguTrend = useMemo(() => {
                   }
                 }}
                 disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/30 text-lg font-black text-slate-900 transition hover:bg-white/50 disabled:opacity-30"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-slate-900 transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ▶
               </button>
@@ -1357,7 +1357,7 @@ const jjangguTrend = useMemo(() => {
       </div>
     </section>
 
-    <section className="mx-auto max-w-6xl px-6 py-8">
+    <section className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
       {loading ? (
         <div className="rounded-[28px] bg-white p-10 text-center text-sm text-slate-500 shadow-sm ring-1 ring-slate-100">
           불러오는 중...
@@ -1431,7 +1431,7 @@ const jjangguTrend = useMemo(() => {
                 데이터 없음
               </div>
             ) : (
-              <svg viewBox={`0 0 ${assetChartWidth} ${assetChartHeight}`} className="h-[300px] w-full overflow-visible">
+              <svg viewBox={`0 0 ${assetChartWidth} ${assetChartHeight}`} className="h-[210px] w-full overflow-visible sm:h-[300px]">
                 
             {[0, 0.25, 0.5, 0.75, 1].map((rate) => {
               const y = assetBaseY - rate * assetInnerHeight;

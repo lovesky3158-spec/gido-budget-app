@@ -174,8 +174,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
-      <div className="mb-3 sm:mb-5">
+    <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
+      <div className="mb-5">
         <div className="text-[20px] font-black tracking-[-0.04em] text-[#2a2112]">{title}</div>
         {sub ? <div className="mt-1 text-[13px] font-semibold text-[#9b7d3e]">{sub}</div> : null}
       </div>
@@ -548,6 +548,10 @@ export default function DashboardPage() {
     });
   }, [monthlyExpenses]);
 
+  const userBase = Math.max(...userSummary.map((item) => item.amount), 1);
+  const accountBase = Math.max(...accountSummary.map((item) => item.amount), 1);
+  const largestExpense = bigExpenseRows[0] ? Math.abs(getNormalizedAmount(bigExpenseRows[0])) : 0;
+  const avgExpense = expenseRows.length > 0 ? Math.round(totalExpense / expenseRows.length) : 0;
   const topCategory = categorySummary[0];
   const selectedBudget = monthFilter ? Number(budgetMap[monthFilter] ?? 0) : 0;
   const budgetRate = selectedBudget > 0 ? Math.round((totalExpense / selectedBudget) * 100) : 0;
@@ -597,7 +601,7 @@ const filterSummary = [
 
   const filterButtonClass = (active: boolean, tone: "user" | "card") =>
     [
-      "inline-flex h-9 min-w-[66px] items-center justify-center gap-1.5 rounded-[16px] border px-2.5 text-[12px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:rounded-[18px] sm:px-3 sm:text-[13px]",
+      "inline-flex h-10 min-w-[82px] px-3 items-center justify-center gap-1.5 rounded-[18px] border text-[13px] font-black transition-all duration-200",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
@@ -606,7 +610,7 @@ const filterSummary = [
     ].join(" ");
 
   const filterIconClass =
-    "flex h-5 w-5 shrink-0 items-center justify-center rounded-[9px] bg-white ring-1 ring-slate-200 sm:h-6 sm:w-6 sm:rounded-[10px]";
+    "flex h-6 w-6 shrink-0 items-center justify-center rounded-[10px] bg-white ring-1 ring-slate-200";
   return (
     <main className="min-h-screen bg-white pb-12">
       {loading ? (
@@ -626,7 +630,7 @@ const filterSummary = [
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
           <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
-            <div>
+            <div className="py-2">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                   <span>{getMonthLabel(monthFilter)} 지출 분석</span>
@@ -636,11 +640,11 @@ const filterSummary = [
                 </div>
 
                 <div>
-                  <h1 className="text-[30px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[34px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
+                  <p className="mt-3 text-[14px] font-medium text-[#7a6335]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
@@ -773,7 +777,7 @@ const filterSummary = [
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-4">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-5">
+          <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -783,7 +787,7 @@ const filterSummary = [
                   <span className="text-[12px] font-bold text-[#9b7d3e]">{filterSummary}</span>
                 </div>
 
-                <div className="mt-2 text-[20px] font-black tracking-[-0.04em] text-[#2a2112] sm:text-[22px]">
+                <div className="mt-2 text-[22px] font-black tracking-[-0.04em] text-[#2a2112]">
                   {reportTitle}
                 </div>
                 <p className="mt-1 text-[13px] font-semibold text-[#7a6335]">{reportMessage}</p>
@@ -1056,7 +1060,7 @@ accountSummary.map((item) => {
                       <button
                           type="button"
                           onClick={() => setActiveCategory(null)}
-                          className="mb-2 w-full rounded-[16px] bg-[#fff4c7] px-3 py-2.5 ring-1 ring-[#f0df9b] sm:rounded-[18px] sm:px-4 sm:py-3"
+                          className="mb-2 w-full rounded-[18px] bg-[#fff4c7] px-4 py-3 ring-1 ring-[#f0df9b]"
                         >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1078,7 +1082,7 @@ accountSummary.map((item) => {
                             type="button"
                             onClick={() => setActiveCategory(item.category)}
                             className={[
-                              "w-full rounded-[16px] px-3 py-2.5 text-left transition sm:rounded-[18px] sm:px-4 sm:py-3",
+                              "w-full rounded-[18px] px-4 py-3 text-left transition",
                               selected
                               ? "bg-[#fff4c7] ring-1 ring-[#f0df9b]"
                               : "bg-[#fff9df] hover:bg-[#fff4c7]"
@@ -1120,8 +1124,11 @@ accountSummary.map((item) => {
                     </div>
                   ) : (
                         bigExpenseRows.slice(0, 7).map((row, index) => {
+                          const meta = splitType(row.type);
                           const amount = Math.abs(getNormalizedAmount(row));
+                          const width = largestExpense > 0 ? (amount / largestExpense) * 100 : 0;
                           const percentOfGroup = totalExpense > 0 ? Math.round((amount / totalExpense) * 100) : 0;
+                          const category = meta.category || "기타";
 
                           const userName = normalizeUserTag(row.user_type) || "미지정";
                           const userIcon = resolveOptionIcon("users", userName, optionIcons);
@@ -1139,50 +1146,59 @@ accountSummary.map((item) => {
                                   : "bg-[#fff9df]",
                               ].join(" ")}
                             >
-                              <div className="space-y-2">
-                                <div className="flex min-w-0 items-center justify-between gap-2">
-                                  <div className="flex min-w-0 items-center gap-2">
-                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b] sm:text-[11px]">
-                                      TOP {index + 1}
-                                    </span>
-                                    <span className="truncate text-[14px] font-black text-[#2a2112] sm:text-[15px]">
-                                      {row.description || "-"}
-                                    </span>
-                                  </div>
+                              <div className="grid gap-3 md:grid-cols-[1fr_130px] md:items-center">
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-3">
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b]">
+                                          TOP {index + 1}
+                                        </span>
+                                        <span className="truncate text-[15px] font-black text-[#2a2112]">
+                                          {row.description || "-"}
+                                        </span>
+                                      </div>
 
-                                  <span className="shrink-0 text-[16px] font-black text-rose-600 sm:text-[18px]">
-                                    -{formatAbsMoney(amount)}
-                                  </span>
+                                      <div className="mt-1.5 flex items-center gap-2 text-[11px] font-semibold text-[#9b7d3e]">
+                                        <span>{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
+
+                                        {userIcon ? (
+                                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+                                            {isImageIcon(userIcon) ? (
+                                              <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
+                                            ) : (
+                                              <span className="text-[12px]">{userIcon}</span>
+                                            )}
+                                          </span>
+                                        ) : null}
+                                        <span>{userName}</span>
+
+                                        <span className="flex items-center gap-1">
+                                          {accountIcon ? (
+                                            isImageIcon(accountIcon) ? (
+                                              <img src={accountIcon} alt="" className="h-4 w-4 object-contain" />
+                                            ) : (
+                                              <span className="text-[13px]">{accountIcon}</span>
+                                            )
+                                          ) : (
+                                            <span>{accountName[0]}</span>
+                                          )}
+                                          <span className="max-w-[54px] truncate text-[11px] font-bold text-[#9b7d3e]">
+                                            {accountName}
+                                          </span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
 
-                                <div className="flex min-w-0 items-center justify-between gap-2 text-[11px] font-bold text-[#9b7d3e]">
-                                  <div className="flex min-w-0 items-center gap-1.5">
-                                    <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-
-                                    {userIcon ? (
-                                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
-                                        {isImageIcon(userIcon) ? (
-                                          <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
-                                        ) : (
-                                          <span className="text-[12px]">{userIcon}</span>
-                                        )}
-                                      </span>
-                                    ) : null}
-
-                                    <span className="shrink-0">{userName}</span>
-
-                                    {accountIcon ? (
-                                      isImageIcon(accountIcon) ? (
-                                        <img src={accountIcon} alt="" className="h-4 w-4 shrink-0 object-contain" />
-                                      ) : (
-                                        <span className="shrink-0 text-[13px]">{accountIcon}</span>
-                                      )
-                                    ) : (
-                                      <span className="shrink-0">{accountName[0]}</span>
-                                    )}
+                                <div className="shrink-0 text-left md:text-right">
+                                  <div className="text-[18px] font-black text-rose-600">
+                                    -{formatAbsMoney(amount)}
                                   </div>
-
-                                  <span className="shrink-0">그룹 {percentOfGroup}%</span>
+                                  <div className="mt-0.5 text-[12px] font-black text-[#9b7d3e]">
+                                    선택그룹의 {percentOfGroup}%
+                                  </div>
                                 </div>
                               </div>
                             </div>
