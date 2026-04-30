@@ -1206,7 +1206,7 @@ const appendManualForm = () => {
   return (
     <div className="min-h-screen bg-[#f6fbfb]">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
               <span>수입·지출 등록</span>
@@ -1216,11 +1216,11 @@ const appendManualForm = () => {
             </div>
 
             <div className="mt-3">
-              <h1 className="text-[28px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+              <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 일괄등록
               </h1>
 
-              <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+              <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
                 수동 입력과 엑셀 업로드로 카드·계좌 거래를 빠르게 정리해요.
               </p>
 
@@ -1697,7 +1697,7 @@ const appendManualForm = () => {
       <button
         type="button"
         onClick={() => setShowRawModal(false)}
-        className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+        className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
       >
         ✕
       </button>

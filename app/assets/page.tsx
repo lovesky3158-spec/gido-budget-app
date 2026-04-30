@@ -469,7 +469,7 @@ function IncomeDetailPopover({
         <button
           type="button"
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-[15px] font-black text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-100"
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-[15px] font-black text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-100"
         >
           ×
         </button>
@@ -595,7 +595,7 @@ function IncomeDetailPopover({
                   const next = (incomeDetail.extras ?? []).filter((_, i) => i !== idx);
                   onIncomeDetailChange("extras", next);
                 }}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
               >
                 ×
               </button>
@@ -662,7 +662,7 @@ function ManualCompactList({
             <button
               type="button"
               onClick={() => onRemoveManual(item.id)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
             >
               ×
             </button>
@@ -765,7 +765,7 @@ function PersonAssetCard({
 
         <div className="text-right">
           <div className="text-[13px] font-black text-slate-400">현재 자산</div>
-          <div className="mt-1 text-[30px] font-black tracking-[-0.065em] text-slate-950">
+          <div className="mt-1 text-[26px] font-black tracking-[-0.065em] text-slate-950">
             {formatMoney(ending)}
           </div>
         </div>
@@ -1284,7 +1284,7 @@ const jjangguTrend = useMemo(() => {
   return (
     <main className="min-h-screen bg-white pb-12">
     <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-      <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
         <div className="py-2">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
             <span>{monthFilter ? getMonthLabel(monthFilter) : "월 선택"} 자산 분석</span>
@@ -1294,15 +1294,15 @@ const jjangguTrend = useMemo(() => {
           </div>
 
           <div className="mt-3">
-            <h1 className="text-[28px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+            <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
               기린 · 짱구 자산현황
             </h1>
 
-            <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+            <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
               전월 자산 자동 이월과 수동 보정 카드로 월말 자산 흐름을 확인해요.
             </p>
 
-            <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+            <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -1312,7 +1312,7 @@ const jjangguTrend = useMemo(() => {
                   }
                 }}
                 disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ◀
               </button>
@@ -1321,7 +1321,7 @@ const jjangguTrend = useMemo(() => {
                 <select
                   value={monthFilter}
                   onChange={(e) => setMonthFilter(e.target.value)}
-                  className="h-8 appearance-none rounded-full border border-white/60 bg-white px-3 pr-7 text-[12px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
+                  className="h-7 appearance-none rounded-full border border-white/60 bg-white px-2.5 pr-7 text-[10px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                 >
                   {monthOptions
                     .slice()
@@ -1333,7 +1333,7 @@ const jjangguTrend = useMemo(() => {
                     ))}
                 </select>
 
-                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#0f766e]">
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#0f766e]">
                   ▼
                 </div>
               </div>
@@ -1347,7 +1347,7 @@ const jjangguTrend = useMemo(() => {
                   }
                 }}
                 disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-slate-900 transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-slate-900 transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ▶
               </button>
@@ -1357,7 +1357,7 @@ const jjangguTrend = useMemo(() => {
       </div>
     </section>
 
-    <section className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+    <section className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
       {loading ? (
         <div className="rounded-[28px] bg-white p-10 text-center text-sm text-slate-500 shadow-sm ring-1 ring-slate-100">
           불러오는 중...

@@ -601,7 +601,7 @@ const filterSummary = [
 
   const filterButtonClass = (active: boolean, tone: "user" | "card") =>
     [
-      "inline-flex h-10 min-w-[82px] px-3 items-center justify-center gap-1.5 rounded-[18px] border text-[13px] font-black transition-all duration-200",
+      "inline-flex h-8 min-w-[64px] items-center justify-center gap-1 rounded-[15px] border px-2 text-[11px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:gap-1.5 sm:rounded-[18px] sm:px-3 sm:text-[13px]",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
@@ -610,7 +610,7 @@ const filterSummary = [
     ].join(" ");
 
   const filterIconClass =
-    "flex h-6 w-6 shrink-0 items-center justify-center rounded-[10px] bg-white ring-1 ring-slate-200";
+    "flex h-5 w-5 shrink-0 items-center justify-center rounded-[9px] bg-white ring-1 ring-slate-200 sm:h-6 sm:w-6 sm:rounded-[10px]";
   return (
     <main className="min-h-screen bg-white pb-12">
       {loading ? (
@@ -629,7 +629,7 @@ const filterSummary = [
       ) : (
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-          <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+          <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
             <div className="py-2">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
@@ -640,16 +640,16 @@ const filterSummary = [
                 </div>
 
                 <div>
-                  <h1 className="text-[28px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[26px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-[#7a6335]">
+                  <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-[#7a6335]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
                   {/* 👇 홈 버튼 위치와 동일한 자리 */}
-                  <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+                  <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
                     
                     {/* 이전 */}
                     <button
@@ -661,7 +661,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                      className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ◀
                     </button>
@@ -671,7 +671,7 @@ const filterSummary = [
                       <select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
-                        className="h-8 appearance-none rounded-full border border-white/60 bg-white px-3 pr-7 text-[12px] font-black text-[#2a2112] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
+                        className="h-7 appearance-none rounded-full border border-white/60 bg-white px-2.5 pr-7 text-[10px] font-black text-[#2a2112] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                       >
                         {monthOptions.map((month) => (
                           <option key={month} value={month}>
@@ -680,7 +680,7 @@ const filterSummary = [
                         ))}
                       </select>
 
-                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#7a6335]">
+                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#7a6335]">
                         ▼
                       </div>
                     </div>
@@ -695,7 +695,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                      className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ▶
                     </button>
@@ -1140,7 +1140,7 @@ accountSummary.map((item) => {
                             <div
                               key={row.id}
                               className={[
-                                "w-full rounded-[18px] px-3 py-2.5 text-left transition sm:rounded-[20px] sm:px-4",
+                                "w-full rounded-[18px] px-3 py-2 text-left transition sm:rounded-[20px] sm:px-4 sm:py-2.5",
                                 index === 0
                                   ? "bg-[linear-gradient(135deg,#fff4c7,#fff9df)] ring-1 ring-[#f0df9b]"
                                   : "bg-[#fff9df]",
@@ -1197,7 +1197,7 @@ accountSummary.map((item) => {
                                     -{formatAbsMoney(amount)}
                                   </div>
                                   <div className="mt-0.5 text-[12px] font-black text-[#9b7d3e]">
-                                    선택그룹의 {percentOfGroup}%
+                                    그룹 {percentOfGroup}%
                                   </div>
                                 </div>
                               </div>

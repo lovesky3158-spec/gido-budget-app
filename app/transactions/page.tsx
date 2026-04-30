@@ -589,8 +589,16 @@ export default function TransactionsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+      <section className="relative bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
+        <button
+          type="button"
+          onClick={() => setShowCalendar(true)}
+          className="absolute right-4 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/35 text-[15px] shadow-sm ring-1 ring-white/45 backdrop-blur transition hover:bg-white/50 sm:right-6 sm:top-5 sm:h-10 sm:w-10 sm:text-[18px]"
+          aria-label="달력 보기"
+        >
+          📅
+        </button>
+        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
               <span>
@@ -602,20 +610,20 @@ export default function TransactionsPage() {
             </div>
 
             <div className="mt-3">
-              <h1 className="text-[28px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+              <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
-              <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+              <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+              <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
                   disabled={currentMonthIndex >= monthOptions.length - 1 || currentMonthIndex < 0}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ◀
                 </button>
@@ -624,7 +632,7 @@ export default function TransactionsPage() {
                   <select
                     value={monthFilter}
                     onChange={(e) => setMonthFilter(e.target.value)}
-                    className="h-8 appearance-none rounded-full border border-white/60 bg-white px-3 pr-7 text-[12px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
+                    className="h-7 appearance-none rounded-full border border-white/60 bg-white px-2.5 pr-7 text-[10px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                   >
                     {monthOptions.map((month) => {
                       const label = formatMonthLabel(month);
@@ -636,7 +644,7 @@ export default function TransactionsPage() {
                     })}
                   </select>
 
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#0f766e]">
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#0f766e]">
                     ▼
                   </div>
                 </div>
@@ -645,7 +653,7 @@ export default function TransactionsPage() {
                   type="button"
                   onClick={() => moveMonth("next")}
                   disabled={currentMonthIndex <= 0}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ▶
                 </button>
@@ -655,7 +663,7 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="border-b border-slate-100 bg-white">
-  <div className="mx-auto flex max-w-6xl flex-nowrap items-center gap-1.5 overflow-x-auto px-3 py-2 sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
+  <div className="mx-auto flex max-w-6xl w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain px-3 py-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
 
     {/* 사용자 */}
     <div className="relative">
@@ -664,21 +672,21 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "user" ? null : "user")
         }
-        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
+        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
           userFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
         }`}
       >
         {userFilter === "기린" ? (
-          <img src="/icons/girin.png" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
+          <img src="/icons/girin.png" className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
         ) : userFilter === "짱구" ? (
-          <img src="/icons/zzangu.png" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
+          <img src="/icons/zzangu.png" className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
         ) : (
           <span>👥</span>
         )}
         <span className="truncate">{userFilter === "all" ? "사용자" : userFilter}</span>
-        <span className="text-[10px] opacity-60">▼</span>
+        <span className="text-[8px] opacity-60">▼</span>
       </button>
 
       {openFilterPanel === "user" ? (
@@ -738,7 +746,7 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "card" ? null : "card")
         }
-        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
+        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
           cardFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
@@ -750,7 +758,7 @@ export default function TransactionsPage() {
           renderIcon("accounts", cardFilter, "h-5 w-5 object-contain")
         )}
         <span className="truncate">{cardFilter === "all" ? "카드" : cardFilter}</span>
-        <span className="text-[10px] opacity-60">▼</span>
+        <span className="text-[8px] opacity-60">▼</span>
       </button>
 
       {openFilterPanel === "card" ? (
@@ -818,7 +826,7 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "category" ? null : "category")
         }
-        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
+        className={`flex h-7 w-[76px] shrink-0 items-center justify-center gap-1 rounded-full border px-1.5 text-[9px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm ${
           categoryFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
@@ -826,7 +834,7 @@ export default function TransactionsPage() {
       >
         <span>🏷️</span>
         <span className="truncate">{categoryFilter === "all" ? "카테" : categoryFilter}</span>
-        <span className="text-[10px] opacity-60">▼</span>
+        <span className="text-[8px] opacity-60">▼</span>
       </button>
 
       {openFilterPanel === "category" ? (
@@ -886,13 +894,13 @@ export default function TransactionsPage() {
     </div>
 
     {/* 검색 */}
-    <div className="flex h-8 min-w-[142px] flex-1 shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 sm:h-auto sm:min-w-[240px] sm:gap-2 sm:px-4 sm:py-2">
+    <div className="flex h-7 min-w-[118px] shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 sm:h-auto sm:min-w-[240px] sm:gap-2 sm:px-4 sm:py-2">
       <span className="text-sm text-slate-400">🔍</span>
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="검색"
-        className="w-full min-w-0 flex-1 bg-transparent text-[11px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
+        className="w-full min-w-0 flex-1 bg-transparent text-[10px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
       />
     </div>
 
@@ -908,19 +916,11 @@ export default function TransactionsPage() {
         setSelectedDateFilter(null);
         setOpenFilterPanel(null);
       }}
-      className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 text-[10px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
+      className="flex h-7 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2 text-[9px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
     >
       ↺ 초기화
     </button>
 
-    {/* 달력보기 */}
-<button
-  type="button"
-  onClick={() => setShowCalendar(true)}
-  className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 text-[10px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
->
-  📅 달력
-</button>
   </div>
 </div>
 
@@ -1010,11 +1010,11 @@ export default function TransactionsPage() {
   key={item.id}
   type="button"
   onClick={() => openEdit(item)}
-  className={`relative w-full overflow-hidden rounded-[22px] border border-[#d8f3f1] bg-white px-3.5 py-3 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-4 before:h-[calc(100%-32px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
+  className={`relative w-full overflow-hidden rounded-[20px] border border-[#d8f3f1] bg-white px-3 py-2.5 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-4 before:h-[calc(100%-32px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
     amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
   }`}
 >
-  <div className="grid grid-cols-[48px_1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
+  <div className="grid grid-cols-[44px_1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
     <div className="row-span-2 flex flex-col items-stretch justify-center gap-1">
       <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
         {typeMeta.flow || "미분류"}
@@ -1025,14 +1025,14 @@ export default function TransactionsPage() {
     </div>
 
     <div className="min-w-0">
-      <div className="truncate text-[14px] font-black text-slate-800 sm:text-[16px]">
+      <div className="truncate text-[13px] font-black text-slate-800 sm:text-[16px]">
         {item.description || "-"}
       </div>
     </div>
 
     <div className="min-w-[82px] text-right sm:min-w-[90px]">
       <div
-        className={`text-[15px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${
+        className={`whitespace-nowrap text-[14px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${
           amount < 0 ? "text-rose-500" : "text-sky-500"
         }`}
       >
@@ -1076,31 +1076,31 @@ export default function TransactionsPage() {
 
       {showCalendar ? (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/45 px-6 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/45 px-3 py-4 backdrop-blur-sm"
           onMouseDown={() => setShowCalendar(false)}
         >
           <div
-            className="max-h-[88vh] w-full max-w-5xl overflow-hidden rounded-[34px] bg-[#f8fffe] shadow-[0_32px_90px_rgba(15,23,42,0.28)]"
+            className="max-h-[88vh] w-full max-w-[94vw] overflow-hidden rounded-[26px] bg-[#f8fffe] sm:max-w-5xl sm:rounded-[34px] shadow-[0_32px_90px_rgba(15,23,42,0.28)]"
             onMouseDown={(e) => e.stopPropagation()}
           >
-              <div className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] px-7 py-6 text-white">
+              <div className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] px-4 py-4 text-white sm:px-7 sm:py-6">
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setShowCalendar(false)}
-                    className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg font-black text-white transition hover:bg-white/30"
+                    className="absolute right-0 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-base font-black text-white transition hover:bg-white/30"
                   >
                     ×
                   </button>
 
                   <div>
-                    <div className="inline-flex rounded-full bg-white/25 px-3 py-1 text-[11px] font-black">
+                    <div className="inline-flex rounded-full bg-white/25 px-2.5 py-1 text-[10px] font-black">
                       MONTHLY CALENDAR
                     </div>
                   </div>
 
-                  <div className="mt-4 flex justify-center">
-                    <div className="flex items-center gap-5">
+                  <div className="mt-2 flex justify-center">
+                    <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={() => {
@@ -1108,16 +1108,16 @@ export default function TransactionsPage() {
                           setSelectedDateFilter(null);
                         }}
                         disabled={currentMonthIndex >= monthOptions.length - 1 || currentMonthIndex < 0}
-                        className="flex h-12 w-12 items-center justify-center rounded-full text-4xl font-black text-white/80 transition hover:bg-white/15 hover:text-white disabled:opacity-25"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-2xl sm:h-12 sm:w-12 sm:text-4xl font-black text-white/80 transition hover:bg-white/15 hover:text-white disabled:opacity-25"
                       >
                         ‹
                       </button>
 
                       <div className="text-center">
-                        <div className="text-[44px] font-black tracking-[-0.06em] text-white">
+                        <div className="text-[30px] font-black sm:text-[44px] tracking-[-0.06em] text-white">
                           {monthLabel.month}
                         </div>
-                        <div className="mt-2 text-[13px] font-bold tracking-[0.2em] text-white/70">
+                        <div className="mt-1 text-[11px] sm:mt-2 sm:text-[13px] font-bold tracking-[0.2em] text-white/70">
                           {monthLabel.year}
                         </div>
                       </div>
@@ -1129,7 +1129,7 @@ export default function TransactionsPage() {
                           setSelectedDateFilter(null);
                         }}
                         disabled={currentMonthIndex <= 0}
-                        className="flex h-12 w-12 items-center justify-center rounded-full text-4xl font-black text-white/80 transition hover:bg-white/15 hover:text-white disabled:opacity-25"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-2xl sm:h-12 sm:w-12 sm:text-4xl font-black text-white/80 transition hover:bg-white/15 hover:text-white disabled:opacity-25"
                       >
                         ›
                       </button>
@@ -1137,41 +1137,41 @@ export default function TransactionsPage() {
                   </div>
                 </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <div className="flex items-end justify-center gap-4 rounded-[18px] border border-white/70 bg-white px-4 py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+              <div className="mt-3 grid grid-cols-3 gap-1.5 sm:gap-3">
+                <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">수입</span>
-                  <span className="text-[18px] font-black text-sky-500">
+                  <span className="truncate text-[12px] font-black text-sky-500 sm:text-[18px]">
                     +{calendarSummary.income.toLocaleString()}
                   </span>
                 </div>
 
-                <div className="flex items-end justify-center gap-4 rounded-[18px] border border-white/70 bg-white px-4 py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+                <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">지출</span>
-                  <span className="text-[18px] font-black text-rose-500">
+                  <span className="truncate text-[12px] font-black text-rose-500 sm:text-[18px]">
                     -{calendarSummary.expense.toLocaleString()}
                   </span>
                 </div>
 
-                <div className="flex items-end justify-center gap-4 rounded-[18px] border border-white/70 bg-white px-4 py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+                <div className="flex items-center justify-center gap-1 rounded-[14px] border border-white/70 bg-white px-2 py-2 sm:gap-4 sm:rounded-[18px] sm:px-4 sm:py-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
                   <span className="text-[11px] font-black text-slate-400">순흐름</span>
-                  <span className="text-[18px] font-black text-slate-800">
+                  <span className="truncate text-[12px] font-black text-slate-800 sm:text-[18px]">
                     {(calendarSummary.income - calendarSummary.expense).toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="max-h-[62vh] overflow-y-auto px-6 py-5">
-              <div className="mb-3 grid grid-cols-7 gap-2 px-1 text-center text-[12px] font-black text-slate-400">
+            <div className="max-h-[64vh] overflow-y-auto px-3 py-3 sm:px-6 sm:py-5">
+              <div className="mb-2 grid grid-cols-7 gap-1 px-1 text-center text-[10px] sm:gap-2 sm:text-[12px] font-black text-slate-400">
                 {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
                   <div key={day}>{day}</div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
                 {calendarDays.map((cell, idx) => {
                   if (cell.isEmpty) {
-                    return <div key={`empty-${idx}`} className="min-h-[76px]" />;
+                    return <div key={`empty-${idx}`} className="min-h-[46px] sm:min-h-[76px]" />;
                   }
 
                   const hasData = cell.income > 0 || cell.expense > 0;
@@ -1185,7 +1185,7 @@ export default function TransactionsPage() {
                         setSelectedDateFilter(cell.date);
                         setShowCalendar(false);
                       }}
-                      className={`group min-h-[76px] rounded-[22px] border p-3 text-left transition ${
+                      className={`group min-h-[46px] rounded-[14px] border p-1.5 text-left transition sm:min-h-[76px] sm:rounded-[22px] sm:p-3 ${
                         isSelected
                           ? "border-[#19aaa4] bg-white shadow-[0_12px_28px_rgba(47,179,173,0.22)]"
                           : hasData
@@ -1195,25 +1195,25 @@ export default function TransactionsPage() {
                     >
                       <div className="flex items-center justify-between">
                         <span
-                          className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-black ${
+                          className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] sm:h-7 sm:w-7 sm:text-sm font-black ${
                             isSelected ? "bg-[#21bdb7] text-white" : "text-slate-700"
                           }`}
                         >
                           {cell.day}
                         </span>
 
-                        {hasData ? <span className="h-2 w-2 rounded-full bg-[#21bdb7]" /> : null}
+                        {hasData ? <span className="h-1.5 w-1.5 rounded-full bg-[#21bdb7] sm:h-2 sm:w-2" /> : null}
                       </div>
 
-                      <div className="mt-3 space-y-1">
+                      <div className="mt-1 space-y-0.5 sm:mt-3 sm:space-y-1">
                         {cell.income > 0 ? (
-                          <div className="truncate text-[11px] font-black text-sky-500">
+                          <div className="truncate text-[8px] font-black text-sky-500 sm:text-[11px]">
                             +{cell.income.toLocaleString()}
                           </div>
                         ) : null}
 
                         {cell.expense > 0 ? (
-                          <div className="truncate text-[11px] font-black text-rose-500">
+                          <div className="truncate text-[8px] font-black text-rose-500 sm:text-[11px]">
                             -{cell.expense.toLocaleString()}
                           </div>
                         ) : null}
@@ -1246,13 +1246,13 @@ export default function TransactionsPage() {
         };
 
         return (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/45 px-6 py-8 backdrop-blur-sm">
-            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[34px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)]">
-            <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-7 py-6">
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/45 px-3 py-4 backdrop-blur-sm">
+            <div className="max-h-[90vh] w-full max-w-[94vw] overflow-y-auto rounded-[26px] bg-white sm:max-w-2xl sm:rounded-[34px] shadow-[0_32px_90px_rgba(15,23,42,0.28)]">
+            <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-4 sm:px-7 sm:py-6">
               <button
                 type="button"
                 onClick={closeEdit}
-                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg font-black text-slate-400 shadow-sm transition hover:bg-slate-50 hover:text-slate-600"
+                className="absolute right-4 top-4 flex h-8 w-8 sm:right-5 sm:top-5 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white text-lg font-black text-slate-400 shadow-sm transition hover:bg-slate-50 hover:text-slate-600"
               >
                 ×
               </button>
@@ -1261,20 +1261,20 @@ export default function TransactionsPage() {
                 <div className="inline-flex rounded-full bg-[#d8f3f1] px-3 py-1 text-[11px] font-black text-[#0f766e]">
                   TRANSACTION EDIT
                 </div>
-                <h2 className="mt-3 text-2xl font-black tracking-[-0.04em] text-slate-800">
+                <h2 className="mt-2 text-xl font-black sm:mt-3 sm:text-2xl tracking-[-0.04em] text-slate-800">
                   거래내역 수정
                 </h2>
-                <p className="mt-1 text-sm font-medium text-slate-400">
+                <p className="mt-1 text-xs font-medium sm:text-sm text-slate-400">
                   카드·분류·금액을 확인하고 필요한 값만 수정해요.
                 </p>
               </div>
             </div>
 
-            <div className="px-7 py-6">
-              <div className="mb-5 rounded-[26px] border border-[#d8f3f1] bg-[#f8fffe] p-4">
+            <div className="px-5 py-4 sm:px-7 sm:py-6">
+              <div className="mb-4 rounded-[22px] border border-[#d8f3f1] bg-[#f8fffe] p-3 sm:mb-5 sm:rounded-[26px] sm:p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <div className="truncate text-lg font-black text-slate-800">
+                    <div className="truncate text-base font-black text-slate-800 sm:text-lg">
                       {editing.description || "거래명 없음"}
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -1289,7 +1289,7 @@ export default function TransactionsPage() {
 
                   <div className="shrink-0 text-right">
                     <div
-                      className={`text-xl font-black tabular-nums ${
+                      className={`whitespace-nowrap text-lg font-black tabular-nums sm:text-xl ${
                         editAmount < 0 ? "text-rose-400" : "text-sky-500"
                       }`}
                     >
@@ -1302,7 +1302,7 @@ export default function TransactionsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-4">
                 <Field label="날짜">
                   <input
                     type="date"
@@ -1362,14 +1362,14 @@ export default function TransactionsPage() {
                             : "border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100"
                         }`}
                       >
-                        <img src={user.icon} className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
+                        <img src={user.icon} className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
                         {user.key}
                       </button>
                     ))}
                   </div>
                 </Field>
 
-                <Field label="내용" className="col-span-2">
+                <Field label="내용" className="sm:col-span-2">
                   <input
                     type="text"
                     value={editing.description}
@@ -1420,22 +1420,22 @@ export default function TransactionsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/70 px-7 py-5">
+            <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7 sm:py-5">
               <button
                 type="button"
                 onClick={handleDelete}
                 disabled={deleteLoading || saveLoading}
-                className="rounded-[18px] bg-rose-50 px-5 py-3 text-sm font-black text-rose-500 transition hover:bg-rose-100 disabled:opacity-60"
+                className="w-full rounded-[18px] bg-rose-50 px-5 py-3 text-sm sm:w-auto font-black text-rose-500 transition hover:bg-rose-100 disabled:opacity-60"
               >
                 {deleteLoading ? "삭제 중..." : "삭제"}
               </button>
 
-              <div className="flex gap-3">
+              <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
                 <button
                   type="button"
                   onClick={handleSave}
                   disabled={saveLoading || deleteLoading}
-                  className="rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] transition hover:bg-[#18aaa4] disabled:opacity-60"
+                  className="w-full rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm sm:w-auto font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] transition hover:bg-[#18aaa4] disabled:opacity-60"
                 >
                   {saveLoading ? "저장 중..." : "저장"}
                 </button>
@@ -1444,7 +1444,7 @@ export default function TransactionsPage() {
                   type="button"
                   onClick={closeEdit}
                   disabled={deleteLoading || saveLoading}
-                  className="rounded-[18px] border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-500 transition hover:bg-slate-50 disabled:opacity-60"
+                  className="w-full rounded-[18px] border border-slate-200 bg-white px-5 py-3 text-sm sm:w-auto font-black text-slate-500 transition hover:bg-slate-50 disabled:opacity-60"
                 >
                   취소
                 </button>
@@ -1469,7 +1469,7 @@ export default function TransactionsPage() {
   }) {
     return (
       <div className={className}>
-        <label className="mb-2 block text-sm font-bold text-slate-600">{label}</label>
+        <label className="mb-1.5 block text-xs font-bold text-slate-600 sm:mb-2 sm:text-sm">{label}</label>
         {children}
       </div>
     );

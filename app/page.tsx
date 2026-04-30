@@ -411,7 +411,7 @@ export default function HomePage() {
       ) : (
         <>
           <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
           <div className="py-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
@@ -420,7 +420,7 @@ export default function HomePage() {
               </div>
 
               <div className="mt-3">
-                <h1 className="text-[28px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                <h1 className="text-[26px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                   기린 도연 가계부
                 </h1>
                 <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
@@ -446,7 +446,7 @@ export default function HomePage() {
           {formatMonthTitle(currentMonth)} 얼마 모으려나
         </div>
 
-        <div className={`mt-2 text-[28px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:text-[32px]`}>
+        <div className={`mt-2 text-[26px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:text-[32px]`}>
           {formatSignedMoney(netAmount)}
         </div>
       </div>
