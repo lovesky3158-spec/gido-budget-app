@@ -417,7 +417,7 @@ export default function HomePage() {
       ) : (
         <>
           <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-        <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
           <div className="py-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
@@ -426,15 +426,15 @@ export default function HomePage() {
               </div>
 
               <div className="mt-3">
-                <h1 className="text-[34px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                <h1 className="text-[28px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                   기린 도연 가계부
                 </h1>
-                <p className="mt-3 text-[14px] font-medium text-[#7a6335]">
-                  돈 열심히 모아서 이사가고 차사고 놀러가고 먹으러다니자!!
+                <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
+                  우리 럭키비키를 위해 돈모으쟈,,,, 기도쀼 화이팅!!
                 </p>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2.5">
+              <div className="mt-4 flex flex-wrap gap-2.5 sm:mt-6">
                 <Link
                   href="/upload"
                   className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-black text-[#2a2112] shadow-sm transition hover:-translate-y-0.5 hover:bg-white/95"
@@ -455,8 +455,8 @@ export default function HomePage() {
         </div>
       </section>
 
-<section className="mx-auto max-w-6xl px-6 mt-6">
-  <div className="grid gap-5 rounded-[32px] border border-slate-200 bg-white p-6 shadow-[0_16px_40px_rgba(139,92,0,0.10)] lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
+<section className="mx-auto mt-4 max-w-6xl px-4 sm:mt-6 sm:px-6">
+  <div className="grid gap-3 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
     <div className="flex flex-col justify-between rounded-[26px] bg-[#fff9df] px-6 py-5 min-h-[140px]">
