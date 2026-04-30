@@ -145,13 +145,13 @@ export default function AppHeader() {
                 key={item.href}
                 href={item.href}
                 className={[
-                  "flex min-h-[54px] flex-col items-center justify-center gap-0.5 rounded-[22px] text-[11px] font-black transition",
+                  "flex min-h-[50px] flex-col items-center justify-center gap-0.5 rounded-[20px] text-[10px] font-black transition sm:text-[11px]",
                   active
                     ? "bg-[#ffd84d] text-[#5f3f00] shadow-[0_8px_18px_rgba(255,191,31,0.28)]"
                     : "text-[#9a7a32] hover:bg-[#fff7d6]",
                 ].join(" ")}
               >
-                <span className="text-[18px] leading-none">{item.icon}</span>
+                <span className="text-[17px] leading-none">{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             );
