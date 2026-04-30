@@ -590,32 +590,32 @@ export default function TransactionsPage() {
   return (
     <div className="min-h-screen bg-white">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
           <div className="py-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#063f3a]">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
               <span>
                 {monthFilter ? `${monthLabel.year}년 ${monthLabel.month}` : "월 선택"} 거래내역
               </span>
-              <span className="rounded-full bg-white/55 px-2 py-0.5 text-[10px] font-black">
+              <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
                 TRANSACTION
               </span>
             </div>
 
-            <div className="mt-4">
-              <h1 className="text-[34px] font-black tracking-[-0.05em] text-white sm:text-[38px]">
+            <div className="mt-3">
+              <h1 className="text-[28px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
-              <p className="mt-3 text-[14px] font-medium text-white/80">
+              <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-white/80">
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
+              <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
                   disabled={currentMonthIndex >= monthOptions.length - 1 || currentMonthIndex < 0}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ◀
                 </button>
@@ -624,7 +624,7 @@ export default function TransactionsPage() {
                   <select
                     value={monthFilter}
                     onChange={(e) => setMonthFilter(e.target.value)}
-                    className="h-9 appearance-none rounded-full border border-white/60 bg-white px-4 pr-8 text-[13px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
+                    className="h-8 appearance-none rounded-full border border-white/60 bg-white px-3 pr-7 text-[12px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                   >
                     {monthOptions.map((month) => {
                       const label = formatMonthLabel(month);
@@ -636,7 +636,7 @@ export default function TransactionsPage() {
                     })}
                   </select>
 
-                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#0f766e]">
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#0f766e]">
                     ▼
                   </div>
                 </div>
@@ -645,7 +645,7 @@ export default function TransactionsPage() {
                   type="button"
                   onClick={() => moveMonth("next")}
                   disabled={currentMonthIndex <= 0}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                 >
                   ▶
                 </button>
@@ -655,7 +655,7 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="border-b border-slate-100 bg-white">
-  <div className="mx-auto flex max-w-6xl flex-nowrap items-center gap-2 overflow-x-auto px-4 py-3 sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
+  <div className="mx-auto flex max-w-6xl flex-nowrap items-center gap-1.5 overflow-x-auto px-3 py-2 sm:flex-wrap sm:gap-3 sm:px-6 sm:py-4">
 
     {/* 사용자 */}
     <div className="relative">
@@ -664,20 +664,20 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "user" ? null : "user")
         }
-        className={`flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-extrabold shadow-sm transition ${
+        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
           userFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
         }`}
       >
         {userFilter === "기린" ? (
-          <img src="/icons/girin.png" className="h-5 w-5 object-contain" />
+          <img src="/icons/girin.png" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
         ) : userFilter === "짱구" ? (
-          <img src="/icons/zzangu.png" className="h-5 w-5 object-contain" />
+          <img src="/icons/zzangu.png" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
         ) : (
           <span>👥</span>
         )}
-        <span>{userFilter === "all" ? "사용자 전체" : userFilter}</span>
+        <span className="truncate">{userFilter === "all" ? "사용자" : userFilter}</span>
         <span className="text-[10px] opacity-60">▼</span>
       </button>
 
@@ -738,7 +738,7 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "card" ? null : "card")
         }
-        className={`flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-extrabold shadow-sm transition ${
+        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
           cardFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
@@ -749,7 +749,7 @@ export default function TransactionsPage() {
         ) : (
           renderIcon("accounts", cardFilter, "h-5 w-5 object-contain")
         )}
-        <span>{cardFilter === "all" ? "카드 전체" : cardFilter}</span>
+        <span className="truncate">{cardFilter === "all" ? "카드" : cardFilter}</span>
         <span className="text-[10px] opacity-60">▼</span>
       </button>
 
@@ -818,14 +818,14 @@ export default function TransactionsPage() {
         onClick={() =>
           setOpenFilterPanel(openFilterPanel === "category" ? null : "category")
         }
-        className={`flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-extrabold shadow-sm transition ${
+        className={`flex h-8 max-w-[104px] shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-extrabold leading-none shadow-sm transition sm:h-10 sm:max-w-none sm:gap-2 sm:px-4 sm:text-sm ${
           categoryFilter === "all"
             ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             : "border-[#21bdb7] bg-[#effffe] text-[#0f766e]"
         }`}
       >
         <span>🏷️</span>
-        <span>{categoryFilter === "all" ? "카테고리" : categoryFilter}</span>
+        <span className="truncate">{categoryFilter === "all" ? "카테" : categoryFilter}</span>
         <span className="text-[10px] opacity-60">▼</span>
       </button>
 
@@ -886,13 +886,13 @@ export default function TransactionsPage() {
     </div>
 
     {/* 검색 */}
-    <div className="flex min-w-[240px] flex-1 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2">
+    <div className="flex h-8 min-w-[142px] flex-1 shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 sm:h-auto sm:min-w-[240px] sm:gap-2 sm:px-4 sm:py-2">
       <span className="text-sm text-slate-400">🔍</span>
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="거래명 검색"
-        className="flex-1 bg-transparent text-sm font-bold text-slate-600 outline-none placeholder:text-slate-300"
+        placeholder="검색"
+        className="w-full min-w-0 flex-1 bg-transparent text-[11px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
       />
     </div>
 
@@ -908,7 +908,7 @@ export default function TransactionsPage() {
         setSelectedDateFilter(null);
         setOpenFilterPanel(null);
       }}
-      className="flex h-10 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50"
+      className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 text-[10px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
     >
       ↺ 초기화
     </button>
@@ -917,7 +917,7 @@ export default function TransactionsPage() {
 <button
   type="button"
   onClick={() => setShowCalendar(true)}
-  className="flex h-10 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50"
+  className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 text-[10px] font-extrabold text-slate-500 shadow-sm transition hover:bg-slate-50 sm:h-10 sm:gap-1.5 sm:px-4 sm:text-sm"
 >
   📅 달력
 </button>
@@ -933,17 +933,17 @@ export default function TransactionsPage() {
         ) : null}
 
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-lg font-extrabold text-[#11b5b0]">
+              <div className="text-[17px] font-extrabold text-[#11b5b0]">
                 전체 내역 {filtered.length}건
               </div>
-              <div className="mt-1 text-sm text-slate-400">
+              <div className="mt-0.5 text-xs text-slate-400">
                 거래 카드를 더블클릭하면 수정할 수 있어요
               </div>
             </div>
 
-            <div className="flex items-center gap-2 rounded-full bg-white/80 px-2.5 py-2 text-sm font-bold text-slate-600 shadow-sm backdrop-blur">
+            <div className="flex items-center gap-1.5 overflow-x-auto rounded-full bg-white/80 px-2 py-1.5 text-xs font-bold text-slate-600 shadow-sm backdrop-blur">
 
 
               {selectedDateFilter ? (
@@ -955,15 +955,15 @@ export default function TransactionsPage() {
                   {selectedDateFilter} 해제
                 </button>
               ) : null}
-<div className="rounded-full bg-sky-50 px-4 py-2 text-xs font-black text-sky-600">
+<div className="rounded-full bg-sky-50 px-3 py-1.5 text-[11px] font-black text-sky-600">
   수입 {totalIncome.toLocaleString()}원
 </div>
 
-<div className="rounded-full bg-rose-50 px-4 py-2 text-xs font-black text-rose-500">
+<div className="rounded-full bg-rose-50 px-3 py-1.5 text-[11px] font-black text-rose-500">
   지출 {totalExpense.toLocaleString()}원
 </div>
 
-<div className={`rounded-full px-5 py-2.5 text-sm font-black text-white shadow-[0_6px_14px_rgba(33,189,183,0.18)] ${
+<div className={`rounded-full px-4 py-2 text-xs font-black text-white shadow-[0_6px_14px_rgba(33,189,183,0.18)] ${
   total >= 0 ? "bg-[#21bdb7]/90" : "bg-rose-500"
 }`}>
   {Math.abs(total).toLocaleString()}원
@@ -980,11 +980,11 @@ export default function TransactionsPage() {
               표시할 거래내역이 없습니다.
             </div>
           ) : (
-            <div className="space-y-8 pb-8">
+            <div className="space-y-6 pb-8">
               {groupedRows.map((group) => (
                 <section key={group.date}>
-                  <div className="mb-3 grid grid-cols-[1fr_auto] items-center gap-4 px-1">
-                    <div className="text-base font-extrabold text-slate-700">{group.date}</div>
+                  <div className="mb-2 grid grid-cols-[1fr_auto] items-center gap-4 px-1">
+                    <div className="text-[15px] font-extrabold text-slate-700">{group.date}</div>
                       <div className="flex items-center justify-end gap-2 text-right">
                         <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-400">
                           일 합계
@@ -995,7 +995,7 @@ export default function TransactionsPage() {
                       </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {group.items.map((item) => {
                       const typeMeta = splitType(item.type);
                       const rawAmount = Number(item.amount ?? 0);
@@ -1010,66 +1010,60 @@ export default function TransactionsPage() {
   key={item.id}
   type="button"
   onClick={() => openEdit(item)}
- className={`relative w-full overflow-hidden rounded-[28px] border border-[#d8f3f1] bg-white px-5 py-4 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full ${
-  amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
-}`}
+  className={`relative w-full overflow-hidden rounded-[22px] border border-[#d8f3f1] bg-white px-3.5 py-3 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-4 before:h-[calc(100%-32px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
+    amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
+  }`}
 >
-<div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-4">
-  {/* 좌측: 지출/주거 - 1~2행 가운데 */}
-  <div className="flex items-center justify-center">
-    <div className="flex overflow-hidden rounded-full bg-slate-100 text-[11px] font-black">
-      <span className={`px-2.5 py-1 ${getTypeTone(typeMeta.flow)}`}>
+  <div className="grid grid-cols-[48px_1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
+    <div className="row-span-2 flex flex-col items-stretch justify-center gap-1">
+      <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
         {typeMeta.flow || "미분류"}
       </span>
-      <span className={`border-l border-white/70 px-2.5 py-1 ${getCategoryTone(typeMeta.category || "기타")}`}>
+      <span className={`truncate rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>
         {typeMeta.category || "기타"}
       </span>
     </div>
-  </div>
 
-  {/* 가운데: 1행 내용 / 2행 날짜+사용자+카드 */}
-  <div className="min-w-0 py-1">
-    <div className="truncate text-[16px] font-black text-slate-800">
-      {item.description || "-"}
+    <div className="min-w-0">
+      <div className="truncate text-[14px] font-black text-slate-800 sm:text-[16px]">
+        {item.description || "-"}
+      </div>
     </div>
 
-    <div className="mt-3 flex flex-wrap items-center gap-2">
-      <span className="rounded-full bg-[#f6fbfb] px-2.5 py-1 text-[11px] font-extrabold text-slate-400">
+    <div className="min-w-[82px] text-right sm:min-w-[90px]">
+      <div
+        className={`text-[15px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${
+          amount < 0 ? "text-rose-500" : "text-sky-500"
+        }`}
+      >
+        {formatSignedAmount(amount)}
+      </div>
+    </div>
+
+    <div className="col-start-2 col-end-4 flex min-w-0 flex-wrap items-center gap-1.5">
+      <span className="rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">
         {parseShortDate(item.tx_date)?.display ?? item.tx_date ?? "-"}
       </span>
 
-{(() => {
-  const userName = normalizeUserTag(item.user_type) || "미지정";
+      {(() => {
+        const userName = normalizeUserTag(item.user_type) || "미지정";
 
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-100 bg-[#f7fbfb] px-2.5 py-1 text-[11px] font-extrabold text-slate-500">
-      {renderIcon("users", userName, "h-4 w-4 object-contain")}
-      {userName}
-    </span>
-  );
-})()}
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+            {renderIcon("users", userName, "h-3.5 w-3.5 object-contain")}
+            {userName}
+          </span>
+        );
+      })()}
 
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-100 bg-[#f7fbfb] px-2.5 py-1 text-[11px] font-extrabold text-slate-500">
-      {renderIcon("accounts", displayAccount)}
+      <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+        {renderIcon("accounts", displayAccount, "h-3.5 w-3.5 object-contain")}
         {displayAccount}
       </span>
     </div>
   </div>
-
-<div className="text-right min-w-[90px]">
-  <div
-    className={`text-[17px] font-black tracking-[-0.03em] tabular-nums ${
-      amount < 0 ? "text-rose-500" : "text-sky-500"
-    }`}
-  >
-    {formatSignedAmount(amount)}
-  </div>
-  <div className="mt-1 text-[10px] font-bold text-slate-300">
-    거래금액
-  </div>
-</div>
-</div>
 </button>
+
                       );
                     })}
                   </div>
@@ -1368,7 +1362,7 @@ export default function TransactionsPage() {
                             : "border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100"
                         }`}
                       >
-                        <img src={user.icon} className="h-5 w-5 object-contain" />
+                        <img src={user.icon} className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
                         {user.key}
                       </button>
                     ))}
@@ -1418,7 +1412,7 @@ export default function TransactionsPage() {
                       {renderIcon("accounts", editing.account_type)}
                     </div>
 
-                    <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                    <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                       ▼
                     </div>
                   </div>

@@ -629,27 +629,27 @@ const filterSummary = [
       ) : (
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-          <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
+          <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
             <div className="py-2">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                   <span>{getMonthLabel(monthFilter)} 지출 분석</span>
-                  <span className="rounded-full bg-white/55 px-2 py-0.5 text-[10px] font-black">
+                  <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
                     DASHBOARD
                   </span>
                 </div>
 
                 <div>
-                  <h1 className="text-[34px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[28px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-3 text-[14px] font-medium text-[#7a6335]">
+                  <p className="mt-2 text-[12px] font-medium leading-relaxed sm:text-[14px] text-[#7a6335]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
                   {/* 👇 홈 버튼 위치와 동일한 자리 */}
-                  <div className="mt-4 flex items-center gap-2 sm:mt-6 sm:gap-3">
+                  <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
                     
                     {/* 이전 */}
                     <button
@@ -661,7 +661,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ◀
                     </button>
@@ -671,7 +671,7 @@ const filterSummary = [
                       <select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
-                        className="h-9 appearance-none rounded-full border border-white/60 bg-white px-4 pr-8 text-[13px] font-black text-[#2a2112] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
+                        className="h-8 appearance-none rounded-full border border-white/60 bg-white px-3 pr-7 text-[12px] font-black text-[#2a2112] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                       >
                         {monthOptions.map((month) => (
                           <option key={month} value={month}>
@@ -680,7 +680,7 @@ const filterSummary = [
                         ))}
                       </select>
 
-                      <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#7a6335]">
+                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#7a6335]">
                         ▼
                       </div>
                     </div>
@@ -695,7 +695,7 @@ const filterSummary = [
                         }
                       }}
                       disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-[#2a2112] transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
                     >
                       ▶
                     </button>

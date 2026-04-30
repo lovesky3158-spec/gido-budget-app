@@ -411,12 +411,12 @@ export default function HomePage() {
       ) : (
         <>
           <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-8">
           <div className="py-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
                 <span>{formatMonthTitle(currentMonth)} 요약</span>
-                <span className="rounded-full bg-white/55 px-2 py-0.5 text-[10px] font-black">HOME</span>
+                <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">HOME</span>
               </div>
 
               <div className="mt-3">
