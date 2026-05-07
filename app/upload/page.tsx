@@ -456,6 +456,28 @@ export default function UploadPage() {
     userType: users[0] ?? "기린",
     accountType: accounts[0] ?? "현금",
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("manual") !== "1") return;
+
+    setTab("manual");
+    setManualForm({
+      id: makeId("manual"),
+      tx_date: "",
+      description: "",
+      flowType: "지출",
+      category: categories[0] ?? "기타",
+      amount: "",
+      userType: users[0] ?? "기린",
+      accountType: accounts[0] ?? "현금",
+    });
+    setShowManualAddModal(true);
+
+    window.history.replaceState(null, "", window.location.pathname);
+  }, [accounts, categories, users]);
+
   useEffect(() => {
     setUsers(loadList("users", DEFAULT_USERS));
     setAccounts(loadList("accounts", DEFAULT_ACCOUNTS));
@@ -1039,6 +1061,57 @@ const appendManualForm = () => {
 
   setManualRows((prev) => [...prev, { ...manualForm, id: makeId("manual") }]);
   setShowManualAddModal(false);
+};
+
+const saveSingleManualForm = async () => {
+  setError("");
+  setSuccess("");
+
+  if (!manualForm.tx_date || !manualForm.description.trim() || parseNumber(manualForm.amount) === null) {
+    setError("날짜, 내용, 금액을 입력해주세요.");
+    return;
+  }
+
+  const rawAmount = Math.abs(Number(parseNumber(manualForm.amount) ?? 0));
+  const finalAmount = manualForm.flowType === "지출" ? -rawAmount : rawAmount;
+
+  try {
+    setIsSaving(true);
+    const { error: insertError } = await supabase.from("transactions").insert([
+      {
+        tx_date: fromIsoDate(manualForm.tx_date),
+        description: manualForm.description.trim(),
+        type: `${manualForm.flowType}/${manualForm.category || "기타"}`,
+        amount: finalAmount,
+        balance: null,
+        user_type: normalizeUserTag(manualForm.userType) || "미지정",
+        account_type: normalizeAccountLabel(manualForm.accountType) || "미지정",
+        source_file: "manual_input",
+      },
+    ]);
+
+    if (insertError) {
+      setError(`저장 실패: ${insertError.message}`);
+      return;
+    }
+
+    setSuccess("1건 저장 완료");
+    setShowManualAddModal(false);
+    setManualForm({
+      id: makeId("manual"),
+      tx_date: "",
+      description: "",
+      flowType: "지출",
+      category: categories[0] ?? "기타",
+      amount: "",
+      userType: users[0] ?? "기린",
+      accountType: accounts[0] ?? "현금",
+    });
+  } catch {
+    setError("저장 중 오류가 발생했습니다.");
+  } finally {
+    setIsSaving(false);
+  }
 };
 
   const removeManualRow = (id: string) => {
@@ -2023,9 +2096,18 @@ const appendManualForm = () => {
         <button
           type="button"
           onClick={appendManualForm}
-          className="rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] hover:bg-[#18aaa4]"
+          className="hidden rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] hover:bg-[#18aaa4] sm:inline-flex"
         >
           미리보기에 추가
+        </button>
+
+        <button
+          type="button"
+          onClick={saveSingleManualForm}
+          disabled={isSaving}
+          className="inline-flex rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] hover:bg-[#18aaa4] disabled:opacity-60 sm:hidden"
+        >
+          1건 등록
         </button>
       </div>
     </div>

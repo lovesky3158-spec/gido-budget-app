@@ -737,16 +737,20 @@ export default function TransactionsPage() {
   </div>
 </div>
 <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
-  <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-    <div className="border-r border-slate-100 pr-3">
-      <div className="text-[11px] font-black text-slate-400">이번달 지출</div>
-      <div className="mt-1 truncate text-[22px] font-black tracking-[-0.06em] text-rose-500">{formatCompactWon(totalExpense)}원</div>
-      <div className="mt-1 text-[10px] font-bold text-slate-400">{filtered.length}건 거래</div>
+  <div className="rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+      <span className="text-[12px] font-black text-slate-500">이번달 요약</span>
+      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-500">{filtered.length}건</span>
     </div>
-    <div className="pl-1">
-      <div className="text-[11px] font-black text-slate-400">순흐름</div>
-      <div className={`mt-1 truncate text-[22px] font-black tracking-[-0.06em] ${total >= 0 ? "text-sky-500" : "text-rose-500"}`}>{formatCompactWon(total)}원</div>
-      <div className="mt-1 text-[10px] font-bold text-slate-400">수입 {formatCompactWon(totalIncome)}원</div>
+    <div className="grid grid-cols-2 gap-3 pt-3">
+      <div className="min-w-0">
+        <div className="text-[11px] font-black text-slate-400">지출</div>
+        <div className="mt-0.5 truncate text-[20px] font-black tracking-[-0.025em] text-rose-500">{formatCompactWon(totalExpense)}원</div>
+      </div>
+      <div className="min-w-0 border-l border-slate-100 pl-3">
+        <div className="text-[11px] font-black text-slate-400">순흐름</div>
+        <div className={`mt-0.5 truncate text-[20px] font-black tracking-[-0.025em] ${total >= 0 ? "text-sky-500" : "text-rose-500"}`}>{formatCompactWon(total)}원</div>
+      </div>
     </div>
   </div>
 </div>

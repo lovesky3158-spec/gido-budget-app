@@ -56,6 +56,13 @@ export default function AppHeader() {
   const [email, setEmail] = useState<string | null>(null);
   const profile = getUserProfile(email);
   const mobileMeta = getMobileRouteMeta(pathname);
+  const isGirinMobileIcon = mobileMeta.icon.includes("girin");
+  const mobileHeaderTone = isGirinMobileIcon
+    ? "border-[#bdeedc] bg-[#eafff6]/96"
+    : "border-[#f1d67a]/70 bg-[#fff3bd]/96";
+  const mobileIconTone = isGirinMobileIcon
+    ? "bg-white ring-[#bdeedc] shadow-[0_8px_20px_rgba(20,184,166,0.16)]"
+    : "bg-white ring-[#f1d67a] shadow-[0_8px_20px_rgba(255,191,31,0.20)]";
 
   useEffect(() => {
     async function loadUser() {
@@ -83,7 +90,7 @@ export default function AppHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-[#f1d67a]/60 bg-white/92 backdrop-blur-xl">
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-xl ${mobileHeaderTone} sm:border-[#f1d67a]/60 sm:bg-white/92`}>
         <div className="mx-auto flex h-[56px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
           <Link href="/" className="group hidden min-w-0 items-center gap-3 sm:flex">
             <div className="relative shrink-0">
@@ -108,7 +115,7 @@ export default function AppHeader() {
           </Link>
 
           <div className="flex min-w-0 items-center gap-2 sm:hidden">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] bg-[#fff7d6] ring-1 ring-[#f1d67a]/70">
+            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] ring-1 ${mobileIconTone}`}>
               <img src={mobileMeta.icon} alt="" className="h-7 w-7 object-contain" />
             </span>
             <div className="truncate text-[18px] font-black tracking-[-0.04em] text-[#2a2112]">
@@ -169,7 +176,7 @@ export default function AppHeader() {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.primary ? "/upload?manual=1" : item.href}
                 className={[
                   item.primary
                     ? "-mt-5 flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-[24px] bg-[#ffd84d] text-[10px] font-black text-[#5f3f00] shadow-[0_12px_28px_rgba(255,191,31,0.36)] ring-4 ring-white"

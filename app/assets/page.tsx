@@ -1254,10 +1254,12 @@ const jjangguTrend = useMemo(() => {
   const assetBaseY = assetTopY + assetInnerHeight;
 
   const assetValues = assetTrend.map((item) => item.ending);
-  const rawMin = Math.min(...assetValues, 0);
-  const rawMax = Math.max(...assetValues, 1);
-  const assetRangePadding = Math.max((rawMax - rawMin) * 0.18, rawMax * 0.08, 1);
-  const assetChartMin = Math.max(0, rawMin - assetRangePadding);
+  const rawMin = assetValues.length ? Math.min(...assetValues) : 0;
+  const rawMax = assetValues.length ? Math.max(...assetValues) : 1;
+  const rawRange = Math.max(rawMax - rawMin, 1);
+  const rawAbsMax = Math.max(Math.abs(rawMax), Math.abs(rawMin), 1);
+  const assetRangePadding = Math.max(rawRange * 0.18, rawAbsMax * 0.08, 1);
+  const assetChartMin = rawMin < 0 ? rawMin - assetRangePadding : Math.max(0, rawMin - assetRangePadding);
   const assetChartMax = rawMax + assetRangePadding;
   const assetChartRange = Math.max(assetChartMax - assetChartMin, 1); 
 
@@ -1496,6 +1498,21 @@ const jjangguTrend = useMemo(() => {
                 </g>
               );
             })}
+
+                {assetChartMin < 0 && assetChartMax > 0 ? (() => {
+                  const zeroY = assetBaseY - ((0 - assetChartMin) / assetChartRange) * assetInnerHeight;
+                  return (
+                    <line
+                      x1={assetPadX}
+                      x2={assetChartWidth - assetPadX}
+                      y1={zeroY}
+                      y2={zeroY}
+                      stroke="#94a3b8"
+                      strokeWidth="1.5"
+                      strokeDasharray="6 6"
+                    />
+                  );
+                })() : null}
 
                 <path
                   ref={pathRef}
