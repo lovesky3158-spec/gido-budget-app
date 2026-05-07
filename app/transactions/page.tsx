@@ -623,8 +623,10 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <section className="relative bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
+    <div className="min-h-screen bg-white pb-28 sm:pb-0">
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
+        <div className="pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full bg-white/20 blur-2xl sm:hidden" />
+        <div className="pointer-events-none absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-[#fff1a8]/20 blur-2xl sm:hidden" />
         <button
           type="button"
           onClick={() => setShowCalendar(true)}
@@ -633,7 +635,7 @@ export default function TransactionsPage() {
         >
           📅
         </button>
-        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-8">
           <div className="py-2">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
               <span>
@@ -649,11 +651,28 @@ export default function TransactionsPage() {
                 기린 · 짱구 거래내역
               </h1>
 
-              <p className="mt-1.5 text-[9px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+              <p className="mt-1.5 hidden text-[9px] font-medium leading-relaxed text-white/80 sm:block sm:text-[14px]">
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+              <div className="mt-4 grid grid-cols-[1.15fr_0.85fr] gap-2 sm:hidden">
+                <div className="rounded-[24px] border border-white/35 bg-white/22 p-3 text-white shadow-[0_16px_34px_rgba(15,23,42,0.10)] backdrop-blur">
+                  <div className="text-[11px] font-black text-white/75">이번달 지출</div>
+                  <div className="mt-1 truncate text-[24px] font-black tracking-[-0.06em]">
+                    {formatCompactWon(totalExpense)}원
+                  </div>
+                  <div className="mt-1 text-[10px] font-bold text-white/70">{filtered.length}건 거래</div>
+                </div>
+                <div className="rounded-[24px] border border-white/35 bg-white/90 p-3 shadow-[0_16px_34px_rgba(15,23,42,0.10)]">
+                  <div className="text-[11px] font-black text-[#0f766e]">순흐름</div>
+                  <div className={`mt-1 truncate text-[19px] font-black tracking-[-0.05em] ${total >= 0 ? "text-sky-500" : "text-rose-500"}`}>
+                    {formatCompactWon(total)}원
+                  </div>
+                  <div className="mt-1 text-[10px] font-bold text-slate-400">수입 {formatCompactWon(totalIncome)}원</div>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
@@ -743,7 +762,11 @@ export default function TransactionsPage() {
     </div>
 
     {showFilterSheet ? (
-      <div className="mt-2 rounded-[24px] border border-slate-100 bg-white p-3 shadow-[0_14px_40px_rgba(15,23,42,0.08)] sm:p-4">
+      <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)] sm:static sm:mt-2 sm:max-h-none sm:overflow-visible sm:rounded-[24px] sm:p-4 sm:shadow-[0_14px_40px_rgba(15,23,42,0.08)]">
+        <div className="mb-3 flex items-center justify-between sm:hidden">
+          <div className="text-sm font-black text-slate-800">필터</div>
+          <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
+        </div>
         <div className="grid gap-3">
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">사용자</div>
@@ -844,7 +867,7 @@ export default function TransactionsPage() {
   </div>
 </div>
 
-<main className="bg-[#f6fbfb] px-4 pt-5 sm:px-6 sm:pt-8">
+<main className="bg-[#f6fbfb] px-3 pt-4 sm:px-6 sm:pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}
@@ -852,17 +875,17 @@ export default function TransactionsPage() {
         ) : null}
 
         <div className="mx-auto max-w-6xl">
-          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="text-[17px] font-extrabold text-[#11b5b0]">
                 전체 내역 {filtered.length}건
               </div>
               <div className="mt-0.5 text-xs text-slate-400">
-                거래 카드를 더블클릭하면 수정할 수 있어요
+                거래 카드를 탭하면 수정할 수 있어요
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto rounded-full bg-white/80 px-2 py-1.5 text-xs font-bold text-slate-600 shadow-sm backdrop-blur">
+            <div className="hidden items-center gap-1.5 overflow-x-auto rounded-full bg-white/80 px-2 py-1.5 text-xs font-bold text-slate-600 shadow-sm backdrop-blur sm:flex">
 
 
               {selectedDateFilter ? (
@@ -902,7 +925,7 @@ export default function TransactionsPage() {
             <div className="space-y-6 pb-8">
               {groupedRows.map((group) => (
                 <section key={group.date}>
-                  <div className="mb-2 grid grid-cols-[1fr_auto] items-center gap-4 px-1">
+                  <div className="mb-2 grid grid-cols-[1fr_auto] items-center gap-3 px-1">
                     <div className="text-[15px] font-extrabold text-slate-700">{group.date}</div>
                       <div className="flex items-center justify-end gap-2 text-right">
                         <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-400">
@@ -929,12 +952,12 @@ export default function TransactionsPage() {
   key={item.id}
   type="button"
   onClick={() => openEdit(item)}
-  className={`relative w-full overflow-hidden rounded-[20px] border border-[#d8f3f1] bg-white px-3 py-2.5 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-4 before:h-[calc(100%-32px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
+  className={`relative w-full overflow-hidden rounded-[24px] border border-[#d8f3f1] bg-white px-3.5 py-3 text-left shadow-sm transition active:scale-[0.99] hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
     amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
   }`}
 >
-  <div className="grid grid-cols-[44px_1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
-    <div className="row-span-2 flex flex-col items-stretch justify-center gap-1">
+  <div className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
+    <div className="hidden row-span-2 flex-col items-stretch justify-center gap-1 sm:flex">
       <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
         {typeMeta.flow || "미분류"}
       </span>
@@ -944,7 +967,11 @@ export default function TransactionsPage() {
     </div>
 
     <div className="min-w-0">
-      <div className="truncate text-[13px] font-black text-slate-800 sm:text-[16px]">
+      <div className="mb-1 flex items-center gap-1.5 sm:hidden">
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>{typeMeta.flow || "미분류"}</span>
+        <span className={`truncate rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>{typeMeta.category || "기타"}</span>
+      </div>
+      <div className="truncate text-[15px] font-black text-slate-800 sm:text-[16px]">
         {item.description || "-"}
       </div>
     </div>
@@ -959,7 +986,7 @@ export default function TransactionsPage() {
       </div>
     </div>
 
-    <div className="col-start-2 col-end-4 flex min-w-0 flex-wrap items-center gap-1.5">
+    <div className="col-start-1 col-end-3 flex min-w-0 flex-wrap items-center gap-1.5 sm:col-start-2 sm:col-end-4">
       <span className="rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">
         {parseShortDate(item.tx_date)?.display ?? item.tx_date ?? "-"}
       </span>
