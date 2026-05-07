@@ -99,8 +99,14 @@ const mobileProfileTone = isGreenMobileTone
 
   return (
     <>
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-xl ${mobileHeaderTone} sm:border-[#f1d67a]/60 sm:bg-white/92`}>
-        <div className="mx-auto flex h-[56px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
+      <header
+        className={[
+            "sticky top-0 z-50 border-b backdrop-blur-xl transition-colors",
+            mobileHeaderTone,
+            "sm:border-[#f1d67a]/60 sm:bg-white/92",
+        ].join(" ")}
+        >
+        <div className="mx-auto flex h-[58px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
           <Link href="/" className="group hidden min-w-0 items-center gap-3 sm:flex">
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-[22px] bg-[#ffd84d] opacity-35 blur-[12px]" />
@@ -157,11 +163,11 @@ const mobileProfileTone = isGreenMobileTone
           <div className="flex shrink-0 items-center gap-2">
             <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black ring-1 sm:gap-2 sm:px-3 sm:text-[12px] ${mobileProfileTone} sm:bg-[#fff7d6] sm:text-[#8a5b00] sm:ring-[#f1d67a]/70`}>
               <img
-                src={profile.icon}
+                src={mobileMeta.icon}
                 alt={profile.label}
                 className="h-5 w-5 rounded-full object-contain"
               />
-              <span>{email ? profile.label : "공동"}</span>
+              <span>{mobileMeta.title === "리포트" || mobileMeta.title === "자산" ? "기린" : "짱구"}</span>
             </div>
 
             {email && (
