@@ -14,10 +14,10 @@ const navItems = [
 ];
 
 const mobileRouteMeta: Record<string, { title: string; icon: string }> = {
-  "/": { title: "홈", icon: "/icons/girin.png" },
+  "/": { title: "홈", icon: "/icons/zzangu.png" },
   "/transactions": { title: "거래내역", icon: "/icons/zzangu.png" },
-  "/upload": { title: "수동등록", icon: "/icons/girin.png" },
-  "/dashboard": { title: "리포트", icon: "/icons/zzangu.png" },
+  "/upload": { title: "수동등록", icon: "/icons/zzangu.png" },
+  "/dashboard": { title: "리포트", icon: "/icons/girin.png" },
   "/assets": { title: "자산현황", icon: "/icons/girin.png" },
 };
 
@@ -58,8 +58,8 @@ export default function AppHeader() {
   const mobileMeta = getMobileRouteMeta(pathname);
   const isGirinMobileIcon = mobileMeta.icon.includes("girin");
   const mobileHeaderTone = isGirinMobileIcon
-    ? "border-[#bdeedc] bg-[#eafff6]/96"
-    : "border-[#f1d67a]/70 bg-[#fff3bd]/96";
+    ? "border-[#bdeedc] bg-[linear-gradient(135deg,#eafff6_0%,#ccfaea_100%)]/96"
+    : "border-[#f1d67a]/70 bg-[linear-gradient(135deg,#fff7c7_0%,#ffe27a_100%)]/96";
   const mobileIconTone = isGirinMobileIcon
     ? "bg-white ring-[#bdeedc] shadow-[0_8px_20px_rgba(20,184,166,0.16)]"
     : "bg-white ring-[#f1d67a] shadow-[0_8px_20px_rgba(255,191,31,0.20)]";

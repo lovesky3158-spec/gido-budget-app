@@ -777,7 +777,7 @@ const resetFilters = () => {
                       { key: "기린", label: "기린", icon: "/icons/girin.png" },
                       { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
                     ].map((user) => (
-                      <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm" : "bg-slate-100 text-slate-500"}`}>
+                      <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm ring-2 ring-[#ffbf1f]/35" : user.key === "all" ? "bg-[#fff4c7] text-[#8a5b00] ring-1 ring-[#f1d67a]" : "bg-slate-100 text-slate-500"}`}>
                         {user.icon.startsWith("/") ? <img src={user.icon} alt="" className="h-4 w-4 object-contain" /> : <span>{user.icon}</span>}
                         <span>{user.label}</span>
                       </button>
@@ -798,7 +798,7 @@ const resetFilters = () => {
                     ].map((card) => {
                       const icon = card.key === "all" ? "💳" : resolveOptionIcon("accounts", card.label, optionIcons);
                       return (
-                        <button key={card.key} type="button" onClick={() => setCardFilter(card.key)} className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${cardFilter === card.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm" : "bg-slate-100 text-slate-500"}`}>
+                        <button key={card.key} type="button" onClick={() => setCardFilter(card.key)} className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${cardFilter === card.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm ring-2 ring-[#ffbf1f]/35" : card.key === "all" ? "bg-[#fff4c7] text-[#8a5b00] ring-1 ring-[#f1d67a]" : "bg-slate-100 text-slate-500"}`}>
                           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/75">
                             {icon && isImageIcon(icon) ? <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" /> : <span className="text-[12px]">{icon || card.label[0]}</span>}
                           </span>

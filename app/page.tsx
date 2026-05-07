@@ -188,6 +188,17 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
+  const [wifeMessage, setWifeMessage] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setWifeMessage(window.localStorage.getItem("gido_home_message") ?? "");
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("gido_home_message", wifeMessage);
+  }, [wifeMessage]);
 
   useEffect(() => {
     setOptionIcons(loadOptionIcons());
@@ -430,7 +441,21 @@ export default function HomePage() {
             </div>
           </section>
 
-          
+          <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+            <div className="rounded-[22px] border border-[#f1d67a] bg-[#fffdf2] px-4 py-3 shadow-[0_12px_28px_rgba(139,92,0,0.07)]">
+              <div className="mb-1 flex items-center gap-2 text-[11px] font-black text-[#b45309]">
+                <img src="/icons/zzangu.png" alt="" className="h-5 w-5 object-contain" />
+                <span>오늘의 한마디</span>
+              </div>
+              <input
+                type="text"
+                value={wifeMessage}
+                onChange={(e) => setWifeMessage(e.target.value)}
+                placeholder="와이프에게 남길 한마디를 적어봐요"
+                className="h-9 w-full rounded-[16px] border border-[#f3df93] bg-white px-3 text-[12px] font-bold text-[#2a2112] outline-none placeholder:text-[#c0a96a]"
+              />
+            </div>
+          </section>
 
 <section className="mx-auto mt-3 max-w-6xl px-4 sm:mt-6 sm:px-6">
   <div className="hidden gap-2 sm:hidden">
@@ -459,17 +484,17 @@ export default function HomePage() {
       </div>
 
       {/* 수입 / 지출 (같은 행) */}
-      <div className="mt-3 hidden grid-cols-2 gap-3 sm:grid">
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
         <div>
-          <div className="text-[13px] text-[#7a6335]">수입</div>
-          <div className="text-[20px] font-black text-[#2a2112]">
+          <div className="text-[11px] font-black text-[#7a6335] sm:text-[13px]">수입</div>
+          <div className="text-[15px] font-black text-[#2a2112] sm:text-[20px]">
             {formatMoney(totalIncome)}
           </div>
         </div>
 
         <div>
-          <div className="text-[13px] text-[#7a6335]">지출</div>
-          <div className="text-[20px] font-black text-[#2a2112]">
+          <div className="text-[11px] font-black text-[#7a6335] sm:text-[13px]">지출</div>
+          <div className="text-[15px] font-black text-[#2a2112] sm:text-[20px]">
             {formatMoney(totalExpense)}
           </div>
         </div>
@@ -487,11 +512,11 @@ export default function HomePage() {
           {formatMoney(userSpendSummary.girin)}
         </div>
 
-        <div className="mt-3 hidden gap-2 sm:grid">
+        <div className="mt-2 grid gap-1.5 sm:mt-3 sm:gap-2">
           {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`girin-${item.label}-${idx}`}
-              className="flex items-center justify-between rounded-full bg-white/80 px-3 py-1.5 text-[13px] font-extrabold text-emerald-700"
+              className="flex items-center justify-between rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold text-emerald-700 sm:px-3 sm:py-1.5 sm:text-[13px]"
             >
               {(() => {
               const accountName = item.label ?? "-";
@@ -517,7 +542,7 @@ export default function HomePage() {
                 </div>
               );
             })()}
-              <span className="shrink-0 text-[12px] font-bold">
+              <span className="shrink-0 text-[10px] font-bold sm:text-[12px]">
                 {formatMoney(item.value)}
               </span>
             </div>
@@ -535,11 +560,11 @@ export default function HomePage() {
             {formatMoney(userSpendSummary.zzangu)}
           </div>
 
-          <div className="mt-3 hidden gap-1.5 sm:grid">
+          <div className="mt-2 grid gap-1.5 sm:mt-3">
           {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`zzangu-${item.label}-${idx}`}
-              className="flex items-center justify-between rounded-full bg-white/70 px-3 py-1 text-[13px] font-bold text-[#b45309]"
+              className="flex items-center justify-between rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-bold text-[#b45309] sm:px-3 sm:text-[13px]"
             >
               {(() => {
                 const accountName = item.label ?? "-";

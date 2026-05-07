@@ -1352,7 +1352,7 @@ const saveSingleManualForm = async () => {
         </div>
       </section>
 
-      <main className={`px-4 py-4 transition-all duration-300 sm:px-6 sm:py-8 ${showRawModal ? "lg:mr-[46vw]" : ""}`}>
+      <main className={`overflow-x-hidden px-4 py-4 transition-all duration-300 sm:px-6 sm:py-8 ${showRawModal ? "lg:mr-[46vw]" : ""}`}>
         <div className="mx-auto max-w-6xl space-y-6">
           {error ? (
             <div className="rounded-[22px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
@@ -1883,7 +1883,7 @@ const saveSingleManualForm = async () => {
 
       {showMappingModal ? (
         <div
-          className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/45 px-6 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[99999] flex items-center justify-center overflow-x-hidden bg-slate-950/45 px-3 py-5 backdrop-blur-sm sm:px-6 sm:py-8"
           onMouseDown={() => setShowMappingModal(false)}
         >
           <div
@@ -1965,10 +1965,10 @@ const saveSingleManualForm = async () => {
     onMouseDown={() => setShowManualAddModal(false)}
   >
     <div
-      className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[30px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)] sm:rounded-[34px]"
+      className="max-h-[88vh] w-full max-w-[calc(100vw-24px)] overflow-y-auto overflow-x-hidden rounded-[26px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)] sm:max-w-2xl sm:rounded-[34px]"
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-7 py-6">
+      <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-5 sm:px-7 sm:py-6">
         <button
           type="button"
           onClick={() => setShowManualAddModal(false)}
@@ -1990,7 +1990,7 @@ const saveSingleManualForm = async () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 px-5 py-5 sm:grid-cols-2 sm:px-7 sm:py-6">
+      <div className="grid min-w-0 grid-cols-1 gap-3 px-4 py-4 sm:grid-cols-2 sm:gap-4 sm:px-7 sm:py-6">
         <Field label="날짜">
           <input
             type="date"
@@ -2084,11 +2084,11 @@ const saveSingleManualForm = async () => {
         </Field>
       </div>
 
-      <div className="flex justify-end gap-3 border-t border-slate-100 bg-slate-50/70 px-7 py-5">
+      <div className="flex justify-end gap-2 border-t border-slate-100 bg-slate-50/70 px-4 py-4 sm:gap-3 sm:px-7 sm:py-5">
         <button
           type="button"
           onClick={() => setShowManualAddModal(false)}
-          className="rounded-[18px] border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-500 hover:bg-slate-50"
+          className="rounded-[16px] border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-500 hover:bg-slate-50 sm:rounded-[18px] sm:px-5 sm:py-3 sm:text-sm"
         >
           취소
         </button>
@@ -2105,7 +2105,7 @@ const saveSingleManualForm = async () => {
           type="button"
           onClick={saveSingleManualForm}
           disabled={isSaving}
-          className="inline-flex rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] hover:bg-[#18aaa4] disabled:opacity-60 sm:hidden"
+          className="inline-flex rounded-[16px] bg-[#21bdb7] px-5 py-2.5 text-xs font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] hover:bg-[#18aaa4] disabled:opacity-60 sm:hidden"
         >
           1건 등록
         </button>
