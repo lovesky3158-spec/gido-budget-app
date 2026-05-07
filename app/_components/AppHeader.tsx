@@ -6,11 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 const navItems = [
-  { href: "/", label: "홈", icon: "⌂" },
-  { href: "/transactions", label: "내역", icon: "▤" },
+  { href: "/", label: "홈", icon: "🏠" },
+  { href: "/transactions", label: "내역", icon: "🧾" },
   { href: "/upload", label: "추가", icon: "+", primary: true },
-  { href: "/dashboard", label: "리포트", icon: "◔" },
-  { href: "/assets", label: "자산", icon: "♙" },
+  { href: "/dashboard", label: "리포트", icon: "📊" },
+  { href: "/assets", label: "자산", icon: "💰" },
 ];
 
 function getUserProfile(email: string | null) {
@@ -66,16 +66,16 @@ export default function AppHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-[#f1d67a]/60 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between gap-3 px-4">
+      <header className="sticky top-0 z-50 border-b border-[#f1d67a]/60 bg-white/92 backdrop-blur-xl">
+        <div className="mx-auto flex h-[56px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
           <Link href="/" className="group flex min-w-0 items-center gap-3">
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-[22px] bg-[#ffd84d] opacity-35 blur-[12px]" />
-              <div className="relative inline-flex h-11 w-11 items-center justify-center rounded-[22px] bg-[linear-gradient(135deg,#fff1a8,#ffd84d,#ffbf1f)] shadow-[0_12px_26px_rgba(255,191,31,0.32)]">
+              <div className="relative inline-flex h-9 w-9 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#fff1a8,#ffd84d,#ffbf1f)] shadow-[0_12px_26px_rgba(255,191,31,0.32)] sm:h-11 sm:w-11 sm:rounded-[22px]">
                 <img
                   src="/icons/girin.png"
                   alt="기도쀼"
-                  className="h-8 w-8 object-contain"
+                  className="h-7 w-7 object-contain sm:h-8 sm:w-8"
                 />
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function AppHeader() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
-            <div className="flex items-center gap-2 rounded-full bg-[#fff7d6] px-3 py-1.5 text-[12px] font-black text-[#8a5b00] ring-1 ring-[#f1d67a]/70">
+            <div className="flex items-center gap-1.5 rounded-full bg-[#fff7d6] px-2.5 py-1.5 text-[11px] font-black text-[#8a5b00] ring-1 ring-[#f1d67a]/70 sm:gap-2 sm:px-3 sm:text-[12px]">
               <img
                 src={profile.icon}
                 alt={profile.label}
@@ -135,42 +135,27 @@ export default function AppHeader() {
         </div>
       </header>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
-        <div className="mx-auto grid max-w-md grid-cols-5 items-end gap-1 rounded-[32px] border border-slate-200/80 bg-white/94 p-2 shadow-[0_-16px_50px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#f1d67a]/70 bg-white/94 px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 backdrop-blur-xl md:hidden">
+        <div className="mx-auto grid max-w-md grid-cols-5 items-end gap-1 rounded-[30px] bg-[#fffdf5] p-1.5 shadow-[0_-14px_44px_rgba(139,92,0,0.12)] ring-1 ring-[#f1d67a]/60">
           {navItems.map((item) => {
             const active = isActive(pathname, item.href);
-            const primary = Boolean((item as { primary?: boolean }).primary);
-
-            if (primary) {
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="relative -mt-7 flex flex-col items-center justify-end gap-1 text-[11px] font-black text-[#4a3510]"
-                >
-                  <span className={[
-                    "flex h-[68px] w-[68px] items-center justify-center rounded-full text-[34px] font-black shadow-[0_16px_34px_rgba(255,191,31,0.34)] ring-4 ring-white",
-                    active ? "bg-[#ffc533]" : "bg-[#ffd84d]",
-                  ].join(" ")}>
-                    +
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            }
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={[
-                  "flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-[22px] text-[11px] font-black transition",
-                  active
-                    ? "bg-slate-50 text-slate-950"
-                    : "text-slate-500 active:bg-slate-50",
+                  item.primary
+                    ? "-mt-5 flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-[24px] bg-[#ffd84d] text-[10px] font-black text-[#5f3f00] shadow-[0_12px_28px_rgba(255,191,31,0.36)] ring-4 ring-white"
+                    : "flex min-h-[50px] flex-col items-center justify-center gap-0.5 rounded-[20px] text-[10px] font-black transition",
+                  !item.primary && active
+                    ? "bg-[#fff1a8] text-[#5f3f00] shadow-[0_8px_18px_rgba(255,191,31,0.18)]"
+                    : !item.primary
+                      ? "text-[#9a7a32] hover:bg-[#fff7d6]"
+                      : "",
                 ].join(" ")}
               >
-                <span className="text-[25px] leading-none">{item.icon}</span>
+                <span className={item.primary ? "flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-[24px] leading-none" : "text-[17px] leading-none"}>{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             );

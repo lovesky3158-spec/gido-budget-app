@@ -924,7 +924,7 @@ export default function AssetsPage() {
     fetchData();
   }, []);
 
-  // 최신 월 -> 오래된 월 순서
+  // 가장 오래된 월 -> 최신월 순서
   const monthOptions = useMemo(() => {
     return Array.from(
       new Set(
@@ -935,8 +935,8 @@ export default function AssetsPage() {
     ).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
   }, [rows]);
 
-  const latestMonth = monthOptions[0] ?? "";
-  const oldestMonth = monthOptions[monthOptions.length - 1] ?? "";
+  const oldestMonth = monthOptions[0] ?? "";
+  const latestMonth = monthOptions[monthOptions.length - 1] ?? "";
 
   useEffect(() => {
     if (!monthFilter && latestMonth) {

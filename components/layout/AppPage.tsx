@@ -20,7 +20,7 @@ export default function AppPage({ eyebrow, title, description, children, right, 
     <main className="min-h-screen bg-[#f7f8fa]">
       <section className={`relative overflow-hidden bg-gradient-to-br ${toneClass[tone]} text-white`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_22%),radial-gradient(circle_at_top_right,rgba(255,223,107,0.18),transparent_24%)]" />
-        <div className="app-shell relative px-6 py-10">
+        <div className="app-shell relative px-4 py-5 sm:px-6 sm:py-10">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               {eyebrow ? (
@@ -28,14 +28,14 @@ export default function AppPage({ eyebrow, title, description, children, right, 
                   {eyebrow}
                 </div>
               ) : null}
-              <h1 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{title}</h1>
-              {description ? <p className="mt-2 text-sm text-white/85">{description}</p> : null}
+              <h1 className="mt-3 text-[26px] font-black tracking-[-0.045em] sm:mt-4 sm:text-4xl">{title}</h1>
+              {description ? <p className="mt-1.5 text-xs leading-relaxed text-white/85 sm:mt-2 sm:text-sm">{description}</p> : null}
             </div>
             {right ? <div className="w-full max-w-full lg:w-auto">{right}</div> : null}
           </div>
         </div>
       </section>
-      <section className="app-shell px-6 py-8">{children}</section>
+      <section className="app-shell px-4 pb-28 pt-4 sm:px-6 sm:py-8">{children}</section>
     </main>
   );
 }
