@@ -1208,7 +1208,7 @@ const appendManualForm = () => {
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white">
         <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
           <div className="py-2">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
+            <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
               <span>수입·지출 등록</span>
               <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
                 UPLOAD
@@ -1216,15 +1216,15 @@ const appendManualForm = () => {
             </div>
 
             <div className="mt-3">
-              <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+              <h1 className="text-[25px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 일괄등록
               </h1>
 
-              <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+              <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-white/80 sm:block sm:text-[14px]">
                 수동 입력과 엑셀 업로드로 카드·계좌 거래를 빠르게 정리해요.
               </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-3 sm:mt-6 sm:justify-start">
                 <div className="flex items-center gap-2 rounded-full bg-white/18 p-1.5 backdrop-blur">
                   <button
                     type="button"
@@ -1272,7 +1272,7 @@ const appendManualForm = () => {
 
           {tab === "manual" ? (
             <>
-              <div className="grid gap-4 md:grid-cols-4">
+              <div className="hidden gap-4 sm:grid md:grid-cols-4">
                 <div className="app-kpi">
                   <div className="app-kpi-label">입력 행</div>
                   <div className="app-kpi-value">{manualRows.length}건</div>
@@ -1292,21 +1292,21 @@ const appendManualForm = () => {
               </div>
 
 <div className="app-card rounded-[30px] p-5">
-  <div className="mb-5 flex items-center justify-between">
+  <div className="mb-4 flex items-center justify-between gap-3">
     <div>
       <h2 className="app-section-title">수동 등록</h2>
-      <p className="app-section-sub">
+      <p className="app-section-sub hidden sm:block">
         현금 사용분이나 자동 파싱되지 않는 내역을 직접 추가해요.
       </p>
     </div>
 
-    <div className="flex gap-2">
+    <div className="flex shrink-0 gap-2">
       <button
         type="button"
         onClick={addManualRow}
-        className="rounded-[16px] bg-[#21bdb7] px-4 py-2.5 text-sm font-black text-white"
+        className="rounded-[16px] bg-[#21bdb7] px-4 py-2.5 text-sm font-black text-white shadow-sm"
       >
-        행 추가
+        <span className="sm:hidden">1건 입력</span><span className="hidden sm:inline">행 추가</span>
       </button>
 
       <button
@@ -1320,7 +1320,34 @@ const appendManualForm = () => {
     </div>
   </div>
 
-  <div className="overflow-hidden rounded-[26px] border border-slate-100 bg-white">
+  <div className="sm:hidden">
+    {manualRows.length > 0 ? (
+      <div className="space-y-2">
+        {manualRows.map((row) => {
+          const amount = Math.abs(Number(parseNumber(row.amount) ?? 0));
+          const signed = row.flowType === "지출" ? -amount : amount;
+          return (
+            <div key={`mobile-manual-${row.id}`} className="rounded-[20px] border border-slate-100 bg-slate-50 px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="truncate text-[14px] font-black text-slate-800">{row.description || "-"}</div>
+                  <div className="mt-1 text-[11px] font-bold text-slate-400">{row.tx_date ? fromIsoDate(row.tx_date) : "-"} · {row.category} · {row.userType}</div>
+                </div>
+                <div className={`shrink-0 text-[14px] font-black ${signed < 0 ? "text-rose-500" : "text-sky-500"}`}>{signed < 0 ? "-" : "+"}{amount.toLocaleString()}원</div>
+              </div>
+              <button type="button" onClick={() => removeManualRow(row.id)} className="mt-2 rounded-full bg-white px-3 py-1.5 text-[11px] font-black text-rose-500 ring-1 ring-rose-100">삭제</button>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <div className="rounded-[22px] border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-center text-sm font-bold text-slate-400">
+        1건 입력 버튼으로 내역을 추가해주세요.
+      </div>
+    )}
+  </div>
+
+  <div className="hidden overflow-hidden rounded-[26px] border border-slate-100 bg-white sm:block">
     <div className="max-h-[420px] overflow-auto">
       <table className="w-full border-collapse text-sm">
         <thead className="sticky top-0 z-10 bg-slate-50">
@@ -1767,7 +1794,7 @@ const appendManualForm = () => {
             className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[34px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)]"
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-7 py-6">
+            <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-5 sm:px-7 sm:py-6">
               <button
                 type="button"
                 onClick={() => setShowMappingModal(false)}
@@ -1816,7 +1843,7 @@ const appendManualForm = () => {
   ))}
 </div>
 
-            <div className="flex justify-end gap-3 border-t border-slate-100 bg-slate-50/70 px-7 py-5">
+            <div className="flex justify-end gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:px-7 sm:py-5">
               <button
                 type="button"
                 onClick={() => setShowMappingModal(false)}
@@ -1842,7 +1869,7 @@ const appendManualForm = () => {
     onMouseDown={() => setShowManualAddModal(false)}
   >
     <div
-      className="w-full max-w-2xl overflow-hidden rounded-[34px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)]"
+      className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[30px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)] sm:rounded-[34px]"
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-7 py-6">
@@ -1867,7 +1894,7 @@ const appendManualForm = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 px-7 py-6">
+      <div className="grid grid-cols-1 gap-4 px-5 py-5 sm:grid-cols-2 sm:px-7 sm:py-6">
         <Field label="날짜">
           <input
             type="date"
@@ -1896,7 +1923,7 @@ const appendManualForm = () => {
           </div>
         </Field>
 
-        <Field label="내용" className="col-span-2">
+        <Field label="내용" className="sm:col-span-2">
           <input
             type="text"
             value={manualForm.description}

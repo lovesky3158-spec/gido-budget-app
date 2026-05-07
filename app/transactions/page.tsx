@@ -637,7 +637,7 @@ export default function TransactionsPage() {
         </button>
         <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-8">
           <div className="py-2">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
+            <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
               <span>
                 {monthFilter ? `${monthLabel.year}년 ${monthLabel.month}` : "월 선택"} 거래내역
               </span>
@@ -647,7 +647,7 @@ export default function TransactionsPage() {
             </div>
 
             <div className="mt-3">
-              <h1 className="text-[24px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+              <h1 className="text-[23px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
@@ -655,24 +655,7 @@ export default function TransactionsPage() {
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-4 grid grid-cols-[1.15fr_0.85fr] gap-2 sm:hidden">
-                <div className="rounded-[24px] border border-white/35 bg-white/22 p-3 text-white shadow-[0_16px_34px_rgba(15,23,42,0.10)] backdrop-blur">
-                  <div className="text-[11px] font-black text-white/75">이번달 지출</div>
-                  <div className="mt-1 truncate text-[24px] font-black tracking-[-0.06em]">
-                    {formatCompactWon(totalExpense)}원
-                  </div>
-                  <div className="mt-1 text-[10px] font-bold text-white/70">{filtered.length}건 거래</div>
-                </div>
-                <div className="rounded-[24px] border border-white/35 bg-white/90 p-3 shadow-[0_16px_34px_rgba(15,23,42,0.10)]">
-                  <div className="text-[11px] font-black text-[#0f766e]">순흐름</div>
-                  <div className={`mt-1 truncate text-[19px] font-black tracking-[-0.05em] ${total >= 0 ? "text-sky-500" : "text-rose-500"}`}>
-                    {formatCompactWon(total)}원
-                  </div>
-                  <div className="mt-1 text-[10px] font-bold text-slate-400">수입 {formatCompactWon(totalIncome)}원</div>
-                </div>
-              </div>
-
-              <div className="mt-3 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+              <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
@@ -716,6 +699,20 @@ export default function TransactionsPage() {
           </div>
         </div>
 </section>
+<div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+  <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+    <div className="border-r border-slate-100 pr-3">
+      <div className="text-[11px] font-black text-slate-400">이번달 지출</div>
+      <div className="mt-1 truncate text-[22px] font-black tracking-[-0.06em] text-rose-500">{formatCompactWon(totalExpense)}원</div>
+      <div className="mt-1 text-[10px] font-bold text-slate-400">{filtered.length}건 거래</div>
+    </div>
+    <div className="pl-1">
+      <div className="text-[11px] font-black text-slate-400">순흐름</div>
+      <div className={`mt-1 truncate text-[22px] font-black tracking-[-0.06em] ${total >= 0 ? "text-sky-500" : "text-rose-500"}`}>{formatCompactWon(total)}원</div>
+      <div className="mt-1 text-[10px] font-bold text-slate-400">수입 {formatCompactWon(totalIncome)}원</div>
+    </div>
+  </div>
+</div>
 <div className="border-b border-slate-100 bg-white">
   <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-4">
     <div className="flex items-center gap-2">

@@ -1286,7 +1286,7 @@ const jjangguTrend = useMemo(() => {
     <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
       <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
         <div className="py-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a]">
+          <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
             <span>{monthFilter ? getMonthLabel(monthFilter) : "월 선택"} 자산 분석</span>
             <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
               ASSET
@@ -1294,15 +1294,15 @@ const jjangguTrend = useMemo(() => {
           </div>
 
           <div className="mt-3">
-            <h1 className="text-[26px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+            <h1 className="text-[25px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
               기린 · 짱구 자산현황
             </h1>
 
-            <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-white/80">
+            <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-white/80 sm:block sm:text-[14px]">
               전월 자산 자동 이월과 수동 보정 카드로 월말 자산 흐름을 확인해요.
             </p>
 
-            <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+            <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -1323,10 +1323,7 @@ const jjangguTrend = useMemo(() => {
                   onChange={(e) => setMonthFilter(e.target.value)}
                   className="h-7 appearance-none rounded-full border border-white/60 bg-white px-2.5 pr-7 text-[10px] font-black text-[#0f766e] shadow-sm outline-none cursor-pointer sm:h-11 sm:px-6 sm:pr-10 sm:text-sm"
                 >
-                  {monthOptions
-                    .slice()
-                    .reverse()
-                    .map((month) => (
+                  {monthOptions.map((month) => (
                       <option key={month} value={month}>
                         {getMonthLabel(month)}
                       </option>

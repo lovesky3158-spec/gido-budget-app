@@ -414,18 +414,19 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
           <div className="py-2">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
+              <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112] sm:inline-flex">
                 <span>{formatMonthTitle(currentMonth)} 요약</span>
                 <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">HOME</span>
               </div>
 
               <div className="mt-3">
-                <h1 className="text-[26px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
+                <h1 className="text-[25px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
                   기린 도연 가계부
                 </h1>
-                <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:text-[14px]">
+                <p className="mt-2 hidden text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:block sm:text-[14px]">
                   돈 열심히 모아서 이사가고 차사고 놀러가고 먹으러다니자!!
                 </p>
+                <div className="mt-2 rounded-full border border-white/45 bg-white/45 px-3 py-1.5 text-[11px] font-bold text-[#7a6335] sm:hidden">돈 열심히 모아서 맛있는 거 먹으러 가자 💛</div>
               </div>
 
             </div>
@@ -435,24 +436,24 @@ export default function HomePage() {
       </section>
 
 <section className="mx-auto mt-4 max-w-6xl px-4 sm:mt-6 sm:px-6">
-  <div className="grid gap-3 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
+  <div className="grid grid-cols-3 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
-    <div className="flex min-h-[124px] flex-col justify-between rounded-[24px] bg-[#fff9df] px-4 py-4 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
+    <div className="flex min-h-[96px] flex-col justify-between rounded-[20px] bg-[#fff9df] px-3 py-3 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
 
       {/* 현금흐름 */}
       <div>
-        <div className="text-[15px] font-bold text-[#9a6800]">
+        <div className="text-[11px] font-bold text-[#9a6800] sm:text-[15px]">
           {formatMonthTitle(currentMonth)} 얼마 모으려나
         </div>
 
-        <div className={`mt-2 text-[26px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:text-[32px]`}>
+        <div className={`mt-1 text-[18px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:mt-2 sm:text-[32px]`}>
           {formatSignedMoney(netAmount)}
         </div>
       </div>
 
       {/* 수입 / 지출 (같은 행) */}
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-3 hidden grid-cols-2 gap-3 sm:grid">
         <div>
           <div className="text-[13px] text-[#7a6335]">수입</div>
           <div className="text-[20px] font-black text-[#2a2112]">
@@ -470,17 +471,17 @@ export default function HomePage() {
     </div>
 
     {/* 기린 (3) */}
-    <div className="flex min-h-[116px] items-center gap-3 rounded-[24px] bg-emerald-50 px-4 py-4 sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
-      <img src="/icons/girin.png" className="h-[56px] w-[56px] object-contain" />
+    <div className="flex min-h-[96px] flex-col items-center justify-center gap-1 rounded-[20px] bg-emerald-50 px-2 py-3 text-center sm:min-h-[140px] sm:flex-row sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
+      <img src="/icons/girin.png" className="h-9 w-9 object-contain sm:h-[56px] sm:w-[56px]" />
 
       <div className="min-w-0 flex-1">
-        <div className="text-[15px] font-bold text-emerald-700">기린</div>
+        <div className="text-[11px] font-bold text-emerald-700 sm:text-[15px]">기린</div>
 
-        <div className="mt-1 text-[22px] font-black text-emerald-700">
+        <div className="mt-0.5 text-[15px] font-black text-emerald-700 sm:mt-1 sm:text-[22px]">
           {formatMoney(userSpendSummary.girin)}
         </div>
 
-        <div className="mt-3 grid gap-2">
+        <div className="mt-3 hidden gap-2 sm:grid">
           {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`girin-${item.label}-${idx}`}
@@ -520,15 +521,15 @@ export default function HomePage() {
     </div>
 
     {/* 짱구 (3) */}
-    <div className="flex min-h-[116px] items-center gap-3 rounded-[24px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-4 py-4 shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
-      <img src="/icons/zzangu.png" className="h-[70px] w-[70px] object-contain" />
+    <div className="flex min-h-[96px] flex-col items-center justify-center gap-1 rounded-[20px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-2 py-3 text-center shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:flex-row sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
+      <img src="/icons/zzangu.png" className="h-10 w-10 object-contain sm:h-[70px] sm:w-[70px]" />
         <div className="min-w-0 flex-1">
-          <div className="text-[15px] font-bold text-[#b45309]">짱구</div>
-          <div className="mt-1 text-[22px] font-black text-[#b45309]">
+          <div className="text-[11px] font-bold text-[#b45309] sm:text-[15px]">짱구</div>
+          <div className="mt-0.5 text-[15px] font-black text-[#b45309] sm:mt-1 sm:text-[22px]">
             {formatMoney(userSpendSummary.zzangu)}
           </div>
 
-          <div className="mt-3 grid gap-1.5">
+          <div className="mt-3 hidden gap-1.5 sm:grid">
           {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`zzangu-${item.label}-${idx}`}

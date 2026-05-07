@@ -632,7 +632,7 @@ const filterSummary = [
           <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
             <div className="py-2">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112]">
+                <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112] sm:inline-flex">
                   <span>{getMonthLabel(monthFilter)} 지출 분석</span>
                   <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
                     DASHBOARD
@@ -640,16 +640,16 @@ const filterSummary = [
                 </div>
 
                 <div>
-                  <h1 className="text-[26px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[25px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-2 text-[10px] font-medium leading-relaxed sm:text-[14px] text-[#7a6335]">
+                  <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-[#7a6335] sm:block sm:text-[14px]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
                   {/* 👇 홈 버튼 위치와 동일한 자리 */}
-                  <div className="mt-2 flex items-center gap-1.5 sm:mt-6 sm:gap-3">
+                  <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
                     
                     {/* 이전 */}
                     <button
@@ -705,8 +705,8 @@ const filterSummary = [
             </div>
           </div>
         </section>
-        <div className="mx-auto max-w-6xl overflow-x-auto px-4 pt-3 sm:px-6 sm:pt-5">
-          <div className="flex w-max min-w-full flex-nowrap items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-3 py-2 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:w-auto sm:flex-wrap sm:gap-5 sm:rounded-[30px] sm:px-5 sm:py-3">
+        <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
+          <div className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-black text-[#9b7d3e]">사용자</span>
 
