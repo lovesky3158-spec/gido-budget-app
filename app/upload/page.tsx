@@ -1206,8 +1206,8 @@ const appendManualForm = () => {
   return (
     <div className="min-h-screen bg-[#f6fbfb]">
       <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white">
-        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
-          <div className="py-2">
+        <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
+          <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
             <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
               <span>수입·지출 등록</span>
               <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
@@ -1215,8 +1215,8 @@ const appendManualForm = () => {
               </span>
             </div>
 
-            <div className="mt-3">
-              <h1 className="text-[25px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+            <div className="sm:mt-3">
+              <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
                 기린 · 짱구 일괄등록
               </h1>
 
@@ -1224,7 +1224,7 @@ const appendManualForm = () => {
                 수동 입력과 엑셀 업로드로 카드·계좌 거래를 빠르게 정리해요.
               </p>
 
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-3 sm:mt-6 sm:justify-start">
+              <div className="mt-3 hidden flex-wrap items-center justify-center gap-3 sm:mt-6 sm:flex sm:justify-start">
                 <div className="flex items-center gap-2 rounded-full bg-white/18 p-1.5 backdrop-blur">
                   <button
                     type="button"
@@ -1256,7 +1256,30 @@ const appendManualForm = () => {
         </div>
       </section>
 
-      <main className={`px-4 py-5 transition-all duration-300 sm:px-6 sm:py-8 ${showRawModal ? "lg:mr-[46vw]" : ""}`}>
+      <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+        <div className="inline-flex w-full items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <button
+            type="button"
+            onClick={() => setTab("manual")}
+            className={`flex-1 rounded-full px-4 py-2 text-[12px] font-black transition ${
+              tab === "manual" ? "bg-[#21bdb7] text-white shadow-sm" : "text-slate-500"
+            }`}
+          >
+            수동 등록
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("excel")}
+            className={`flex-1 rounded-full px-4 py-2 text-[12px] font-black transition ${
+              tab === "excel" ? "bg-[#21bdb7] text-white shadow-sm" : "text-slate-500"
+            }`}
+          >
+            엑셀 업로드
+          </button>
+        </div>
+      </section>
+
+      <main className={`px-4 py-4 transition-all duration-300 sm:px-6 sm:py-8 ${showRawModal ? "lg:mr-[46vw]" : ""}`}>
         <div className="mx-auto max-w-6xl space-y-6">
           {error ? (
             <div className="rounded-[22px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">

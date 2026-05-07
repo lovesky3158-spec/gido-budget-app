@@ -1284,8 +1284,8 @@ const jjangguTrend = useMemo(() => {
   return (
     <main className="min-h-screen bg-white pb-12">
     <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
-      <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
-        <div className="py-2">
+      <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
+        <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
           <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
             <span>{monthFilter ? getMonthLabel(monthFilter) : "월 선택"} 자산 분석</span>
             <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">
@@ -1293,8 +1293,8 @@ const jjangguTrend = useMemo(() => {
             </span>
           </div>
 
-          <div className="mt-3">
-            <h1 className="text-[25px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+          <div className="sm:mt-3">
+            <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
               기린 · 짱구 자산현황
             </h1>
 
@@ -1302,7 +1302,7 @@ const jjangguTrend = useMemo(() => {
               전월 자산 자동 이월과 수동 보정 카드로 월말 자산 흐름을 확인해요.
             </p>
 
-            <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
+            <div className="mt-3 hidden items-center justify-center gap-1.5 sm:mt-6 sm:flex sm:justify-start sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -1351,6 +1351,41 @@ const jjangguTrend = useMemo(() => {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+      <div className="flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            const idx = monthOptions.indexOf(monthFilter);
+            if (idx > 0) setMonthFilter(monthOptions[idx - 1]);
+          }}
+          disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+        >◀</button>
+        <div className="relative">
+          <select
+            value={monthFilter}
+            onChange={(e) => setMonthFilter(e.target.value)}
+            className="h-9 appearance-none rounded-full border border-slate-200 bg-white px-5 pr-8 text-[12px] font-black text-[#0f766e] shadow-sm outline-none"
+          >
+            {monthOptions.map((month) => (
+              <option key={month} value={month}>{getMonthLabel(month)}</option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#0f766e]">▼</div>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const idx = monthOptions.indexOf(monthFilter);
+            if (idx >= 0 && idx < monthOptions.length - 1) setMonthFilter(monthOptions[idx + 1]);
+          }}
+          disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+        >▶</button>
       </div>
     </section>
 

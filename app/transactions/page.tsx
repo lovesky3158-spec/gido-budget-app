@@ -630,13 +630,13 @@ export default function TransactionsPage() {
         <button
           type="button"
           onClick={() => setShowCalendar(true)}
-          className="absolute right-4 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/35 text-[15px] shadow-sm ring-1 ring-white/45 backdrop-blur transition hover:bg-white/50 sm:right-6 sm:top-5 sm:h-10 sm:w-10 sm:text-[18px]"
+          className="absolute right-4 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/35 text-[15px] shadow-sm ring-1 ring-white/45 backdrop-blur transition hover:bg-white/50 sm:right-6 sm:top-5 sm:h-10 sm:w-10 sm:text-[18px]"
           aria-label="달력 보기"
         >
           📅
         </button>
-        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-8">
-          <div className="py-2">
+        <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
+          <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
             <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
               <span>
                 {monthFilter ? `${monthLabel.year}년 ${monthLabel.month}` : "월 선택"} 거래내역
@@ -646,8 +646,8 @@ export default function TransactionsPage() {
               </span>
             </div>
 
-            <div className="mt-3">
-              <h1 className="text-[23px] font-black tracking-[-0.055em] text-white sm:text-[38px]">
+            <div className="sm:mt-3">
+              <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
                 기린 · 짱구 거래내역
               </h1>
 
@@ -655,7 +655,7 @@ export default function TransactionsPage() {
                 업로드된 카드·계좌 내역을 월별로 확인하고 상세 거래를 정리해요.
               </p>
 
-              <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
+              <div className="mt-3 hidden items-center justify-center gap-1.5 sm:mt-6 sm:flex sm:justify-start sm:gap-3">
                 <button
                   type="button"
                   onClick={() => moveMonth("prev")}
@@ -699,6 +699,43 @@ export default function TransactionsPage() {
           </div>
         </div>
 </section>
+<div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+  <div className="flex items-center justify-center gap-2">
+    <button
+      type="button"
+      onClick={() => moveMonth("prev")}
+      disabled={currentMonthIndex >= monthOptions.length - 1 || currentMonthIndex < 0}
+      className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+    >
+      ◀
+    </button>
+    <div className="relative">
+      <select
+        value={monthFilter}
+        onChange={(e) => setMonthFilter(e.target.value)}
+        className="h-9 appearance-none rounded-full border border-slate-200 bg-white px-5 pr-8 text-[12px] font-black text-[#0f766e] shadow-sm outline-none"
+      >
+        {monthOptions.map((month) => {
+          const label = formatMonthLabel(month);
+          return (
+            <option key={month} value={month}>
+              {label.year}년 {label.month}
+            </option>
+          );
+        })}
+      </select>
+      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#0f766e]">▼</div>
+    </div>
+    <button
+      type="button"
+      onClick={() => moveMonth("next")}
+      disabled={currentMonthIndex <= 0}
+      className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+    >
+      ▶
+    </button>
+  </div>
+</div>
 <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
   <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
     <div className="border-r border-slate-100 pr-3">

@@ -629,8 +629,8 @@ const filterSummary = [
       ) : (
         <>
         <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-          <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
-            <div className="py-2">
+          <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
+            <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
               <div>
                 <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112] sm:inline-flex">
                   <span>{getMonthLabel(monthFilter)} 지출 분석</span>
@@ -640,7 +640,7 @@ const filterSummary = [
                 </div>
 
                 <div>
-                  <h1 className="text-[25px] font-black tracking-[-0.055em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[20px] font-black tracking-[-0.045em] text-[#2a2112] sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
@@ -649,7 +649,7 @@ const filterSummary = [
                   </p>
 
                   {/* 👇 홈 버튼 위치와 동일한 자리 */}
-                  <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-6 sm:justify-start sm:gap-3">
+                  <div className="mt-3 hidden items-center justify-center gap-1.5 sm:mt-6 sm:flex sm:justify-start sm:gap-3">
                     
                     {/* 이전 */}
                     <button
@@ -705,6 +705,40 @@ const filterSummary = [
             </div>
           </div>
         </section>
+        <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+          <div className="flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const idx = monthOptions.indexOf(monthFilter);
+                if (idx >= 0 && idx < monthOptions.length - 1) setMonthFilter(monthOptions[idx + 1]);
+              }}
+              disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+            >◀</button>
+            <div className="relative">
+              <select
+                value={monthFilter}
+                onChange={(e) => setMonthFilter(e.target.value)}
+                className="h-9 appearance-none rounded-full border border-slate-200 bg-white px-5 pr-8 text-[12px] font-black text-[#7a6335] shadow-sm outline-none"
+              >
+                {monthOptions.map((month) => (
+                  <option key={month} value={month}>{getMonthLabel(month)}</option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#7a6335]">▼</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const idx = monthOptions.indexOf(monthFilter);
+                if (idx > 0) setMonthFilter(monthOptions[idx - 1]);
+              }}
+              disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
+            >▶</button>
+          </div>
+        </div>
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
           <div className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
             <div className="flex items-center gap-2">

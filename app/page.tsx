@@ -410,33 +410,45 @@ export default function HomePage() {
         </section>
       ) : (
         <>
-          <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
-        <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-8">
-          <div className="py-2">
-            <div>
-              <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112] sm:inline-flex">
-                <span>{formatMonthTitle(currentMonth)} 요약</span>
-                <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">HOME</span>
-              </div>
+          <section className="border-b border-[#f3df93] bg-[linear-gradient(135deg,#fff7c7_0%,#ffe27a_100%)] sm:bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
+            <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
+              <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
+                <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-white/35 px-3 py-1.5 text-[11px] font-bold text-[#2a2112] sm:inline-flex">
+                  <span>{formatMonthTitle(currentMonth)} 요약</span>
+                  <span className="rounded-full bg-white/55 px-1.5 py-0.5 text-[9px] font-black">HOME</span>
+                </div>
 
-              <div className="mt-3">
-                <h1 className="text-[25px] font-black tracking-[-0.05em] text-[#2a2112] sm:text-[38px]">
-                  기린 도연 가계부
-                </h1>
-                <p className="mt-2 hidden text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:block sm:text-[14px]">
-                  돈 열심히 모아서 이사가고 차사고 놀러가고 먹으러다니자!!
-                </p>
-                <div className="mt-2 rounded-full border border-white/45 bg-white/45 px-3 py-1.5 text-[11px] font-bold text-[#7a6335] sm:hidden">돈 열심히 모아서 맛있는 거 먹으러 가자 💛</div>
+                <div className="sm:mt-3">
+                  <h1 className="text-[20px] font-black tracking-[-0.045em] text-[#2a2112] sm:text-[38px]">
+                    기린 도연 가계부
+                  </h1>
+                  <p className="mt-2 hidden text-[13px] font-medium leading-relaxed text-[#7a6335] sm:mt-3 sm:block sm:text-[14px]">
+                    돈 열심히 모아서 이사가고 차사고 놀러가고 먹으러다니자!!
+                  </p>
+                </div>
               </div>
-
             </div>
+          </section>
 
-          </div>
-        </div>
-      </section>
+          <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+            <div className="flex justify-center">
+              <div className="rounded-full border border-[#f0df9b] bg-white px-4 py-2 text-[12px] font-black text-[#7a6335] shadow-[0_10px_24px_rgba(139,92,0,0.08)]">
+                {formatMonthTitle(currentMonth)} 요약
+              </div>
+            </div>
+          </section>
 
-<section className="mx-auto mt-4 max-w-6xl px-4 sm:mt-6 sm:px-6">
-  <div className="grid grid-cols-3 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
+<section className="mx-auto mt-3 max-w-6xl px-4 sm:mt-6 sm:px-6">
+  <div className="grid gap-2 sm:hidden">
+    {summaryCards.map((card) => (
+      <div key={card.label} className="flex min-h-[74px] items-center justify-between rounded-[22px] border border-slate-200 bg-white px-5 py-3 shadow-[0_12px_28px_rgba(139,92,0,0.08)]">
+        <div className="text-[12px] font-black text-[#9a6800]">{card.label}</div>
+        <div className={`text-[21px] font-black tracking-[-0.05em] ${card.tone}`}>{card.value}</div>
+      </div>
+    ))}
+  </div>
+
+  <div className="hidden grid-cols-3 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:grid sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
     <div className="flex min-h-[96px] flex-col justify-between rounded-[20px] bg-[#fff9df] px-3 py-3 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
