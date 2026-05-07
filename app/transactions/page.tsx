@@ -624,7 +624,7 @@ export default function TransactionsPage() {
 
   return (
     <div className="min-h-screen bg-white pb-28 sm:pb-0">
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
+      <section className="relative hidden overflow-hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] sm:block">
         <div className="pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full bg-white/20 blur-2xl sm:hidden" />
         <div className="pointer-events-none absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-[#fff1a8]/20 blur-2xl sm:hidden" />
         <button

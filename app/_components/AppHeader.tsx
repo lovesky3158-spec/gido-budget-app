@@ -13,6 +13,22 @@ const navItems = [
   { href: "/assets", label: "자산", icon: "💰" },
 ];
 
+const mobileRouteMeta: Record<string, { title: string; icon: string }> = {
+  "/": { title: "홈", icon: "/icons/girin.png" },
+  "/transactions": { title: "거래내역", icon: "/icons/zzangu.png" },
+  "/upload": { title: "수동등록", icon: "/icons/girin.png" },
+  "/dashboard": { title: "리포트", icon: "/icons/zzangu.png" },
+  "/assets": { title: "자산현황", icon: "/icons/girin.png" },
+};
+
+function getMobileRouteMeta(pathname: string | null) {
+  if (!pathname) return mobileRouteMeta["/"];
+  const key = Object.keys(mobileRouteMeta)
+    .filter((href) => href === "/" ? pathname === "/" : pathname.startsWith(href))
+    .sort((a, b) => b.length - a.length)[0];
+  return mobileRouteMeta[key ?? "/"];
+}
+
 function getUserProfile(email: string | null) {
   const normalized = (email ?? "").toLowerCase();
 
@@ -39,6 +55,7 @@ export default function AppHeader() {
 
   const [email, setEmail] = useState<string | null>(null);
   const profile = getUserProfile(email);
+  const mobileMeta = getMobileRouteMeta(pathname);
 
   useEffect(() => {
     async function loadUser() {
@@ -68,7 +85,7 @@ export default function AppHeader() {
     <>
       <header className="sticky top-0 z-50 border-b border-[#f1d67a]/60 bg-white/92 backdrop-blur-xl">
         <div className="mx-auto flex h-[56px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
-          <Link href="/" className="group flex min-w-0 items-center gap-3">
+          <Link href="/" className="group hidden min-w-0 items-center gap-3 sm:flex">
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-[22px] bg-[#ffd84d] opacity-35 blur-[12px]" />
               <div className="relative inline-flex h-9 w-9 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#fff1a8,#ffd84d,#ffbf1f)] shadow-[0_12px_26px_rgba(255,191,31,0.32)] sm:h-11 sm:w-11 sm:rounded-[22px]">
@@ -89,6 +106,15 @@ export default function AppHeader() {
               </div>
             </div>
           </Link>
+
+          <div className="flex min-w-0 items-center gap-2 sm:hidden">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] bg-[#fff7d6] ring-1 ring-[#f1d67a]/70">
+              <img src={mobileMeta.icon} alt="" className="h-7 w-7 object-contain" />
+            </span>
+            <div className="truncate text-[18px] font-black tracking-[-0.04em] text-[#2a2112]">
+              {mobileMeta.title}
+            </div>
+          </div>
 
           <nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => {

@@ -924,7 +924,7 @@ export default function AssetsPage() {
     fetchData();
   }, []);
 
-  // 가장 오래된 월 -> 최신월 순서
+  // UI 선택 목록은 최신월 -> 오래된월 순서
   const monthOptions = useMemo(() => {
     return Array.from(
       new Set(
@@ -935,8 +935,11 @@ export default function AssetsPage() {
     ).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
   }, [rows]);
 
-  const oldestMonth = monthOptions[0] ?? "";
-  const latestMonth = monthOptions[monthOptions.length - 1] ?? "";
+  // 자산 이월 계산은 오래된월 -> 최신월 순서로 별도 사용
+  const timelineMonthOptions = useMemo(() => [...monthOptions].reverse(), [monthOptions]);
+
+  const latestMonth = monthOptions[0] ?? "";
+  const oldestMonth = monthOptions[monthOptions.length - 1] ?? "";
 
   useEffect(() => {
     if (!monthFilter && latestMonth) {
@@ -958,7 +961,7 @@ export default function AssetsPage() {
       { 기린: { income: number; expense: number }; 짱구: { income: number; expense: number } }
     >();
 
-    for (const month of monthOptions) {
+    for (const month of timelineMonthOptions) {
       result.set(month, {
         기린: { income: 0, expense: 0 },
         짱구: { income: 0, expense: 0 },
@@ -987,7 +990,7 @@ export default function AssetsPage() {
     }
 
     return result;
-  }, [rows, monthOptions]);
+  }, [rows, timelineMonthOptions]);
 
   const manualSummaryByMonth = useMemo(() => {
     const result = new Map<string, { 기린: number; 짱구: number }>();
@@ -1019,7 +1022,7 @@ export default function AssetsPage() {
     let prevGirin = Number(baseAssets.기린 || 0);
     let prevJjanggu = Number(baseAssets.짱구 || 0);
 
-    for (const month of monthOptions) {
+    for (const month of timelineMonthOptions) {
       const tx = txSummaryByMonth.get(month) ?? {
         기린: { income: 0, expense: 0 },
         짱구: { income: 0, expense: 0 },
@@ -1067,7 +1070,7 @@ export default function AssetsPage() {
     }
 
     return entries;
-  }, [monthOptions, txSummaryByMonth, manualSummaryByMonth, baseAssets, incomeDetails]);
+  }, [timelineMonthOptions, txSummaryByMonth, manualSummaryByMonth, baseAssets, incomeDetails]);
 
   const currentEntry = useMemo(() => {
     return timeline.find((item) => item.month === monthFilter) ?? null;
@@ -1283,7 +1286,7 @@ const jjangguTrend = useMemo(() => {
   }, [assetTrend]);
   return (
     <main className="min-h-screen bg-white pb-12">
-    <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)]">
+    <section className="hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] sm:block">
       <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
         <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
           <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">

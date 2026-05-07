@@ -218,6 +218,7 @@ export default function DashboardPage() {
   const [monthFilter, setMonthFilter] = useState("");
   const [userFilter, setUserFilter] = useState("all");
   const [cardFilter, setCardFilter] = useState("all");
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [budgetMap, setBudgetMap] = useState<Record<string, number>>({});
   const [budgetLoaded, setBudgetLoaded] = useState(false);
@@ -563,6 +564,12 @@ const filterSummary = [
 ]
   .filter(Boolean)
   .join(" · ");
+
+const activeFilterCount = [userFilter !== "all", cardFilter !== "all"].filter(Boolean).length;
+const resetFilters = () => {
+  setUserFilter("all");
+  setCardFilter("all");
+};
   const reportTitle = topCategory ? topCategory.category + " 중심 소비" : "분석할 지출 없음";
   const reportMessage = topCategory
     ? selectedBudget > 0
@@ -628,7 +635,7 @@ const filterSummary = [
         </section>
       ) : (
         <>
-        <section className="bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)]">
+        <section className="hidden bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)] sm:block">
           <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
             <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
               <div>
@@ -739,8 +746,75 @@ const filterSummary = [
             >▶</button>
           </div>
         </div>
+        <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+          <div className="flex items-center gap-2 rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+            <button
+              type="button"
+              onClick={() => setShowFilterSheet((v) => !v)}
+              className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#ffd84d] px-3 text-[11px] font-black text-[#5f3f00] shadow-[0_8px_18px_rgba(255,191,31,0.22)]"
+            >
+              <span>☰</span>
+              <span>필터</span>
+              {activeFilterCount > 0 ? <span className="ml-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] text-[#8a5b00]">{activeFilterCount}</span> : null}
+            </button>
+            <span className="min-w-0 flex-1 truncate text-[11px] font-extrabold text-slate-500">{filterSummary || "전체 조건"}</span>
+            <button type="button" onClick={resetFilters} className="flex h-9 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm">초기화</button>
+          </div>
+
+          {showFilterSheet ? (
+            <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)]">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="text-sm font-black text-slate-800">필터</div>
+                <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
+              </div>
+
+              <div className="grid gap-4">
+                <div>
+                  <div className="mb-1.5 text-[11px] font-black text-slate-400">사용자</div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[
+                      { key: "all", label: "전체", icon: "👥" },
+                      { key: "기린", label: "기린", icon: "/icons/girin.png" },
+                      { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
+                    ].map((user) => (
+                      <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm" : "bg-slate-100 text-slate-500"}`}>
+                        {user.icon.startsWith("/") ? <img src={user.icon} alt="" className="h-4 w-4 object-contain" /> : <span>{user.icon}</span>}
+                        <span>{user.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
+                  <div className="flex max-h-[170px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+                    {[
+                      { key: "all", label: "전체" },
+                      { key: "신한", label: "신한" },
+                      { key: "국민", label: "국민" },
+                      { key: "농협", label: "농협" },
+                      { key: "현금", label: "현금" },
+                      { key: "기타", label: "기타" },
+                    ].map((card) => {
+                      const icon = card.key === "all" ? "💳" : resolveOptionIcon("accounts", card.label, optionIcons);
+                      return (
+                        <button key={card.key} type="button" onClick={() => setCardFilter(card.key)} className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${cardFilter === card.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm" : "bg-slate-100 text-slate-500"}`}>
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/75">
+                            {icon && isImageIcon(icon) ? <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" /> : <span className="text-[12px]">{icon || card.label[0]}</span>}
+                          </span>
+                          <span>{card.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
-          <div className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
+          <div className="hidden min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:flex sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-black text-[#9b7d3e]">사용자</span>
 

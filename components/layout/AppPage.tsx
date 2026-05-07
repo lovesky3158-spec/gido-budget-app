@@ -18,7 +18,7 @@ const toneClass = {
 export default function AppPage({ eyebrow, title, description, children, right, tone = "teal" }: Props) {
   return (
     <main className="min-h-screen bg-[#f7f8fa]">
-      <section className={`relative overflow-hidden bg-gradient-to-br ${toneClass[tone]} text-white`}>
+      <section className={`relative hidden overflow-hidden bg-gradient-to-br ${toneClass[tone]} text-white sm:block`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_22%),radial-gradient(circle_at_top_right,rgba(255,223,107,0.18),transparent_24%)]" />
         <div className="app-shell relative px-4 py-3 sm:px-6 sm:py-10">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -35,7 +35,7 @@ export default function AppPage({ eyebrow, title, description, children, right, 
           </div>
         </div>
       </section>
-      <section className="app-shell px-4 pb-28 pt-4 sm:px-6 sm:py-8">{children}</section>
+      <section className="app-shell px-4 pb-28 pt-3 sm:px-6 sm:py-8">{children}</section>
     </main>
   );
 }
