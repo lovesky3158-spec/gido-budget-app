@@ -21,6 +21,11 @@ import {
   type OptionIconMap,
 } from "@/lib/option-icons";
 
+
+const DEFAULT_WIFE_MESSAGE = "오늘도 고생했어 💛";
+
+
+
 type TransactionRow = {
   id: string | number;
   tx_date: string | null;
@@ -188,11 +193,11 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
-  const [wifeMessage, setWifeMessage] = useState("");
+  const [wifeMessage, setWifeMessage] = useState(DEFAULT_WIFE_MESSAGE);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setWifeMessage(window.localStorage.getItem("gido_home_message") ?? "");
+    setWifeMessage(window.localStorage.getItem("gido_home_message") ?? DEFAULT_WIFE_MESSAGE);
   }, []);
 
   useEffect(() => {
@@ -512,7 +517,7 @@ export default function HomePage() {
           {formatMoney(userSpendSummary.girin)}
         </div>
 
-        <div className="mt-2 grid gap-1.5 sm:mt-3 sm:gap-2">
+        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 sm:mt-3 sm:grid sm:gap-2 sm:overflow-visible sm:pb-0">
           {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`girin-${item.label}-${idx}`}

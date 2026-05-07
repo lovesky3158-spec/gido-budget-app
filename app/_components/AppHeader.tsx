@@ -13,12 +13,15 @@ const navItems = [
   { href: "/assets", label: "자산", icon: "💰" },
 ];
 
-const mobileRouteMeta: Record<string, { title: string; icon: string }> = {
-  "/": { title: "홈", icon: "/icons/zzangu.png" },
-  "/transactions": { title: "거래내역", icon: "/icons/zzangu.png" },
-  "/upload": { title: "수동등록", icon: "/icons/zzangu.png" },
-  "/dashboard": { title: "리포트", icon: "/icons/girin.png" },
-  "/assets": { title: "자산현황", icon: "/icons/girin.png" },
+const mobileRouteMeta: Record<
+  string,
+  { title: string; icon: string; tone: "yellow" | "green" }
+> = {
+  "/": { title: "홈", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/transactions": { title: "내역", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/upload": { title: "추가", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/dashboard": { title: "리포트", icon: "/icons/girin.png", tone: "green" },
+  "/assets": { title: "자산", icon: "/icons/girin.png", tone: "green" },
 };
 
 function getMobileRouteMeta(pathname: string | null) {
@@ -56,13 +59,19 @@ export default function AppHeader() {
   const [email, setEmail] = useState<string | null>(null);
   const profile = getUserProfile(email);
   const mobileMeta = getMobileRouteMeta(pathname);
-  const isGirinMobileIcon = mobileMeta.icon.includes("girin");
-  const mobileHeaderTone = isGirinMobileIcon
-    ? "border-[#bdeedc] bg-[linear-gradient(135deg,#eafff6_0%,#ccfaea_100%)]/96"
-    : "border-[#f1d67a]/70 bg-[linear-gradient(135deg,#fff7c7_0%,#ffe27a_100%)]/96";
-  const mobileIconTone = isGirinMobileIcon
-    ? "bg-white ring-[#bdeedc] shadow-[0_8px_20px_rgba(20,184,166,0.16)]"
-    : "bg-white ring-[#f1d67a] shadow-[0_8px_20px_rgba(255,191,31,0.20)]";
+const isGreenMobileTone = mobileMeta.tone === "green";
+
+const mobileHeaderTone = isGreenMobileTone
+? "border-[#bdeedc] bg-[linear-gradient(135deg,#eafff6_0%,#ccfaea_100%)]/96"
+: "border-[#f1d67a]/70 bg-[linear-gradient(135deg,#fff7c7_0%,#ffe27a_100%)]/96";
+
+const mobileIconTone = isGreenMobileTone
+? "bg-white ring-[#bdeedc] shadow-[0_8px_20px_rgba(20,184,166,0.16)]"
+: "bg-white ring-[#f1d67a] shadow-[0_8px_20px_rgba(255,191,31,0.20)]";
+
+const mobileProfileTone = isGreenMobileTone
+? "bg-[#ecfdf5] text-[#047857] ring-[#bdeedc]"
+: "bg-[#fff7d6] text-[#8a5b00] ring-[#f1d67a]/70";
 
   useEffect(() => {
     async function loadUser() {
@@ -146,7 +155,7 @@ export default function AppHeader() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full bg-[#fff7d6] px-2.5 py-1.5 text-[11px] font-black text-[#8a5b00] ring-1 ring-[#f1d67a]/70 sm:gap-2 sm:px-3 sm:text-[12px]">
+            <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black ring-1 sm:gap-2 sm:px-3 sm:text-[12px] ${mobileProfileTone} sm:bg-[#fff7d6] sm:text-[#8a5b00] sm:ring-[#f1d67a]/70`}>
               <img
                 src={profile.icon}
                 alt={profile.label}
