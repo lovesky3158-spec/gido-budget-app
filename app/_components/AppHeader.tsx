@@ -99,14 +99,23 @@ const mobileProfileTone = isGreenMobileTone
 
   return (
     <>
-      <header
+        <header
         className={[
-            "sticky top-0 z-50 border-b backdrop-blur-xl transition-colors",
-            mobileHeaderTone,
-            "sm:border-[#f1d67a]/60 sm:bg-white/92",
+            "sticky top-0 z-50 transition-colors",
+            isGreenMobileTone
+            ? "border-b border-[#86efac]"
+            : "border-b border-[#facc15]",
+            "bg-transparent",
+            "sm:border-[#f1d67a]/60 sm:bg-white/92 sm:backdrop-blur-xl",
         ].join(" ")}
         >
-        <div className="mx-auto flex h-[58px] max-w-6xl items-center justify-between gap-3 px-4 sm:h-[68px]">
+        <div
+            className={[
+            "mx-auto flex h-[58px] max-w-6xl items-center justify-between gap-3 px-4 transition-colors sm:h-[68px]",
+            isGreenMobileTone ? "bg-[#dcfce7]" : "bg-[#fff1a8]",
+            "sm:bg-transparent",
+            ].join(" ")}
+        >
           <Link href="/" className="group hidden min-w-0 items-center gap-3 sm:flex">
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-[22px] bg-[#ffd84d] opacity-35 blur-[12px]" />
