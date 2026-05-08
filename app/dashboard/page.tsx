@@ -1322,7 +1322,7 @@ accountSummary.map((item) => {
                               ].join(" ")}
                             >
                               <div className="space-y-1">
-                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
                                   <div className="flex min-w-0 items-center gap-2">
                                     <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">
                                       TOP {index + 1}
@@ -1332,26 +1332,27 @@ accountSummary.map((item) => {
                                     </span>
                                   </div>
 
-                                  <div className="shrink-0 text-right">
-                                    <div className="whitespace-nowrap text-[15px] font-black text-rose-600 sm:text-[18px]">
-                                      -{formatAbsMoney(amount)}
-                                    </div>
-                                    <div className="mt-0.5 text-[10px] font-black text-[#0f766e] sm:text-[11px]">
-                                      점유율 {percentOfGroup}%
-                                    </div>
+                                  <div className="shrink-0 whitespace-nowrap text-right text-[15px] font-black text-rose-600 sm:text-[18px]">
+                                    -{formatAbsMoney(amount)}
                                   </div>
                                 </div>
 
-                                <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
-                                  <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-                                  <span className={`inline-flex max-w-[92px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:max-w-none ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
-                                    {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
-                                    <span className="truncate">{userName}</span>
-                                  </span>
-                                  <span className="inline-flex max-w-[104px] items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500 sm:max-w-none">
-                                    {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
-                                    <span className="truncate">{accountName}</span>
-                                  </span>
+                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                                  <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                                    <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
+                                    <span className={`inline-flex max-w-[92px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:max-w-none ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
+                                      {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
+                                      <span className="truncate">{userName}</span>
+                                    </span>
+                                    <span className="inline-flex max-w-[104px] items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500 sm:max-w-none">
+                                      {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
+                                      <span className="truncate">{accountName}</span>
+                                    </span>
+                                  </div>
+
+                                  <div className="shrink-0 whitespace-nowrap text-right text-[10px] font-black text-[#0f766e] sm:text-[11px]">
+                                    점유율 {percentOfGroup}%
+                                  </div>
                                 </div>
                               </div>                            </div>
                           );
