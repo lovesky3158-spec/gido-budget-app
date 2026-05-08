@@ -72,11 +72,12 @@ export function resolveOptionIcon(
   if (saved) return saved;
 
   if (group === "accounts") {
-    const withoutCard = key.replace(/카드/g, "").trim();
+    const baseKey = key.split("|")[0]?.trim() || key;
+    const withoutCard = baseKey.replace(/카드/g, "").trim();
     const savedWithoutCard = icons.accounts?.[withoutCard];
     if (savedWithoutCard) return savedWithoutCard;
 
-    return getDefaultOptionIcon(group, withoutCard || key);
+    return getDefaultOptionIcon(group, withoutCard || baseKey || key);
   }
 
   return getDefaultOptionIcon(group, key);

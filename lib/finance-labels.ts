@@ -32,16 +32,37 @@ export function normalizeAccountLabel(
   const presetText = String(preset ?? "").trim().toLowerCase();
   const joined = `${lower} ${file} ${presetText}`;
 
+  const detectCardKind = () => {
+    if (joined.includes("체크") || joined.includes("check") || joined.includes("debit")) return "체크";
+    if (joined.includes("신용") || joined.includes("credit") || joined.includes("일시불") || joined.includes("할부")) return "신용";
+    if (joined.includes("법인") || joined.includes("corporate") || joined.includes("corp")) return "법인";
+    return "";
+  };
+
+  const withKind = (base: string) => {
+    const kind = detectCardKind();
+    if (!kind) return base;
+    if (base.includes("|")) return base;
+    if (base === "현금" || base === "계좌" || base === "기타") return base;
+    return `${base}|${kind}`;
+  };
+
+  // 이미 국민|신용처럼 저장된 값은 그대로 유지
+  if (raw.includes("|")) {
+    const [base, kind] = raw.split("|").map((v) => v.trim()).filter(Boolean);
+    return kind ? `${base}|${kind}` : base || raw;
+  }
+
   if (
     joined.includes("국민") ||
     joined.includes("kb") ||
     joined.includes("kbcard")
   ) {
-    return "국민";
+    return withKind("국민");
   }
 
   if (joined.includes("신한") || joined.includes("shinhan")) {
-    return "신한";
+    return withKind("신한");
   }
 
   if (
@@ -50,14 +71,14 @@ export function normalizeAccountLabel(
     joined.includes("nhcard") ||
     joined.includes("m390")
   ) {
-    return "농협";
+    return withKind("농협");
   }
 
-  if (joined.includes("우리")) return "우리";
+  if (joined.includes("우리")) return withKind("우리");
   if (joined.includes("현금") || joined.includes("cash")) return "현금";
   if (joined.includes("계좌")) return "계좌";
 
-  if (raw.includes("카드")) return raw.replace(/카드/g, "").trim() || raw;
+  if (raw.includes("카드")) return withKind(raw.replace(/카드/g, "").trim() || raw);
 
   return raw || "기타";
 }

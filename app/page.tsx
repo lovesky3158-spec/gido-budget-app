@@ -22,7 +22,7 @@ import {
 } from "@/lib/option-icons";
 
 
-const DEFAULT_WIFE_MESSAGE = "럭키비키야 엄마아빠 돈 많이모을게에!!";
+const DEFAULT_WIFE_MESSAGE = "오늘도 고생했어 💛";
 
 
 
@@ -395,8 +395,15 @@ export default function HomePage() {
       {isLoading ? (
         <section className="mx-auto flex min-h-[calc(100vh-74px)] max-w-6xl items-center justify-center px-6">
           <div className="w-full max-w-[420px] rounded-[34px] border border-[#f1d67a] bg-white p-8 text-center shadow-[0_24px_60px_rgba(139,92,0,0.12)]">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[26px] bg-[linear-gradient(135deg,#fff1a8,#ffd84d,#ffbf1f)] text-[34px] shadow-[0_14px_28px_rgba(255,191,31,0.28)]">
-              🐥
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[26px] bg-[linear-gradient(135deg,#fff1a8,#ffd84d,#ffbf1f)] shadow-[0_14px_28px_rgba(255,191,31,0.28)]">
+              <Image
+                src="/icons/zzangu.png"
+                alt="짱구"
+                width={52}
+                height={52}
+                className="h-[52px] w-[52px] object-contain"
+                priority
+              />
             </div>
 
             <h1 className="mt-5 text-[24px] font-black tracking-[-0.04em] text-[#2a2112]">

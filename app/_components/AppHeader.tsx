@@ -17,7 +17,7 @@ const mobileRouteMeta: Record<
   string,
   { title: string; icon: string; tone: "yellow" | "green" }
 > = {
-  "/": { title: "기도쀼 가계부💛", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/": { title: "기도쀼 가계부♥", icon: "/icons/zzangu.png", tone: "yellow" },
   "/transactions": { title: "거래내역 관리", icon: "/icons/zzangu.png", tone: "yellow" },
   "/upload": { title: "거래내역 등록", icon: "/icons/girin.png", tone: "green" },
   "/dashboard": { title: "지출/소비분석", icon: "/icons/girin.png", tone: "green" },
