@@ -476,7 +476,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="flex min-h-[178px] flex-col rounded-[22px] bg-emerald-50 p-2.5 ring-1 ring-emerald-100 sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
+              <div className="flex flex-col rounded-[22px] bg-emerald-50 p-2.5 ring-1 ring-emerald-100 sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
                 <div className="flex items-center gap-2 sm:block sm:text-center">
                   <img src="/icons/girin.png" className="h-10 w-10 shrink-0 object-contain sm:h-[56px] sm:w-[56px]" />
                   <div className="min-w-0 sm:mt-1">
@@ -488,7 +488,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-2 grid flex-1 gap-1.5 sm:mt-0 sm:gap-2">
-                  {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
+                  {girinTopCards.length === 0 ? (
+                    <div className="rounded-[13px] bg-white/70 px-2 py-2 text-center text-[10px] font-black text-emerald-500">카드 내역 없음</div>
+                  ) : girinTopCards.map((item, idx) => (
                     <div
                       key={`girin-${item.label}-${idx}`}
                       className="flex min-w-0 items-center justify-between gap-1 rounded-[13px] bg-white/85 px-2 py-1.5 text-[10px] font-extrabold text-emerald-700 sm:rounded-full sm:px-3 sm:text-[13px]"
@@ -522,7 +524,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="flex min-h-[178px] flex-col rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#fff1a8,#ffd84d)] p-2.5 shadow-[0_10px_22px_rgba(255,191,31,0.18)] sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
+              <div className="flex flex-col rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#fff1a8,#ffd84d)] p-2.5 shadow-[0_10px_22px_rgba(255,191,31,0.18)] sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
                 <div className="flex items-center gap-2 sm:block sm:text-center">
                   <img src="/icons/zzangu.png" className="h-10 w-10 shrink-0 object-contain sm:h-[70px] sm:w-[70px]" />
                   <div className="min-w-0 sm:mt-1">
@@ -534,7 +536,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-2 grid flex-1 gap-1.5 sm:mt-0 sm:gap-2">
-                  {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
+                  {zzanguTopCards.length === 0 ? (
+                    <div className="rounded-[13px] bg-white/60 px-2 py-2 text-center text-[10px] font-black text-[#b45309]">카드 내역 없음</div>
+                  ) : zzanguTopCards.map((item, idx) => (
                     <div
                       key={`zzangu-${item.label}-${idx}`}
                       className="flex min-w-0 items-center justify-between gap-1 rounded-[13px] bg-white/75 px-2 py-1.5 text-[10px] font-extrabold text-[#b45309] sm:rounded-full sm:px-3 sm:text-[13px]"

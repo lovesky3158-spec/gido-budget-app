@@ -980,13 +980,14 @@ async function buildPrevInstallmentMap() {
 
   const payload: TransactionInsertRow[] = selectedData.map((row) => {
     const rawAmount = Math.abs(Number(row.amount ?? 0));
-    const finalAmount = row.amount && row.amount > 0 ? row.amount : -rawAmount;
+    const flowType = row.amount && row.amount > 0 ? "수입" : "지출";
+    const finalAmount = flowType === "수입" ? rawAmount : -rawAmount;
     const memoMeta = buildUploadMeta(row);
 
     return {
       tx_date: row.tx_date || null,
       description: row.description || null,
-      type: `지출/${row.category || "기타"}`,
+      type: `${flowType}/${row.category || "기타"}`,
       amount: finalAmount,
       balance: null,
       user_type: normalizeUserTag(excelUserType),
