@@ -19,28 +19,59 @@ export function getUserDisplayName(value: string | null | undefined) {
   return normalizeUserTag(value) || "미지정";
 }
 
+const ACCOUNT_SEPARATOR = " · ";
+const CARD_KIND_WORDS = ["신용", "체크", "법인"];
+
+function normalizeAccountSeparator(value: string) {
+  const raw = String(value ?? "").replace(/카드/g, "").trim();
+  if (!raw) return "";
+
+  const parts = raw
+    .split(/[|·]/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length >= 2) {
+    const issuer = parts[0];
+    const kind = parts.find((part, index) => index > 0 && CARD_KIND_WORDS.includes(part));
+    return kind ? `${issuer}${ACCOUNT_SEPARATOR}${kind}` : parts.join(ACCOUNT_SEPARATOR);
+  }
+
+  return raw;
+}
+
+function buildAccountLabel(issuer: string, kind: string) {
+  const cleanIssuer = normalizeAccountSeparator(issuer);
+  if (!cleanIssuer || cleanIssuer === "현금" || cleanIssuer === "계좌" || cleanIssuer === "기타") return cleanIssuer;
+  return `${cleanIssuer}${ACCOUNT_SEPARATOR}${kind}`;
+}
+
 function joinAccountType(issuer: string, joined: string) {
-  if (issuer === "현금" || issuer === "계좌" || issuer === "기타") return issuer;
-  if (issuer.includes("|")) return issuer;
+  const normalizedIssuer = normalizeAccountSeparator(issuer);
+  if (!normalizedIssuer) return "";
+  if (normalizedIssuer === "현금" || normalizedIssuer === "계좌" || normalizedIssuer === "기타") return normalizedIssuer;
+  if (normalizedIssuer.includes(ACCOUNT_SEPARATOR)) return normalizedIssuer;
 
   const compact = joined.replace(/\s/g, "").toLowerCase();
 
   if (compact.includes("체크") || compact.includes("check") || compact.includes("debit")) {
-    return `${issuer}|체크`;
+    return buildAccountLabel(normalizedIssuer, "체크");
+  }
+
+  if (compact.includes("법인") || compact.includes("business") || compact.includes("corp")) {
+    return buildAccountLabel(normalizedIssuer, "법인");
   }
 
   if (compact.includes("신용") || compact.includes("credit")) {
-    return `${issuer}|신용`;
+    return buildAccountLabel(normalizedIssuer, "신용");
   }
 
-  // 기존 개발용 DB처럼 account_type에 카드사만 저장된 데이터도
-  // 화면에서는 카드사|구분 형태로 보이도록 기본값을 보정한다.
-  if (issuer === "국민") return "국민|신용";
-  if (issuer === "신한") return "신한|체크";
-  if (issuer === "농협") return "농협|체크";
-  if (issuer === "우리") return "우리|체크";
+  // 기존 개발용 DB처럼 account_type에 카드사만 저장된 데이터는 기본 신용으로 보정한다.
+  if (["국민", "신한", "농협", "우리", "현대", "삼성", "카카오"].includes(normalizedIssuer)) {
+    return buildAccountLabel(normalizedIssuer, "신용");
+  }
 
-  return issuer;
+  return normalizedIssuer;
 }
 
 export function normalizeAccountLabel(
@@ -56,7 +87,7 @@ export function normalizeAccountLabel(
   const presetText = String(preset ?? "").trim().toLowerCase();
   const joined = `${lower} ${file} ${presetText}`;
 
-  if (raw.includes("|")) return raw.replace(/카드/g, "").trim();
+  if (raw.includes("|") || raw.includes("·")) return normalizeAccountSeparator(raw);
 
   if (
     joined.includes("국민") ||

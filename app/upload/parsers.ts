@@ -127,6 +127,32 @@ function detectColumn(headers: string[], hints: string[]) {
   return "";
 }
 
+function buildCardLabelWithKind(cardName: string, cardKind: string) {
+  const issuer = String(cardName ?? "").replace(/카드/g, "").trim();
+  const kind = String(cardKind ?? "").trim();
+
+  if (!issuer) return "카드";
+  if (!kind) return issuer;
+  if (issuer.includes("|") || issuer.includes("·")) return issuer;
+
+  return `${issuer} ${kind}`;
+}
+
+function detectCardKindColumn(headers: string[]) {
+  return detectColumn(headers, [
+    "카드구분",
+    "카드 구분",
+    "카드종류",
+    "카드 종류",
+    "결제구분",
+    "결제 구분",
+    "신용체크",
+    "신용/체크",
+    "cardtype",
+    "card type",
+  ]);
+}
+
 function detectAmountColumn(headers: string[]) {
   const priorityGroups = [
     ["이번달 결제금액", "이번달결제금액", "이번달 내실금액", "이번달내실금액", "내실금액", "청구금액", "결제금액"],
@@ -722,6 +748,7 @@ export function buildDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
 
   const { headers, rawRows, mapping, makeId } = params;
   const rows: ExcelDraftRow[] = [];
+  const cardKindHeader = detectCardKindColumn(headers);
 
   for (const row of rawRows) {
     const rowText = row.join(" ").trim();
@@ -731,7 +758,10 @@ export function buildDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
     const dateText = normalizeDateText(getCell(row, headers, mapping.date));
     const desc = getCell(row, headers, mapping.description);
     const amount = parseNumber(getCell(row, headers, mapping.amount));
-    const cardName = getCell(row, headers, mapping.cardName) || "카드";
+    const cardName = buildCardLabelWithKind(
+      getCell(row, headers, mapping.cardName) || "카드",
+      getCell(row, headers, cardKindHeader)
+    );
 
     if (!dateText || !isLikelyDate(dateText)) continue;
     if (!desc) continue;

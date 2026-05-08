@@ -94,7 +94,7 @@ const LS_KEYS = {
 } as const;
 
 const DEFAULT_USERS = ["기린", "짱구", "공동"];
-const DEFAULT_ACCOUNTS = ["현대카드", "삼성카드", "신한카드", "국민카드", "카드", "계좌", "현금"];
+const DEFAULT_ACCOUNTS = ["현대 · 신용", "삼성 · 신용", "신한 · 신용", "국민 · 신용", "농협 · 체크", "계좌", "현금"];
 const DEFAULT_CATEGORIES = [
   "식대",
   "카페",
