@@ -736,20 +736,20 @@ export default function TransactionsPage() {
     </button>
   </div>
 </div>
-<div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
-  <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-    <div className="mb-2 flex items-center justify-between">
-      <span className="text-[12px] font-black text-slate-500">이번달 요약</span>
-      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-500">{filtered.length}건</span>
+<div className="mx-auto max-w-6xl px-4 pt-2 sm:hidden">
+  <div className="rounded-[18px] border border-slate-200 bg-white px-3 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+    <div className="mb-1.5 flex items-center justify-between">
+      <span className="text-[11px] font-black text-slate-500">이번달 요약</span>
+      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-black text-slate-500">{filtered.length}건</span>
     </div>
-    <div className="grid grid-cols-2 gap-2">
-      <div className="min-w-0 rounded-[16px] bg-rose-50 px-3 py-2">
-        <span className="block text-[11px] font-black text-rose-500">지출</span>
-        <span className="mt-0.5 block truncate text-[15px] font-black tracking-[-0.03em] text-rose-500">{formatCompactWon(totalExpense)}원</span>
+    <div className="grid grid-cols-2 gap-1.5">
+      <div className="flex min-w-0 items-center justify-between gap-2 rounded-[14px] bg-rose-50 px-2.5 py-1.5">
+        <span className="shrink-0 text-[10px] font-black text-rose-500">지출</span>
+        <span className="min-w-0 truncate text-right text-[13px] font-black tracking-[-0.04em] text-rose-500">{formatCompactWon(totalExpense)}원</span>
       </div>
-      <div className="min-w-0 rounded-[16px] bg-sky-50 px-3 py-2">
-        <span className="block text-[11px] font-black text-sky-600">순흐름</span>
-        <span className={`mt-0.5 block truncate text-[15px] font-black tracking-[-0.03em] ${total >= 0 ? "text-sky-600" : "text-rose-500"}`}>{formatCompactWon(total)}원</span>
+      <div className="flex min-w-0 items-center justify-between gap-2 rounded-[14px] bg-sky-50 px-2.5 py-1.5">
+        <span className="shrink-0 text-[10px] font-black text-sky-600">순흐름</span>
+        <span className={`min-w-0 truncate text-right text-[13px] font-black tracking-[-0.04em] ${total >= 0 ? "text-sky-600" : "text-rose-500"}`}>{formatCompactWon(total)}원</span>
       </div>
     </div>
   </div>

@@ -279,7 +279,7 @@ export default function HomePage() {
     return Array.from(map.entries())
       .map(([label, value]) => ({ label, value }))
       .sort((a, b) => b.value - a.value)
-      .slice(0, 2);
+      .slice(0, 3);
   };
 
   const girinTopCards = getUserTopCards("기린");
@@ -435,161 +435,140 @@ export default function HomePage() {
           </section>
 
           <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
-            <div className="rounded-[22px] border border-[#f1d67a] bg-[#fffdf2] px-4 py-3 shadow-[0_12px_28px_rgba(139,92,0,0.07)]">
-              <div className="mb-1 flex items-center gap-2 text-[11px] font-black text-[#b45309]">
-                <img src="/icons/zzangu.png" alt="" className="h-5 w-5 object-contain" />
-                <span>오늘의 한마디</span>
-              </div>
-              <div className="rounded-[16px] border border-[#f3df93] bg-white px-3 py-2 text-[13px] font-black leading-relaxed text-[#2a2112]">
+            <div className="flex min-w-0 items-center gap-2 rounded-[18px] border border-[#f1d67a] bg-[#fffdf2] px-3 py-2.5 shadow-[0_10px_24px_rgba(139,92,0,0.06)]">
+              <img src="/icons/girin.png" alt="" className="h-7 w-7 shrink-0 object-contain" />
+              <p className="min-w-0 flex-1 truncate text-[13px] font-black tracking-[-0.03em] text-[#2a2112]">
                 {DEFAULT_WIFE_MESSAGE}
-              </div>
+              </p>
             </div>
           </section>
 
-<section className="mx-auto mt-3 max-w-6xl px-4 sm:mt-6 sm:px-6">
-  <div className="hidden gap-2 sm:hidden">
-    {summaryCards.map((card) => (
-      <div key={card.label} className="flex min-h-[74px] items-center justify-between rounded-[22px] border border-slate-200 bg-white px-5 py-3 shadow-[0_12px_28px_rgba(139,92,0,0.08)]">
-        <div className="text-[12px] font-black text-[#9a6800]">{card.label}</div>
-        <div className={`text-[21px] font-black tracking-[-0.05em] ${card.tone}`}>{card.value}</div>
-      </div>
-    ))}
-  </div>
-
-  <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:grid-cols-3 sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
-
-    {/* 좌측: 현금흐름 + 수입/지출 */}
-    <div className="col-span-2 flex min-h-[96px] flex-col justify-between rounded-[22px] bg-[#fff9df] px-4 py-3 sm:col-span-1 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
-
-      {/* 현금흐름 */}
-      <div>
-        <div className="text-[10px] font-bold text-[#9a6800] sm:text-[15px]">
-          {formatMonthTitle(currentMonth)} 얼마 모으려나
-        </div>
-
-        <div className={`mt-1 text-[27px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:mt-2 sm:text-[32px]`}>
-          {formatSignedMoney(netAmount)}
-        </div>
-      </div>
-
-      {/* 수입 / 지출 (같은 행) */}
-      <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-3 sm:gap-3">
-        <div>
-          <div className="text-[11px] font-black text-[#7a6335] sm:text-[13px]">수입</div>
-          <div className="text-[15px] font-black text-[#2a2112] sm:text-[20px]">
-            {formatMoney(totalIncome)}
-          </div>
-        </div>
-
-        <div>
-          <div className="text-[11px] font-black text-[#7a6335] sm:text-[13px]">지출</div>
-          <div className="text-[15px] font-black text-[#2a2112] sm:text-[20px]">
-            {formatMoney(totalExpense)}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* 기린 (3) */}
-    <div className="flex min-h-[142px] flex-col items-center justify-between gap-2 rounded-[22px] bg-emerald-50 px-3 py-3 text-center sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
-      <img src="/icons/girin.png" className="h-12 w-12 object-contain sm:h-[56px] sm:w-[56px]" />
-
-      <div className="min-w-0 flex-1">
-        <div className="text-[12px] font-bold text-emerald-700 sm:text-[15px]">기린</div>
-
-        <div className="mt-0.5 text-[19px] font-black text-emerald-700 sm:mt-1 sm:text-[22px]">
-          {formatMoney(userSpendSummary.girin)}
-        </div>
-
-        <div className="mt-2 grid gap-1.5 sm:mt-3 sm:grid sm:gap-2 sm:overflow-visible sm:pb-0">
-          {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
-            <div
-              key={`girin-${item.label}-${idx}`}
-              className="flex min-w-0 items-center justify-between gap-1 rounded-full bg-white/80 px-2 py-1 text-[10px] font-extrabold text-emerald-700 sm:px-3 sm:py-1.5 sm:text-[13px]"
-            >
-              {(() => {
-              const accountName = item.label ?? "-";
-              const icon = resolveOptionIcon("accounts", accountName, optionIcons);
-
-              return (
-                <div className="flex min-w-0 items-center gap-1.5">
-                  {icon ? (
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#d9f2e6]">
-                      {isImageIcon(icon) ? (
-                        <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" />
-                      ) : (
-                        <span className="text-[12px]">{icon}</span>
-                      )}
-                    </span>
-                  ) : (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#2a2112] ring-1 ring-[#d9f2e6]">
-                      {accountName[0]}
-                    </span>
-                  )}
-
-                  <span className="truncate">{accountName}</span>
-                </div>
-              );
-            })()}
-              <span className="shrink-0 text-[10px] font-bold sm:text-[12px]">
-                {formatMoney(item.value)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* 짱구 (3) */}
-    <div className="flex min-h-[142px] flex-col items-center justify-between gap-2 rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-3 py-3 text-center shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
-      <img src="/icons/zzangu.png" className="h-12 w-12 object-contain sm:h-[70px] sm:w-[70px]" />
-        <div className="min-w-0 flex-1">
-          <div className="text-[12px] font-bold text-[#b45309] sm:text-[15px]">짱구</div>
-          <div className="mt-0.5 text-[19px] font-black text-[#b45309] sm:mt-1 sm:text-[22px]">
-            {formatMoney(userSpendSummary.zzangu)}
-          </div>
-
-          <div className="mt-2 grid gap-1.5 sm:mt-3">
-          {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
-            <div
-              key={`zzangu-${item.label}-${idx}`}
-              className="flex min-w-0 items-center justify-between gap-1 rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-[#b45309] sm:px-3 sm:text-[13px]"
-            >
-              {(() => {
-                const accountName = item.label ?? "-";
-                const icon = resolveOptionIcon("accounts", accountName, optionIcons);
-
-                return (
-                  <div className="flex min-w-0 items-center gap-1.5">
-                    {icon ? (
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
-                        {isImageIcon(icon) ? (
-                          <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" />
-                        ) : (
-                          <span className="text-[12px]">{icon}</span>
-                        )}
-                      </span>
-                    ) : (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#2a2112] ring-1 ring-[#d9f2e6]">
-                        {accountName[0]}
-                      </span>
-                    )}
-
-                    <span className="truncate">{accountName}</span>
+          <section className="mx-auto mt-3 max-w-6xl px-4 sm:mt-6 sm:px-6">
+            <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-2.5 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:grid-cols-3 sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
+              <div className="col-span-2 rounded-[22px] border border-[#f4dc87] bg-[linear-gradient(135deg,#fffaf0,#fff2bd)] p-3 sm:col-span-1 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-black text-[#9a6800] sm:text-[15px]">
+                      {formatMonthTitle(currentMonth)} 얼마 모으려나
+                    </div>
+                    <div className={`mt-1 truncate text-[28px] font-black tracking-[-0.06em] ${amountTone(netAmount)} sm:mt-2 sm:text-[32px]`}>
+                      {formatSignedMoney(netAmount)}
+                    </div>
                   </div>
-                );
-              })()}
+                  <div className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-[10px] font-black text-[#9a6800] ring-1 ring-[#f1d67a]">
+                    순흐름
+                  </div>
+                </div>
 
-              <span className="shrink-0">{formatMoney(item.value)}</span>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
+                  <div className="rounded-[15px] bg-white/85 px-3 py-2 ring-1 ring-[#f4e7b0]">
+                    <div className="text-[10px] font-black text-sky-600 sm:text-[12px]">수입</div>
+                    <div className="mt-0.5 truncate text-[14px] font-black tracking-[-0.04em] text-[#2a2112] sm:text-[18px]">
+                      {formatMoney(totalIncome)}
+                    </div>
+                  </div>
+                  <div className="rounded-[15px] bg-white/85 px-3 py-2 ring-1 ring-[#f4e7b0]">
+                    <div className="text-[10px] font-black text-rose-500 sm:text-[12px]">지출</div>
+                    <div className="mt-0.5 truncate text-[14px] font-black tracking-[-0.04em] text-[#2a2112] sm:text-[18px]">
+                      {formatMoney(totalExpense)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex min-h-[178px] flex-col rounded-[22px] bg-emerald-50 p-2.5 ring-1 ring-emerald-100 sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
+                <div className="flex items-center gap-2 sm:block sm:text-center">
+                  <img src="/icons/girin.png" className="h-10 w-10 shrink-0 object-contain sm:h-[56px] sm:w-[56px]" />
+                  <div className="min-w-0 sm:mt-1">
+                    <div className="text-[11px] font-black text-emerald-700 sm:text-[15px]">기린</div>
+                    <div className="truncate text-[16px] font-black tracking-[-0.05em] text-emerald-700 sm:text-[22px]">
+                      {formatMoney(userSpendSummary.girin)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 grid flex-1 gap-1.5 sm:mt-0 sm:gap-2">
+                  {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
+                    <div
+                      key={`girin-${item.label}-${idx}`}
+                      className="flex min-w-0 items-center justify-between gap-1 rounded-[13px] bg-white/85 px-2 py-1.5 text-[10px] font-extrabold text-emerald-700 sm:rounded-full sm:px-3 sm:text-[13px]"
+                    >
+                      {(() => {
+                        const accountName = item.label ?? "-";
+                        const icon = resolveOptionIcon("accounts", accountName, optionIcons);
+
+                        return (
+                          <div className="flex min-w-0 items-center gap-1.5">
+                            {icon ? (
+                              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#d9f2e6]">
+                                {isImageIcon(icon) ? (
+                                  <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" />
+                                ) : (
+                                  <span className="text-[12px]">{icon}</span>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#2a2112] ring-1 ring-[#d9f2e6]">
+                                {accountName[0]}
+                              </span>
+                            )}
+                            <span className="truncate">{accountName}</span>
+                          </div>
+                        );
+                      })()}
+                      <span className="shrink-0 text-[10px] font-black sm:text-[12px]">{formatMoney(item.value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex min-h-[178px] flex-col rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#fff1a8,#ffd84d)] p-2.5 shadow-[0_10px_22px_rgba(255,191,31,0.18)] sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
+                <div className="flex items-center gap-2 sm:block sm:text-center">
+                  <img src="/icons/zzangu.png" className="h-10 w-10 shrink-0 object-contain sm:h-[70px] sm:w-[70px]" />
+                  <div className="min-w-0 sm:mt-1">
+                    <div className="text-[11px] font-black text-[#b45309] sm:text-[15px]">짱구</div>
+                    <div className="truncate text-[16px] font-black tracking-[-0.05em] text-[#b45309] sm:text-[22px]">
+                      {formatMoney(userSpendSummary.zzangu)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 grid flex-1 gap-1.5 sm:mt-0 sm:gap-2">
+                  {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
+                    <div
+                      key={`zzangu-${item.label}-${idx}`}
+                      className="flex min-w-0 items-center justify-between gap-1 rounded-[13px] bg-white/75 px-2 py-1.5 text-[10px] font-extrabold text-[#b45309] sm:rounded-full sm:px-3 sm:text-[13px]"
+                    >
+                      {(() => {
+                        const accountName = item.label ?? "-";
+                        const icon = resolveOptionIcon("accounts", accountName, optionIcons);
+
+                        return (
+                          <div className="flex min-w-0 items-center gap-1.5">
+                            {icon ? (
+                              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+                                {isImageIcon(icon) ? (
+                                  <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" />
+                                ) : (
+                                  <span className="text-[12px]">{icon}</span>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#2a2112] ring-1 ring-[#f0df9b]">
+                                {accountName[0]}
+                              </span>
+                            )}
+                            <span className="truncate">{accountName}</span>
+                          </div>
+                        );
+                      })()}
+                      <span className="shrink-0 text-[10px] font-black sm:text-[12px]">{formatMoney(item.value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          ))}
-          </div>
-        </div>
-    </div>
-
-  </div>
-</section>
-
+          </section>
 
 
       <section className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 sm:pt-6">
