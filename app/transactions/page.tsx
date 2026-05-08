@@ -737,7 +737,7 @@ export default function TransactionsPage() {
     <button
       type="button"
       onClick={() => setShowCalendar(true)}
-      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#f1d67a] bg-[#fff7d6] text-sm font-black text-[#8a5b00] shadow-sm"
+      className="ml-auto flex h-10 w-10 items-center justify-center rounded-[16px] border border-[#f1d67a] bg-[#fff7d6] text-base font-black text-[#8a5b00] shadow-sm"
       aria-label="달력 보기"
     >
       📅
@@ -920,7 +920,7 @@ export default function TransactionsPage() {
     </div>
   </div>
 </div>
-<main className="bg-[#fffaf0] px-3 pt-4 sm:bg-[#f6fbfb] sm:px-6 sm:pt-8">
+<main className="bg-white px-3 pt-4 sm:bg-[#f6fbfb] sm:px-6 sm:pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}
@@ -1047,8 +1047,14 @@ export default function TransactionsPage() {
       {(() => {
         const userName = normalizeUserTag(item.user_type) || "미지정";
 
+        const userTone = userName === "기린"
+          ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]"
+          : userName === "짱구"
+            ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]"
+            : "border-slate-100 bg-[#f7fbfb] text-slate-500";
+
         return (
-          <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+          <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${userTone}`}>
             {renderIcon("users", userName, "h-3.5 w-3.5 object-contain")}
             {userName}
           </span>

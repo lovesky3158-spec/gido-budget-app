@@ -17,11 +17,11 @@ const mobileRouteMeta: Record<
   string,
   { title: string; icon: string; tone: "yellow" | "green" }
 > = {
-  "/": { title: "홈", icon: "/icons/zzangu.png", tone: "yellow" },
-  "/transactions": { title: "내역", icon: "/icons/zzangu.png", tone: "yellow" },
-  "/upload": { title: "추가", icon: "/icons/girin.png", tone: "green" },
-  "/dashboard": { title: "리포트", icon: "/icons/girin.png", tone: "green" },
-  "/assets": { title: "자산", icon: "/icons/girin.png", tone: "green" },
+  "/": { title: "기도쀼 가계부♥", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/transactions": { title: "거래내역 관리", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/upload": { title: "거래내역 등록", icon: "/icons/girin.png", tone: "green" },
+  "/dashboard": { title: "지출/소비분석", icon: "/icons/girin.png", tone: "green" },
+  "/assets": { title: "소비/수입 분석", icon: "/icons/girin.png", tone: "green" },
 };
 
 function getMobileRouteMeta(pathname: string | null) {
@@ -70,7 +70,7 @@ const mobileIconTone = isGreenMobileTone
 : "bg-white ring-[#f1d67a] shadow-[0_8px_20px_rgba(255,191,31,0.20)]";
 
 const mobileProfileTone = isGreenMobileTone
-? "bg-[#ecfdf5] text-[#047857] ring-[#bdeedc]"
+? "bg-white/92 text-[#0f766e] ring-white/60"
 : "bg-[#fff7d6] text-[#8a5b00] ring-[#f1d67a]/70";
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const mobileProfileTone = isGreenMobileTone
         className={[
             "sticky top-0 z-50 transition-colors",
             isGreenMobileTone
-            ? "border-b border-[#86efac]"
+            ? "border-b border-[#18aaa4]"
             : "border-b border-[#facc15]",
             "bg-transparent",
             "sm:border-[#f1d67a]/60 sm:bg-white/92 sm:backdrop-blur-xl",
@@ -115,7 +115,7 @@ const mobileProfileTone = isGreenMobileTone
         <div
             className={[
             "mx-auto flex h-[58px] max-w-6xl items-center justify-between gap-3 px-4 transition-colors sm:h-[68px]",
-            isGreenMobileTone ? "bg-[#dcfce7]" : "bg-[#fff1a8]",
+            isGreenMobileTone ? "bg-[#21bdb7]" : "bg-[#fff1a8]",
             "sm:bg-transparent",
             ].join(" ")}
         >
@@ -145,7 +145,7 @@ const mobileProfileTone = isGreenMobileTone
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] ring-1 ${mobileIconTone}`}>
               <img src={mobileMeta.icon} alt="" className="h-7 w-7 object-contain" />
             </span>
-            <div className="truncate text-[18px] font-black tracking-[-0.04em] text-[#2a2112]">
+            <div className={["truncate text-[18px] font-black tracking-[-0.04em]", isGreenMobileTone ? "text-white" : "text-[#2a2112]"].join(" ")}>
               {mobileMeta.title}
             </div>
           </div>

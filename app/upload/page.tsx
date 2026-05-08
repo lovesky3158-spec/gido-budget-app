@@ -1295,7 +1295,7 @@ const saveSingleManualForm = async () => {
                   <img src="/icons/girin.png" alt="기린" className="h-7 w-7 object-contain" />
                 </span>
                 <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
-                  기린 · 짱구 일괄등록
+                  거래내역 등록
                 </h1>
               </div>
 
@@ -1335,7 +1335,7 @@ const saveSingleManualForm = async () => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+      <section className="hidden mx-auto max-w-6xl px-4 pt-3 sm:hidden">
         <div className="inline-flex w-full items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <button
             type="button"

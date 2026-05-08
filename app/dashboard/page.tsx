@@ -177,7 +177,7 @@ function SectionCard({
     <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
       <div className="mb-5">
         <div className="text-[20px] font-black tracking-[-0.04em] text-[#2a2112]">{title}</div>
-        {sub ? <div className="mt-1 text-[13px] font-semibold text-[#9b7d3e]">{sub}</div> : null}
+        {sub ? <div className="mt-1 text-[13px] font-semibold text-slate-500">{sub}</div> : null}
       </div>
       {children}
     </div>
@@ -198,9 +198,9 @@ function MetricCard({
   return (
     <div className="rounded-[24px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
-        <div className="text-[13px] font-black text-[#9b7d3e]">{label}</div>
+        <div className="text-[13px] font-black text-slate-500">{label}</div>
         {sub ? (
-          <div className="truncate text-[11px] font-bold text-[#b08a2f]">{sub}</div>
+          <div className="truncate text-[11px] font-bold text-slate-500">{sub}</div>
         ) : null}
       </div>
 
@@ -699,7 +699,7 @@ const resetFilters = () => {
                         ))}
                       </select>
 
-                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#7a6335]">
+                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">
                         ▼
                       </div>
                     </div>
@@ -739,13 +739,13 @@ const resetFilters = () => {
               <select
                 value={monthFilter}
                 onChange={(e) => setMonthFilter(e.target.value)}
-                className="h-9 appearance-none rounded-full border border-slate-200 bg-white px-5 pr-8 text-[12px] font-black text-[#7a6335] shadow-sm outline-none"
+                className="h-9 appearance-none rounded-full border border-slate-200 bg-white px-5 pr-8 text-[12px] font-black text-slate-500 shadow-sm outline-none"
               >
                 {monthOptions.map((month) => (
                   <option key={month} value={month}>{getMonthLabel(month)}</option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#7a6335]">▼</div>
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">▼</div>
             </div>
             <button
               type="button"
@@ -830,9 +830,9 @@ const resetFilters = () => {
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
           <div className="hidden min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:flex sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-black text-[#9b7d3e]">사용자</span>
+              <span className="text-[12px] font-black text-slate-500">사용자</span>
 
-              <div className="inline-flex items-center gap-1 rounded-full bg-[#fff4c7] p-1 ring-1 ring-[#f0df9b]">
+              <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
               {[
                 { key: "all", label: "전체", icon: null },
                 { key: "기린", label: "기린", icon: "/icons/girin.png" },
@@ -855,9 +855,9 @@ const resetFilters = () => {
               </div>
             </div>
           <div className="flex items-center gap-2">
-            <span className="text-[12px] font-black text-[#9b7d3e]">결제수단</span>
+            <span className="text-[12px] font-black text-slate-500">결제수단</span>
 
-            <div className="inline-flex flex-wrap items-center gap-1 rounded-full bg-[#fff4c7] p-1 ring-1 ring-[#f0df9b]">
+            <div className="inline-flex flex-wrap items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
               {[
                 { key: "all", label: "전체" },
                 { key: "신한", label: "신한" },
@@ -903,31 +903,31 @@ const resetFilters = () => {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#fff4c7] px-3 py-1 text-[11px] font-black text-[#9b7d3e] ring-1 ring-[#f0df9b]">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-500 ring-1 ring-slate-200">
                     소비 리포트
                   </span>
-                  <span className="text-[12px] font-bold text-[#9b7d3e]">{filterSummary}</span>
+                  <span className="text-[12px] font-bold text-slate-500">{filterSummary}</span>
                 </div>
 
                 <div className="mt-2 text-[22px] font-black tracking-[-0.04em] text-[#2a2112]">
                   {reportTitle}
                 </div>
-                <p className="mt-1 text-[13px] font-semibold text-[#7a6335]">{reportMessage}</p>
+                <p className="mt-1 text-[13px] font-semibold text-slate-500">{reportMessage}</p>
               </div>
 
               <div className="grid min-w-0 shrink-0 grid-cols-3 gap-2 sm:min-w-[460px]">
-                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
-                  <div className="text-[11px] font-black text-[#9b7d3e]">지출</div>
+                <div className="min-w-0 rounded-[18px] bg-slate-50 px-3 py-3 ring-1 ring-slate-200 sm:rounded-[22px] sm:px-4">
+                  <div className="text-[11px] font-black text-slate-500">지출</div>
                   <div className="mt-1 truncate text-[15px] font-black text-[#2a2112] sm:text-[17px]">{formatAbsMoney(totalExpense)}</div>
                 </div>
-                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
-                  <div className="text-[11px] font-black text-[#9b7d3e]">예산</div>
+                <div className="min-w-0 rounded-[18px] bg-slate-50 px-3 py-3 ring-1 ring-slate-200 sm:rounded-[22px] sm:px-4">
+                  <div className="text-[11px] font-black text-slate-500">예산</div>
                   <div className="mt-1 truncate text-[15px] font-black text-[#2a2112] sm:text-[17px]">
                     {selectedBudget > 0 ? formatAbsMoney(selectedBudget) : "미설정"}
                   </div>
                 </div>
-                <div className="min-w-0 rounded-[18px] bg-[#fff9df] px-3 py-3 ring-1 ring-[#f0df9b] sm:rounded-[22px] sm:px-4">
-                  <div className="text-[11px] font-black text-[#9b7d3e]">예산대비</div>
+                <div className="min-w-0 rounded-[18px] bg-slate-50 px-3 py-3 ring-1 ring-slate-200 sm:rounded-[22px] sm:px-4">
+                  <div className="text-[11px] font-black text-slate-500">예산대비</div>
                   <div className={[
                     "mt-1 truncate text-[15px] font-black sm:text-[17px]",
                     selectedBudget > 0 && budgetGap < 0 ? "text-rose-600" : "text-emerald-600",
@@ -939,7 +939,7 @@ const resetFilters = () => {
             </div>
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#fff4c7] ring-1 ring-[#f0df9b]">
+              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100 ring-1 ring-slate-200">
                 <div
                   className={[
                     "h-full rounded-full transition-all",
@@ -973,7 +973,7 @@ const resetFilters = () => {
           <SectionCard title="최근 6개월 지출 트렌드" sub="월별 지출 흐름을 확인해요">
             <div className="rounded-[22px] bg-slate-50 px-2 py-1 ring-1 ring-slate-200 sm:rounded-[26px] sm:px-4 sm:py-3">
               {monthlyExpenses.length === 0 ? (
-                <div className="py-16 text-center text-sm font-bold text-[#9b7d3e]">
+                <div className="py-16 text-center text-sm font-bold text-slate-500">
                   표시할 지출 데이터가 없습니다.
                 </div>
               ) : (
@@ -1105,9 +1105,9 @@ const resetFilters = () => {
 
           <SectionCard title="결제수단별 지출현황" sub="선택 월 기준 결제수단 비중">
             <div className="space-y-2.5">
-              <div className="flex items-center justify-between gap-3 rounded-full border border-[#f0df9b] bg-[#fff4c7] px-4 py-1.5">
+              <div className="flex items-center justify-between gap-3 rounded-full border border-slate-200 bg-slate-100 px-4 py-1.5">
                 <div className="flex min-w-0 items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#2a2112] ring-1 ring-[#f0df9b]">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#2a2112] ring-1 ring-slate-200">
                     ∑
                   </span>
                   <span className="truncate text-[13px] font-black text-[#2a2112]">
@@ -1121,7 +1121,7 @@ const resetFilters = () => {
               </div>
 
               {accountSummary.length === 0 ? (
-                <div className="rounded-full bg-[#fff9df] px-4 py-2 text-[12px] font-bold text-[#7a6335]">
+                <div className="rounded-full bg-slate-50 px-4 py-2 text-[12px] font-bold text-slate-500">
                   결제수단 데이터가 없습니다.
                 </div>
               ) : (
@@ -1132,10 +1132,10 @@ accountSummary.map((item) => {
   return (
     <div
       key={item.account}
-      className="flex items-center justify-between gap-3 rounded-full bg-[#fff9df] px-4 py-1.5"
+      className="flex items-center justify-between gap-3 rounded-full bg-slate-50 px-4 py-1.5"
     >
       <div className="flex min-w-0 items-center gap-2">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200">
           {accountIcon ? (
             isImageIcon(accountIcon) ? (
               <img src={accountIcon} alt="" className="h-[18px] w-[18px] object-contain" />
@@ -1172,7 +1172,7 @@ accountSummary.map((item) => {
               >
                 <div className="space-y-3">
                   {categorySummary.length === 0 ? (
-                    <div className="rounded-[22px] bg-[#fff9df] px-4 py-4 text-sm font-bold text-[#9b7d3e]">
+                    <div className="rounded-[22px] bg-slate-50 px-4 py-4 text-sm font-bold text-slate-500">
                       카테고리 데이터가 없습니다.
                     </div>
 
@@ -1181,8 +1181,15 @@ accountSummary.map((item) => {
                     <>
                       <div className="sm:hidden">
                         <div className="flex flex-col items-center rounded-[24px] bg-[#f8fffe] px-4 py-4 ring-1 ring-[#d8f3f1]">
-                          <div
-                            className="relative h-[188px] w-[188px] rounded-full shadow-[inset_0_0_0_1px_rgba(15,118,110,0.08)]"
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (categorySummary.length === 0) return;
+                              const idx = categorySummary.findIndex((item) => item.category === activeCategory);
+                              const next = categorySummary[(idx + 1) % categorySummary.length];
+                              setActiveCategory(next.category);
+                            }}
+                            className="relative h-[188px] w-[188px] rounded-full shadow-[inset_0_0_0_1px_rgba(15,118,110,0.08)] transition active:scale-[0.98]"
                             style={{ background: `conic-gradient(${mobileDonutGradient})` }}
                           >
                             <div className="absolute inset-[30px] flex flex-col items-center justify-center rounded-full bg-white px-3 text-center shadow-[0_12px_28px_rgba(15,23,42,0.08)]">
@@ -1196,31 +1203,10 @@ accountSummary.map((item) => {
                                 {activeSlice ? `${activeSlice.percent}%` : "100%"}
                               </div>
                             </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => setActiveCategory(null)}
-                            className={`mt-4 h-9 rounded-full px-4 text-[11px] font-black transition ${!activeCategory ? "bg-[#21bdb7] text-white" : "bg-white text-[#0f766e] ring-1 ring-[#d8f3f1]"}`}
-                          >
-                            전체 {formatAbsMoney(totalExpense)}
                           </button>
 
-                          <div className="mt-3 flex w-full flex-wrap justify-center gap-1.5">
-                            {categorySummary.map((item) => {
-                              const selected = activeCategory === item.category;
-                              return (
-                                <button
-                                  key={`mobile-donut-${item.category}`}
-                                  type="button"
-                                  onClick={() => setActiveCategory(item.category)}
-                                  className={`flex h-9 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${selected ? "bg-[#21bdb7] text-white" : "bg-white text-slate-600 ring-1 ring-slate-100"}`}
-                                >
-                                  <span>{item.emoji}</span>
-                                  <span>{item.category}</span>
-                                </button>
-                              );
-                            })}
+                          <div className="mt-3 text-center text-[11px] font-black text-slate-400">
+                            도넛 조각을 눌러 카테고리를 선택해요
                           </div>
                         </div>
                       </div>
@@ -1229,7 +1215,7 @@ accountSummary.map((item) => {
                       <button
                           type="button"
                           onClick={() => setActiveCategory(null)}
-                          className="mb-2 w-full rounded-[18px] bg-[#fff4c7] px-4 py-3 ring-1 ring-[#f0df9b]"
+                          className="mb-2 w-full rounded-[18px] bg-slate-100 px-4 py-3 ring-1 ring-slate-200"
                         >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1253,8 +1239,8 @@ accountSummary.map((item) => {
                             className={[
                               "w-full rounded-[18px] px-4 py-3 text-left transition",
                               selected
-                              ? "bg-[#fff4c7] ring-1 ring-[#f0df9b]"
-                              : "bg-[#fff9df] hover:bg-[#fff4c7]"
+                              ? "bg-slate-100 ring-1 ring-slate-200"
+                              : "bg-slate-50 hover:bg-slate-100"
                             ].join(" ")}
                           >
                     <div className="grid grid-cols-[86px_1fr_94px] items-center gap-2 sm:grid-cols-[140px_1fr_120px] sm:gap-3">
@@ -1289,7 +1275,7 @@ accountSummary.map((item) => {
               >
                 <div className="space-y-3">
                   {bigExpenseRows.length === 0 ? (
-                    <div className="rounded-[22px] bg-[#fff9df] px-4 py-4 text-sm font-bold text-[#9b7d3e]">
+                    <div className="rounded-[22px] bg-slate-50 px-4 py-4 text-sm font-bold text-slate-500">
                       지출 데이터가 없습니다.
                     </div>
                   ) : (
@@ -1312,14 +1298,14 @@ accountSummary.map((item) => {
                               className={[
                                 "w-full rounded-[18px] px-3 py-2 text-left transition sm:rounded-[20px] sm:px-4 sm:py-2.5",
                                 index === 0
-                                  ? "bg-[linear-gradient(135deg,#fff4c7,#fff9df)] ring-1 ring-[#f0df9b]"
-                                  : "bg-[#fff9df]",
+                                  ? "bg-[linear-gradient(135deg,#f8fafc,#f1f5f9)] ring-1 ring-slate-200"
+                                  : "bg-slate-50",
                               ].join(" ")}
                             >
                               <div className="space-y-1.5">
                                 <div className="flex min-w-0 items-center justify-between gap-2">
                                   <div className="flex min-w-0 items-center gap-2">
-                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-[#b08a2f] ring-1 ring-[#f0df9b]">
+                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">
                                       TOP {index + 1}
                                     </span>
                                     <span className="truncate text-[13px] font-black leading-tight text-[#2a2112] sm:text-[15px]">
@@ -1332,12 +1318,12 @@ accountSummary.map((item) => {
                                   </span>
                                 </div>
 
-                                <div className="flex min-w-0 items-center justify-between gap-2 text-[10px] font-bold text-[#9b7d3e] sm:text-[11px]">
+                                <div className="flex min-w-0 items-center justify-between gap-2 text-[10px] font-bold text-slate-500 sm:text-[11px]">
                                   <div className="flex min-w-0 items-center gap-1.5">
                                     <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
 
                                     {userIcon ? (
-                                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-[#f0df9b]">
+                                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200">
                                         {isImageIcon(userIcon) ? (
                                           <img src={userIcon} alt={userName} className="h-3.5 w-3.5 object-contain" />
                                         ) : (
@@ -1357,13 +1343,24 @@ accountSummary.map((item) => {
                                       ) : (
                                         <span className="shrink-0">{accountName[0]}</span>
                                       )}
-                                      <span className="max-w-[58px] truncate font-bold text-[#9b7d3e]">
+                                      <span className="max-w-[58px] truncate font-bold text-slate-500">
                                         {accountName}
                                       </span>
                                     </span>
                                   </div>
 
-                                  <span className="shrink-0">그룹 {percentOfGroup}%</span>
+                                  <span className="shrink-0 text-[12px] font-black text-[#0f766e]">{formatAbsMoney(amount)}</span>
+                                </div>
+                                <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
+                                    {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 object-contain" /> : null}
+                                    {userName}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+                                    {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 object-contain" /> : null}
+                                    {accountName}
+                                  </span>
+                                  <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-400">그룹 {percentOfGroup}%</span>
                                 </div>
                               </div>                            </div>
                           );
@@ -1373,7 +1370,7 @@ accountSummary.map((item) => {
               </SectionCard>
               <div className="xl:col-span-2">
 <SectionCard
-  title="정기지출 / 고정비"
+  title="정기지출 · 고정비"
   sub="반복되는 지출을 빠르게 확인"
 >
   <div className="grid gap-5 lg:grid-cols-2">
@@ -1387,7 +1384,7 @@ accountSummary.map((item) => {
         <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[#99f6e4] bg-[#ecfdf5] px-4 py-3 shadow-[0_10px_24px_rgba(20,184,166,0.10)]">
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[15px] font-black text-[#0f766e] ring-1 ring-[#99f6e4]">
-              💸
+              📌
             </span>
             <span className="text-[13px] font-black text-[#2a2112]">
               전체
@@ -1402,18 +1399,18 @@ accountSummary.map((item) => {
         </div>
 
         {recurringCandidates.length === 0 ? (
-          <div className="rounded-full bg-[#fff9df] px-4 py-2 text-[12px] font-bold text-[#7a6335]">
+          <div className="rounded-full bg-slate-50 px-4 py-2 text-[12px] font-bold text-slate-500">
             정기지출 후보 없음
           </div>
         ) : (
           recurringCandidates.map((item, idx) => (
             <div
               key={`fixed-${idx}`}
-              className="flex items-center justify-between gap-3 rounded-full bg-[#fff9df] px-4 py-2"
+              className="flex items-center justify-between gap-3 rounded-full bg-slate-50 px-4 py-2"
             >
               <div className="flex min-w-0 items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#0f766e] ring-1 ring-[#99f6e4]">
-                  🔁
+                  ↻
                 </span>
 
                 <span className="truncate text-[13px] font-black text-[#2a2112]">
@@ -1452,7 +1449,7 @@ accountSummary.map((item) => {
           </span>
         </div>
 
-        <div className="rounded-full bg-[#fff9df] px-4 py-2 text-[12px] font-bold text-[#7a6335]">
+        <div className="rounded-full bg-slate-50 px-4 py-2 text-[12px] font-bold text-slate-500">
           할부 후보 없음
         </div>
       </div>
