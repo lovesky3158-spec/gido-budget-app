@@ -377,6 +377,18 @@ export default function DashboardPage() {
   }, [activeCategory, categoryKey, categorySummary]);
 
   const activeSlice = categorySummary.find((item) => item.category === activeCategory) ?? categorySummary[0] ?? null;
+  const mobileDonutGradient = useMemo(() => {
+    if (categorySummary.length === 0) return "#e5e7eb";
+    let cursor = 0;
+    return categorySummary
+      .map((item, index) => {
+        const start = cursor;
+        const end = index === categorySummary.length - 1 ? 100 : Math.min(100, cursor + item.percent);
+        cursor = end;
+        return `${item.color} ${start}% ${end}%`;
+      })
+      .join(", ");
+  }, [categorySummary]);
 
   const userSummary = useMemo(() => {
     const map = new Map<string, number>();
@@ -635,7 +647,7 @@ const resetFilters = () => {
         </section>
       ) : (
         <>
-        <section className="hidden bg-[linear-gradient(135deg,#fff1a8_0%,#ffd84d_52%,#ffbf1f_100%)] sm:block">
+        <section className="hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] sm:block">
           <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
             <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
               <div>
@@ -647,11 +659,11 @@ const resetFilters = () => {
                 </div>
 
                 <div>
-                  <h1 className="text-[20px] font-black tracking-[-0.045em] text-[#2a2112] sm:text-[38px]">
+                  <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
                     소비 흐름 대시보드
                   </h1>
 
-                  <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-[#7a6335] sm:block sm:text-[14px]">
+                  <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-white/80 sm:block sm:text-[14px]">
                     카테고리, 사용자, 결제수단별로 이번 달 지출을 한눈에 분석해요.
                   </p>
 
@@ -751,11 +763,11 @@ const resetFilters = () => {
             <button
               type="button"
               onClick={() => setShowFilterSheet((v) => !v)}
-              className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#ffd84d] px-3 text-[11px] font-black text-[#5f3f00] shadow-[0_8px_18px_rgba(255,191,31,0.22)]"
+              className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#21bdb7] px-3 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(33,189,183,0.22)]"
             >
               <span>☰</span>
               <span>필터</span>
-              {activeFilterCount > 0 ? <span className="ml-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] text-[#8a5b00]">{activeFilterCount}</span> : null}
+              {activeFilterCount > 0 ? <span className="ml-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] text-[#0f766e]">{activeFilterCount}</span> : null}
             </button>
             <span className="min-w-0 flex-1 truncate text-[11px] font-extrabold text-slate-500">{filterSummary || "전체 조건"}</span>
             <button type="button" onClick={resetFilters} className="flex h-9 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm">초기화</button>
@@ -778,7 +790,7 @@ const resetFilters = () => {
                       { key: "기린", label: "기린", icon: "/icons/girin.png" },
                       { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
                     ].map((user) => (
-                      <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm ring-2 ring-[#ffbf1f]/35" : user.key === "all" ? "bg-[#fff4c7] text-[#8a5b00] ring-1 ring-[#f1d67a]" : "bg-slate-100 text-slate-500"}`}>
+                      <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#21bdb7] text-white shadow-sm ring-2 ring-[#99f6e4]/50" : user.key === "all" ? "bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#99f6e4]" : "bg-slate-100 text-slate-500"}`}>
                         {user.icon.startsWith("/") ? <img src={user.icon} alt="" className="h-4 w-4 object-contain" /> : <span>{user.icon}</span>}
                         <span>{user.label}</span>
                       </button>
@@ -799,7 +811,7 @@ const resetFilters = () => {
                     ].map((card) => {
                       const icon = card.key === "all" ? "💳" : resolveOptionIcon("accounts", card.label, optionIcons);
                       return (
-                        <button key={card.key} type="button" onClick={() => setCardFilter(card.key)} className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${cardFilter === card.key ? "bg-[#ffd84d] text-[#5f3f00] shadow-sm ring-2 ring-[#ffbf1f]/35" : card.key === "all" ? "bg-[#fff4c7] text-[#8a5b00] ring-1 ring-[#f1d67a]" : "bg-slate-100 text-slate-500"}`}>
+                        <button key={card.key} type="button" onClick={() => setCardFilter(card.key)} className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${cardFilter === card.key ? "bg-[#21bdb7] text-white shadow-sm ring-2 ring-[#99f6e4]/50" : card.key === "all" ? "bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#99f6e4]" : "bg-slate-100 text-slate-500"}`}>
                           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/75">
                             {icon && isImageIcon(icon) ? <img src={icon} alt="" className="h-3.5 w-3.5 object-contain" /> : <span className="text-[12px]">{icon || card.label[0]}</span>}
                           </span>
@@ -1167,6 +1179,53 @@ accountSummary.map((item) => {
                     
                   ) : (
                     <>
+                      <div className="sm:hidden">
+                        <div className="flex flex-col items-center rounded-[24px] bg-[#f8fffe] px-4 py-4 ring-1 ring-[#d8f3f1]">
+                          <div
+                            className="relative h-[188px] w-[188px] rounded-full shadow-[inset_0_0_0_1px_rgba(15,118,110,0.08)]"
+                            style={{ background: `conic-gradient(${mobileDonutGradient})` }}
+                          >
+                            <div className="absolute inset-[30px] flex flex-col items-center justify-center rounded-full bg-white px-3 text-center shadow-[0_12px_28px_rgba(15,23,42,0.08)]">
+                              <div className="truncate text-[12px] font-black text-[#0f766e]">
+                                {activeSlice?.category ?? "전체"}
+                              </div>
+                              <div className="mt-1 text-[18px] font-black tracking-[-0.05em] text-[#2a2112]">
+                                {formatAbsMoney(activeSlice?.amount ?? totalExpense)}
+                              </div>
+                              <div className="mt-0.5 text-[11px] font-black text-slate-400">
+                                {activeSlice ? `${activeSlice.percent}%` : "100%"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setActiveCategory(null)}
+                            className={`mt-4 h-9 rounded-full px-4 text-[11px] font-black transition ${!activeCategory ? "bg-[#21bdb7] text-white" : "bg-white text-[#0f766e] ring-1 ring-[#d8f3f1]"}`}
+                          >
+                            전체 {formatAbsMoney(totalExpense)}
+                          </button>
+
+                          <div className="mt-3 flex w-full flex-wrap justify-center gap-1.5">
+                            {categorySummary.map((item) => {
+                              const selected = activeCategory === item.category;
+                              return (
+                                <button
+                                  key={`mobile-donut-${item.category}`}
+                                  type="button"
+                                  onClick={() => setActiveCategory(item.category)}
+                                  className={`flex h-9 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${selected ? "bg-[#21bdb7] text-white" : "bg-white text-slate-600 ring-1 ring-slate-100"}`}
+                                >
+                                  <span>{item.emoji}</span>
+                                  <span>{item.category}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="hidden sm:block">
                       <button
                           type="button"
                           onClick={() => setActiveCategory(null)}
@@ -1218,6 +1277,7 @@ accountSummary.map((item) => {
                           </button>
                         );
                       })}
+                      </div>
                     </>
                   )}
                 </div>
@@ -1324,10 +1384,10 @@ accountSummary.map((item) => {
       </div>
 
       <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-3 rounded-full border border-[#f0df9b] bg-[#fff4c7] px-4 py-2">
+        <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[#99f6e4] bg-[#ecfdf5] px-4 py-3 shadow-[0_10px_24px_rgba(20,184,166,0.10)]">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#2a2112] ring-1 ring-[#f0df9b]">
-              ∑
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[15px] font-black text-[#0f766e] ring-1 ring-[#99f6e4]">
+              💸
             </span>
             <span className="text-[13px] font-black text-[#2a2112]">
               전체
@@ -1352,8 +1412,8 @@ accountSummary.map((item) => {
               className="flex items-center justify-between gap-3 rounded-full bg-[#fff9df] px-4 py-2"
             >
               <div className="flex min-w-0 items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#2a2112] ring-1 ring-[#f0df9b]">
-                  {item.months}
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#0f766e] ring-1 ring-[#99f6e4]">
+                  🔁
                 </span>
 
                 <span className="truncate text-[13px] font-black text-[#2a2112]">
@@ -1377,10 +1437,10 @@ accountSummary.map((item) => {
       </div>
 
       <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-3 rounded-full border border-[#f0df9b] bg-[#fff4c7] px-4 py-2">
+        <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[#99f6e4] bg-[#ecfdf5] px-4 py-3 shadow-[0_10px_24px_rgba(20,184,166,0.10)]">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#2a2112] ring-1 ring-[#f0df9b]">
-              ∑
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[15px] font-black text-[#0f766e] ring-1 ring-[#99f6e4]">
+              📌
             </span>
             <span className="text-[13px] font-black text-[#2a2112]">
               전체

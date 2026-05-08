@@ -30,6 +30,22 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      if (
+        data.session &&
+        typeof window !== "undefined" &&
+        currentPath &&
+        currentPath !== "/" &&
+        !window.sessionStorage.getItem("gido_initial_home_done")
+      ) {
+        window.sessionStorage.setItem("gido_initial_home_done", "1");
+        router.replace("/");
+        return;
+      }
+
+      if (data.session && typeof window !== "undefined") {
+        window.sessionStorage.setItem("gido_initial_home_done", "1");
+      }
+
       if (alive) setChecked(true);
     }
 

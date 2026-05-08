@@ -11,4 +11,12 @@ if (!supabaseKey) {
   throw new Error("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY is missing");
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    // 브라우저를 다시 열었을 때까지 로그인이 계속 남지 않도록 세션 스토리지에만 보관합니다.
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: typeof window !== "undefined" ? window.sessionStorage : undefined,
+  },
+});

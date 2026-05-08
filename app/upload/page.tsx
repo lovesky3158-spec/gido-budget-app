@@ -393,7 +393,7 @@ function parseHtmlTableFile(text: string) {
 
 
 export default function UploadPage() {
-  const [tab, setTab] = useState<UploadTab>("excel");
+  const [tab, setTab] = useState<UploadTab>("manual");
 
   const [users, setUsers] = useState<string[]>(DEFAULT_USERS);
   const [accounts, setAccounts] = useState<string[]>(DEFAULT_ACCOUNTS);
@@ -1290,9 +1290,14 @@ const saveSingleManualForm = async () => {
             </div>
 
             <div className="sm:mt-3">
-              <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
-                기린 · 짱구 일괄등록
-              </h1>
+              <div className="flex items-center gap-2">
+                <span className="flex h-9 w-9 items-center justify-center rounded-[16px] bg-white/25 ring-1 ring-white/35 sm:hidden">
+                  <img src="/icons/girin.png" alt="기린" className="h-7 w-7 object-contain" />
+                </span>
+                <h1 className="text-[20px] font-black tracking-[-0.045em] text-white sm:text-[38px]">
+                  기린 · 짱구 일괄등록
+                </h1>
+              </div>
 
               <p className="mt-2 hidden text-[10px] font-medium leading-relaxed text-white/80 sm:block sm:text-[14px]">
                 수동 입력과 엑셀 업로드로 카드·계좌 거래를 빠르게 정리해요.
@@ -1344,7 +1349,7 @@ const saveSingleManualForm = async () => {
           <button
             type="button"
             onClick={() => setTab("excel")}
-            className={`flex-1 rounded-full px-4 py-2 text-[12px] font-black transition ${
+            className={`hidden flex-1 rounded-full px-4 py-2 text-[12px] font-black transition sm:block ${
               tab === "excel" ? "bg-[#21bdb7] text-white shadow-sm" : "text-slate-500"
             }`}
           >

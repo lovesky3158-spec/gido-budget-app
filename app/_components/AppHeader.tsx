@@ -19,7 +19,7 @@ const mobileRouteMeta: Record<
 > = {
   "/": { title: "홈", icon: "/icons/zzangu.png", tone: "yellow" },
   "/transactions": { title: "내역", icon: "/icons/zzangu.png", tone: "yellow" },
-  "/upload": { title: "추가", icon: "/icons/zzangu.png", tone: "yellow" },
+  "/upload": { title: "추가", icon: "/icons/girin.png", tone: "green" },
   "/dashboard": { title: "리포트", icon: "/icons/girin.png", tone: "green" },
   "/assets": { title: "자산", icon: "/icons/girin.png", tone: "green" },
 };
@@ -91,6 +91,9 @@ const mobileProfileTone = isGreenMobileTone
   }, []);
 
   async function handleLogout() {
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem("gido_initial_home_done");
+    }
     await supabase.auth.signOut();
     router.replace("/login");
   }
@@ -204,7 +207,7 @@ const mobileProfileTone = isGreenMobileTone
                 href={item.primary ? "/upload?manual=1" : item.href}
                 className={[
                   item.primary
-                    ? "-mt-5 flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-[24px] bg-[#ffd84d] text-[10px] font-black text-[#5f3f00] shadow-[0_12px_28px_rgba(255,191,31,0.36)] ring-4 ring-white"
+                    ? "-mt-5 flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-[24px] bg-[#21bdb7] text-[10px] font-black text-white shadow-[0_12px_28px_rgba(33,189,183,0.32)] ring-4 ring-white"
                     : "flex min-h-[50px] flex-col items-center justify-center gap-0.5 rounded-[20px] text-[10px] font-black transition",
                   !item.primary && active
                     ? "bg-[#fff1a8] text-[#5f3f00] shadow-[0_8px_18px_rgba(255,191,31,0.18)]"

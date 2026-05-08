@@ -734,6 +734,14 @@ export default function TransactionsPage() {
     >
       ▶
     </button>
+    <button
+      type="button"
+      onClick={() => setShowCalendar(true)}
+      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#f1d67a] bg-[#fff7d6] text-sm font-black text-[#8a5b00] shadow-sm"
+      aria-label="달력 보기"
+    >
+      📅
+    </button>
   </div>
 </div>
 <div className="border-b border-slate-100 bg-white">
@@ -912,7 +920,7 @@ export default function TransactionsPage() {
     </div>
   </div>
 </div>
-<main className="bg-[#f6fbfb] px-3 pt-4 sm:px-6 sm:pt-8">
+<main className="bg-[#fffaf0] px-3 pt-4 sm:bg-[#f6fbfb] sm:px-6 sm:pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
             {errorMessage}
@@ -1237,8 +1245,8 @@ export default function TransactionsPage() {
         };
 
         return (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/45 px-3 py-4 backdrop-blur-sm">
-            <div className="max-h-[90vh] w-full max-w-[94vw] overflow-y-auto rounded-[26px] bg-white sm:max-w-2xl sm:rounded-[34px] shadow-[0_32px_90px_rgba(15,23,42,0.28)]">
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center overflow-x-hidden bg-slate-950/45 px-3 py-4 backdrop-blur-sm touch-pan-y">
+            <div className="max-h-[90vh] w-full max-w-[calc(100vw-24px)] overflow-x-hidden overflow-y-auto rounded-[26px] bg-white sm:max-w-2xl sm:rounded-[34px] shadow-[0_32px_90px_rgba(15,23,42,0.28)]" style={{ touchAction: "pan-y" }}>
             <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-4 sm:px-7 sm:py-6">
               <button
                 type="button"
