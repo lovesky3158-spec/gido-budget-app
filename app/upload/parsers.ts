@@ -21,6 +21,7 @@ type ExcelDraftRow = {
   amount: number | null;
   cardName: string;
   selected: boolean;
+  flowType?: "지출" | "수입";
 };
 
 type BuildDraftRowsParams = {
@@ -732,6 +733,7 @@ function buildKbDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
       amount,
       cardName,
       selected: true,
+      flowType: "지출",
     };
 
     result.push(item);
@@ -775,6 +777,7 @@ export function buildDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
       amount,
       cardName,
       selected: true,
+      flowType: "지출",
     });
   }
 
@@ -953,6 +956,7 @@ export function parseKbRowsDirect(
       amount,
       cardName: card || "국민카드",
       selected: true,
+      flowType: "지출",
     };
 
     result.push(item);

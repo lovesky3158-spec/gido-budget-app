@@ -39,6 +39,7 @@ type ExcelDraftRow = {
   amount: number | null;
   cardName: string;
   selected: boolean;
+  flowType?: "지출" | "수입";
   memo?: string;
   isFixed?: boolean;
   installmentTotal?: number | null;
@@ -841,7 +842,7 @@ const openRowEditor = (row: ExcelDraftRow) => {
     amount: row.amount !== null ? String(Math.abs(row.amount)) : "",
     cardName: row.cardName,
     memo: row.memo ?? "",
-    flowType: "지출",
+    flowType: row.flowType ?? "지출",
     userType: excelUserType,
     isFixed: row.isFixed ?? false,
     installmentTotal: row.installmentTotal ? String(row.installmentTotal) : "",
@@ -865,10 +866,8 @@ const openRowEditor = (row: ExcelDraftRow) => {
           tx_date: editingRow.tx_date ? fromIsoDate(editingRow.tx_date) : row.tx_date,
           description: nextDescription,
           category: nextCategory,
-          amount:
-            editingRow.flowType === "지출"
-              ? -Math.abs(Number(parseNumber(editingRow.amount) ?? 0))
-              : Math.abs(Number(parseNumber(editingRow.amount) ?? 0)),
+          amount: Math.abs(Number(parseNumber(editingRow.amount) ?? 0)),
+          flowType: editingRow.flowType,
           cardName: editingRow.cardName.trim() || "카드",
           memo: editingRow.memo.trim(),
           isFixed: editingRow.isFixed,
@@ -1025,7 +1024,9 @@ async function buildPrevInstallmentMap() {
 
   const payload: TransactionInsertRow[] = selectedData.map((row) => {
     const rawAmount = Math.abs(Number(row.amount ?? 0));
-    const flowType = row.amount && row.amount > 0 ? "수입" : "지출";
+    // 엑셀 카드내역은 금액이 양수로 들어와도 기본은 지출입니다.
+    // 행 수정 팝업에서 수입으로 바꾼 경우에만 수입으로 저장합니다.
+    const flowType = row.flowType ?? "지출";
     const finalAmount = flowType === "수입" ? rawAmount : -rawAmount;
     const memoMeta = buildUploadMeta(row);
 
