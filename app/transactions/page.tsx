@@ -700,7 +700,7 @@ export default function TransactionsPage() {
         </div>
 </section>
 <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
-  <div className="flex items-center justify-center gap-2">
+  <div className="relative flex items-center justify-center gap-2">
     <button
       type="button"
       onClick={() => moveMonth("prev")}
@@ -737,7 +737,7 @@ export default function TransactionsPage() {
     <button
       type="button"
       onClick={() => setShowCalendar(true)}
-      className="ml-auto flex h-10 w-10 items-center justify-center rounded-[16px] border border-[#f1d67a] bg-[#fff7d6] text-base font-black text-[#8a5b00] shadow-sm"
+      className="absolute right-0 flex h-10 w-10 items-center justify-center rounded-[16px] border border-[#f1d67a] bg-[#fff7d6] text-base font-black text-[#8a5b00] shadow-sm"
       aria-label="달력 보기"
     >
       📅
@@ -747,16 +747,6 @@ export default function TransactionsPage() {
 <div className="border-b border-slate-100 bg-white">
   <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-4">
     <div className="flex items-center gap-2">
-      <div className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[16px] border border-slate-200 bg-slate-50 px-3 shadow-sm sm:h-10 sm:rounded-full sm:px-4">
-        <span className="text-sm text-slate-400">🔍</span>
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="거래 검색"
-          className="w-full min-w-0 flex-1 bg-transparent text-[12px] font-bold text-slate-700 outline-none placeholder:text-slate-300 sm:text-sm"
-        />
-      </div>
-
       <button
         type="button"
         onClick={() => {
@@ -774,10 +764,20 @@ export default function TransactionsPage() {
         ) : null}
       </button>
 
+      <div className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[16px] border border-slate-200 bg-slate-50 px-3 shadow-sm sm:h-10 sm:rounded-full sm:px-4">
+        <span className="text-sm text-slate-400">🔍</span>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="거래 검색"
+          className="w-full min-w-0 flex-1 bg-transparent text-[12px] font-bold text-slate-700 outline-none placeholder:text-slate-300 sm:text-sm"
+        />
+      </div>
+
       <button
         type="button"
         onClick={resetFilters}
-        className="hidden h-10 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm sm:flex sm:text-sm"
+        className="flex h-10 shrink-0 items-center rounded-[16px] border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm sm:rounded-full sm:text-sm"
       >
         초기화
       </button>
@@ -787,15 +787,7 @@ export default function TransactionsPage() {
       <span className="min-w-0 truncate text-[10px] font-extrabold text-slate-400 sm:text-sm">
         {filterSummary || "전체 조건"}
       </span>
-      {activeFilterCount > 0 ? (
-        <button
-          type="button"
-          onClick={resetFilters}
-          className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-black text-slate-500 sm:hidden"
-        >
-          초기화
-        </button>
-      ) : null}
+
     </div>
 
     {showFilterSheet ? (
@@ -899,23 +891,18 @@ export default function TransactionsPage() {
 
 <div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
   <div className="rounded-[22px] border border-slate-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
-    <div className="grid grid-cols-3 divide-x divide-slate-100">
-      <div className="min-w-0 pr-3">
-        <div className="text-[10px] font-black text-slate-400">수입</div>
+    <div className="grid grid-cols-3 gap-2 text-center">
+      <div className="min-w-0 rounded-[16px] bg-sky-50 px-2 py-2">
+        <div className="text-[10px] font-black text-sky-500">수입</div>
         <div className="mt-1 truncate text-[15px] font-black tracking-[-0.05em] text-sky-600">+{formatCompactWon(totalIncome)}원</div>
-        <div className="mt-1 text-[9px] font-black text-slate-300">총 입금</div>
       </div>
-      <div className="min-w-0 px-3">
-        <div className="text-[10px] font-black text-slate-400">지출</div>
+      <div className="min-w-0 rounded-[16px] bg-rose-50 px-2 py-2">
+        <div className="text-[10px] font-black text-rose-400">지출</div>
         <div className="mt-1 truncate text-[15px] font-black tracking-[-0.05em] text-rose-500">-{formatCompactWon(totalExpense)}원</div>
-        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-rose-300" style={{ width: `${Math.min(100, Math.round((totalExpense / Math.max(totalIncome, totalExpense, 1)) * 100))}%` }} />
-        </div>
       </div>
-      <div className="min-w-0 pl-3">
-        <div className="text-[10px] font-black text-slate-400">순흐름</div>
+      <div className="min-w-0 rounded-[16px] bg-emerald-50 px-2 py-2">
+        <div className="text-[10px] font-black text-emerald-500">잔액</div>
         <div className={`mt-1 truncate text-[15px] font-black tracking-[-0.05em] ${total >= 0 ? "text-[#0faaa4]" : "text-rose-500"}`}>{total >= 0 ? "+" : "-"}{formatCompactWon(Math.abs(total))}원</div>
-        <div className="mt-1 text-[9px] font-black text-slate-300">수입 - 지출</div>
       </div>
     </div>
   </div>

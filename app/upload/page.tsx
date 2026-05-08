@@ -1279,7 +1279,7 @@ const saveSingleManualForm = async () => {
 
   return (
     <div className="min-h-screen bg-[#f6fbfb]">
-      <section className="bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white">
+      <section className="hidden bg-[linear-gradient(135deg,#3ec7c1_0%,#2fb3ad_100%)] text-white sm:block">
         <div className="mx-auto max-w-6xl px-4 py-2.5 sm:px-6 sm:py-8">
           <div className="flex min-h-[34px] items-center sm:block sm:min-h-0 sm:py-2">
             <div className="hidden items-center gap-1.5 rounded-full border border-white/35 bg-white/35 px-2.5 py-1 text-[10px] font-bold text-[#063f3a] sm:inline-flex">
