@@ -22,7 +22,7 @@ import {
 } from "@/lib/option-icons";
 
 
-const DEFAULT_WIFE_MESSAGE = "오늘도 고생했어 💛";
+const DEFAULT_WIFE_MESSAGE = "럭키비키야 엄마아빠 부자되볼게!";
 
 
 
