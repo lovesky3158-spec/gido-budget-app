@@ -455,7 +455,7 @@ function IncomeDetailPopover({
   onIncomeDetailChange: (field: keyof IncomeDetail, value: string | IncomeExtraItem[]) => void;
 }) {
   return (
-    <div className="absolute left-1/2 top-[145px] z-[999] w-[640px ] max-w-[calc(100vw-48px)] -translate-x-1/2 rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_28px_70px_rgba(15,23,42,0.18)]">
+    <div className="absolute left-1/2 top-[145px] z-[999] w-[calc(100vw-24px)] max-w-[640px] -translate-x-1/2 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_28px_70px_rgba(15,23,42,0.18)] sm:p-5">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <div className="text-[18px] font-black tracking-[-0.04em] text-slate-900">
@@ -484,7 +484,7 @@ function IncomeDetailPopover({
         ].map(([amountField, noteField, label]) => (
           <div
             key={amountField}
-            className="grid grid-cols-[90px_140px_1fr] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200"
+            className="grid grid-cols-1 items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:grid-cols-[90px_140px_minmax(0,1fr)]"
           >
             <div className="text-[13px] font-black text-slate-700">{label}</div>
 
@@ -551,7 +551,7 @@ function IncomeDetailPopover({
           (incomeDetail.extras ?? []).map((extra, idx) => (
             <div
               key={extra.id}
-              className="grid grid-cols-[110px_120px_1fr_30px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200"
+              className="grid grid-cols-[minmax(0,1fr)_30px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:grid-cols-[110px_120px_minmax(0,1fr)_30px]"
             >
               <input
                 type="text"
@@ -561,7 +561,7 @@ function IncomeDetailPopover({
                   next[idx] = { ...extra, title: e.target.value };
                   onIncomeDetailChange("extras", next);
                 }}
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-700 outline-none focus:border-[#14b8a6]"
+                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-700 outline-none focus:border-[#14b8a6]"
                 placeholder="구분"
               />
 
@@ -573,7 +573,7 @@ function IncomeDetailPopover({
                   next[idx] = { ...extra, amount: formatInputChange(e.target.value) };
                   onIncomeDetailChange("extras", next);
                 }}
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-900 outline-none focus:border-[#14b8a6]"
+                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-900 outline-none focus:border-[#14b8a6]"
                 placeholder="금액"
               />
 
@@ -585,7 +585,7 @@ function IncomeDetailPopover({
                   next[idx] = { ...extra, note: e.target.value };
                   onIncomeDetailChange("extras", next);
                 }}
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-semibold text-slate-700 outline-none focus:border-[#14b8a6]"
+                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-semibold text-slate-700 outline-none focus:border-[#14b8a6]"
                 placeholder="비고"
               />
 

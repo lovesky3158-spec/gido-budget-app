@@ -174,7 +174,7 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
+    <div className="min-w-0 overflow-hidden rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
       <div className="mb-5">
         <div className="text-[20px] font-black tracking-[-0.04em] text-[#2a2112]">{title}</div>
         {sub ? <div className="mt-1 text-[13px] font-semibold text-slate-500">{sub}</div> : null}
@@ -1200,12 +1200,13 @@ accountSummary.map((item) => {
                                 return (
                                   <path
                                     key={item.category}
-                                    d={describeArc(donutCenter, donutCenter, selected ? donutRadius + 5 : donutRadius, start, end)}
+                                    d={describeArc(donutCenter, donutCenter, donutRadius, start, end)}
                                     fill="none"
                                     stroke={item.color}
-                                    strokeWidth={selected ? donutStroke + 5 : donutStroke}
+                                    strokeWidth={selected ? donutStroke + 2 : donutStroke}
                                     strokeLinecap="round"
                                     className="cursor-pointer transition-all duration-200"
+                                    opacity={selected || !activeCategory ? 1 : 0.28}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setActiveCategory(item.category);
@@ -1321,32 +1322,36 @@ accountSummary.map((item) => {
                               ].join(" ")}
                             >
                               <div className="space-y-1.5">
-                                <div className="flex min-w-0 items-center justify-between gap-2">
+                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                                   <div className="flex min-w-0 items-center gap-2">
                                     <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">
                                       TOP {index + 1}
                                     </span>
-                                    <span className="truncate text-[13px] font-black leading-tight text-[#2a2112] sm:text-[15px]">
+                                    <span className="min-w-0 truncate text-[13px] font-black leading-tight text-[#2a2112] sm:text-[15px]">
                                       {row.description || "-"}
                                     </span>
                                   </div>
 
-                                  <span className="shrink-0 whitespace-nowrap text-[15px] font-black text-rose-600 sm:text-[18px]">
-                                    -{formatAbsMoney(amount)}
-                                  </span>
+                                  <div className="shrink-0 text-right">
+                                    <div className="whitespace-nowrap text-[15px] font-black text-rose-600 sm:text-[18px]">
+                                      -{formatAbsMoney(amount)}
+                                    </div>
+                                    <div className="mt-0.5 text-[10px] font-black text-[#0f766e] sm:text-[11px]">
+                                      점유율 {percentOfGroup}%
+                                    </div>
+                                  </div>
                                 </div>
 
-                                <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                                <div className="flex min-w-0 flex-wrap items-center gap-1.5 pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
                                   <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-                                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
-                                    {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 object-contain" /> : null}
-                                    {userName}
+                                  <span className={`inline-flex max-w-[92px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:max-w-none ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
+                                    {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
+                                    <span className="truncate">{userName}</span>
                                   </span>
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
-                                    {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 object-contain" /> : null}
-                                    {accountName}
+                                  <span className="inline-flex max-w-[104px] items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500 sm:max-w-none">
+                                    {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
+                                    <span className="truncate">{accountName}</span>
                                   </span>
-                                  <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-extrabold text-[#0f766e] ring-1 ring-[#d8f3f1]">점유율 {percentOfGroup}%</span>
                                 </div>
                               </div>                            </div>
                           );
