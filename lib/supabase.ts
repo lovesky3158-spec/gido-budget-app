@@ -13,10 +13,11 @@ if (!supabaseKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    // 브라우저를 다시 열었을 때까지 로그인이 계속 남지 않도록 세션 스토리지에만 보관합니다.
+    // 로그인 유지시간을 앱에서 1시간으로 제어하기 위해 localStorage에 세션을 보관합니다.
+    // 실제 만료 판단은 AuthGate의 GIDO_LOGIN_TTL_MS에서 처리합니다.
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: typeof window !== "undefined" ? window.sessionStorage : undefined,
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
   },
 });

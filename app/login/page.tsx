@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+
+const SAVED_LOGIN_ID_KEY = "gido_saved_login_id";
+const GIDO_LOGIN_AT_KEY = "gido_login_at";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberId, setRememberId] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const savedId = window.localStorage.getItem(SAVED_LOGIN_ID_KEY) ?? "";
+    if (savedId) {
+      setEmail(savedId);
+      setRememberId(true);
+    }
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +37,13 @@ export default function LoginPage() {
       setError("로그인 정보가 올바르지 않습니다.");
       return;
     }
+
+    if (rememberId) {
+      window.localStorage.setItem(SAVED_LOGIN_ID_KEY, email.trim());
+    } else {
+      window.localStorage.removeItem(SAVED_LOGIN_ID_KEY);
+    }
+    window.localStorage.setItem(GIDO_LOGIN_AT_KEY, String(Date.now()));
 
     window.location.href = "/";
   }
@@ -78,6 +97,16 @@ export default function LoginPage() {
             className="h-12 w-full rounded-2xl border border-[#ead78c] bg-[#fffdf5] px-4 text-sm font-semibold outline-none focus:border-[#ffbf1f]"
           />
         </div>
+
+        <label className="mt-3 flex items-center gap-2 rounded-2xl px-1 text-xs font-extrabold text-[#8a5b00]">
+          <input
+            type="checkbox"
+            checked={rememberId}
+            onChange={(e) => setRememberId(e.target.checked)}
+            className="h-4 w-4 rounded border-[#ead78c] accent-[#ffbf1f]"
+          />
+          아이디 저장
+        </label>
 
         {error && (
           <div className="mt-3 rounded-2xl bg-rose-50 px-4 py-3 text-xs font-bold text-rose-600">
