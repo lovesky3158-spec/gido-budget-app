@@ -32,13 +32,14 @@ export function getDefaultOptionIcon(group: OptionGroupKey, value: string) {
   }
 
   if (group === "accounts") {
-    if (key === "신한") return "/icons/sh.png";
-    if (key === "국민") return "/icons/kb.png";
-    if (key === "농협") return "/icons/nh.png";
-    if (key === "우리") return "/icons/woori.png";
-    if (key === "현금") return "💵";
-    if (key === "계좌") return "🏦";
-    if (key === "기타") return "💳";
+    const accountKey = key.split("|")[0].replace(/카드/g, "").trim();
+    if (accountKey === "신한") return "/icons/sh.png";
+    if (accountKey === "국민") return "/icons/kb.png";
+    if (accountKey === "농협") return "/icons/nh.png";
+    if (accountKey === "우리") return "/icons/woori.png";
+    if (accountKey === "현금") return "💵";
+    if (accountKey === "계좌") return "🏦";
+    if (accountKey === "기타") return "💳";
   }
 
   if (group === "categories") {
@@ -72,12 +73,15 @@ export function resolveOptionIcon(
   if (saved) return saved;
 
   if (group === "accounts") {
-    const baseKey = key.split("|")[0]?.trim() || key;
-    const withoutCard = baseKey.replace(/카드/g, "").trim();
+    const withoutCard = key.replace(/카드/g, "").trim();
+    const issuerOnly = withoutCard.split("|")[0].trim();
     const savedWithoutCard = icons.accounts?.[withoutCard];
     if (savedWithoutCard) return savedWithoutCard;
 
-    return getDefaultOptionIcon(group, withoutCard || baseKey || key);
+    const savedIssuerOnly = icons.accounts?.[issuerOnly];
+    if (savedIssuerOnly) return savedIssuerOnly;
+
+    return getDefaultOptionIcon(group, issuerOnly || withoutCard || key);
   }
 
   return getDefaultOptionIcon(group, key);

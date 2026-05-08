@@ -1786,7 +1786,7 @@ const saveSingleManualForm = async () => {
                   </span>
                 </td>
                 <td className="px-3 py-4 text-center align-middle font-bold text-slate-500">
-                  <span className="block whitespace-normal break-words">{row.cardName}</span>
+                  <span className="block whitespace-normal break-words">{normalizeAccountLabel(row.cardName, fileName, detectedPreset) || row.cardName}</span>
                 </td>
                 <td className="px-3 py-4 text-right align-middle font-black text-rose-500 tabular-nums">
                   -{Math.abs(Number(row.amount ?? 0)).toLocaleString("ko-KR")}원

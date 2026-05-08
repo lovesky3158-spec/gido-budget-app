@@ -19,6 +19,30 @@ export function getUserDisplayName(value: string | null | undefined) {
   return normalizeUserTag(value) || "미지정";
 }
 
+function joinAccountType(issuer: string, joined: string) {
+  if (issuer === "현금" || issuer === "계좌" || issuer === "기타") return issuer;
+  if (issuer.includes("|")) return issuer;
+
+  const compact = joined.replace(/\s/g, "").toLowerCase();
+
+  if (compact.includes("체크") || compact.includes("check") || compact.includes("debit")) {
+    return `${issuer}|체크`;
+  }
+
+  if (compact.includes("신용") || compact.includes("credit")) {
+    return `${issuer}|신용`;
+  }
+
+  // 기존 개발용 DB처럼 account_type에 카드사만 저장된 데이터도
+  // 화면에서는 카드사|구분 형태로 보이도록 기본값을 보정한다.
+  if (issuer === "국민") return "국민|신용";
+  if (issuer === "신한") return "신한|체크";
+  if (issuer === "농협") return "농협|체크";
+  if (issuer === "우리") return "우리|체크";
+
+  return issuer;
+}
+
 export function normalizeAccountLabel(
   value: string | null | undefined,
   fileName?: string | null,
@@ -32,37 +56,18 @@ export function normalizeAccountLabel(
   const presetText = String(preset ?? "").trim().toLowerCase();
   const joined = `${lower} ${file} ${presetText}`;
 
-  const detectCardKind = () => {
-    if (joined.includes("체크") || joined.includes("check") || joined.includes("debit")) return "체크";
-    if (joined.includes("신용") || joined.includes("credit") || joined.includes("일시불") || joined.includes("할부")) return "신용";
-    if (joined.includes("법인") || joined.includes("corporate") || joined.includes("corp")) return "법인";
-    return "";
-  };
-
-  const withKind = (base: string) => {
-    const kind = detectCardKind();
-    if (!kind) return base;
-    if (base.includes("|")) return base;
-    if (base === "현금" || base === "계좌" || base === "기타") return base;
-    return `${base}|${kind}`;
-  };
-
-  // 이미 국민|신용처럼 저장된 값은 그대로 유지
-  if (raw.includes("|")) {
-    const [base, kind] = raw.split("|").map((v) => v.trim()).filter(Boolean);
-    return kind ? `${base}|${kind}` : base || raw;
-  }
+  if (raw.includes("|")) return raw.replace(/카드/g, "").trim();
 
   if (
     joined.includes("국민") ||
     joined.includes("kb") ||
     joined.includes("kbcard")
   ) {
-    return withKind("국민");
+    return joinAccountType("국민", joined);
   }
 
   if (joined.includes("신한") || joined.includes("shinhan")) {
-    return withKind("신한");
+    return joinAccountType("신한", joined);
   }
 
   if (
@@ -71,14 +76,17 @@ export function normalizeAccountLabel(
     joined.includes("nhcard") ||
     joined.includes("m390")
   ) {
-    return withKind("농협");
+    return joinAccountType("농협", joined);
   }
 
-  if (joined.includes("우리")) return withKind("우리");
+  if (joined.includes("우리")) return joinAccountType("우리", joined);
   if (joined.includes("현금") || joined.includes("cash")) return "현금";
   if (joined.includes("계좌")) return "계좌";
 
-  if (raw.includes("카드")) return withKind(raw.replace(/카드/g, "").trim() || raw);
+  if (raw.includes("카드")) {
+    const cleaned = raw.replace(/카드/g, "").trim() || raw;
+    return joinAccountType(cleaned, joined);
+  }
 
   return raw || "기타";
 }
