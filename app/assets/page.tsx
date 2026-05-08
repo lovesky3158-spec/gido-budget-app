@@ -1365,9 +1365,9 @@ const jjangguTrend = useMemo(() => {
           type="button"
           onClick={() => {
             const idx = monthOptions.indexOf(monthFilter);
-            if (idx > 0) setMonthFilter(monthOptions[idx - 1]);
+            if (idx >= 0 && idx < monthOptions.length - 1) setMonthFilter(monthOptions[idx + 1]);
           }}
-          disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
+          disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
         >◀</button>
         <div className="relative">
@@ -1386,9 +1386,9 @@ const jjangguTrend = useMemo(() => {
           type="button"
           onClick={() => {
             const idx = monthOptions.indexOf(monthFilter);
-            if (idx >= 0 && idx < monthOptions.length - 1) setMonthFilter(monthOptions[idx + 1]);
+            if (idx > 0) setMonthFilter(monthOptions[idx - 1]);
           }}
-          disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
+          disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 shadow-sm disabled:opacity-30"
         >▶</button>
       </div>

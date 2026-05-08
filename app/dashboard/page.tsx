@@ -762,7 +762,8 @@ const resetFilters = () => {
           </div>
 
           {showFilterSheet ? (
-            <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)]">
+            <div className="fixed inset-0 z-[80] flex items-end bg-slate-950/25 px-3 pb-4 pt-20 backdrop-blur-[2px] sm:hidden" onClick={() => setShowFilterSheet(false)}>
+              <div className="max-h-[76vh] w-full overflow-y-auto rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)]" onClick={(e) => e.stopPropagation()}>
               <div className="mb-3 flex items-center justify-between">
                 <div className="text-sm font-black text-slate-800">필터</div>
                 <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
@@ -809,6 +810,7 @@ const resetFilters = () => {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           ) : null}
         </div>

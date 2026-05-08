@@ -193,18 +193,6 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
-  const [wifeMessage, setWifeMessage] = useState(DEFAULT_WIFE_MESSAGE);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setWifeMessage(window.localStorage.getItem("gido_home_message") ?? DEFAULT_WIFE_MESSAGE);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem("gido_home_message", wifeMessage);
-  }, [wifeMessage]);
-
   useEffect(() => {
     setOptionIcons(loadOptionIcons());
 
@@ -452,13 +440,9 @@ export default function HomePage() {
                 <img src="/icons/zzangu.png" alt="" className="h-5 w-5 object-contain" />
                 <span>오늘의 한마디</span>
               </div>
-              <input
-                type="text"
-                value={wifeMessage}
-                onChange={(e) => setWifeMessage(e.target.value)}
-                placeholder="와이프에게 남길 한마디를 적어봐요"
-                className="h-9 w-full rounded-[16px] border border-[#f3df93] bg-white px-3 text-[12px] font-bold text-[#2a2112] outline-none placeholder:text-[#c0a96a]"
-              />
+              <div className="rounded-[16px] border border-[#f3df93] bg-white px-3 py-2 text-[13px] font-black leading-relaxed text-[#2a2112]">
+                {DEFAULT_WIFE_MESSAGE}
+              </div>
             </div>
           </section>
 
@@ -472,10 +456,10 @@ export default function HomePage() {
     ))}
   </div>
 
-  <div className="grid gap-3 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:grid-cols-3 sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
+  <div className="grid grid-cols-2 gap-2 rounded-[24px] border border-slate-200 bg-white p-3 shadow-[0_16px_40px_rgba(139,92,0,0.10)] sm:grid-cols-3 sm:gap-5 sm:rounded-[32px] sm:p-6 lg:grid-cols-[3.5fr_3.25fr_3.25fr]">
 
     {/* 좌측: 현금흐름 + 수입/지출 */}
-    <div className="flex min-h-[108px] flex-col justify-between rounded-[22px] bg-[#fff9df] px-5 py-4 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
+    <div className="col-span-2 flex min-h-[96px] flex-col justify-between rounded-[22px] bg-[#fff9df] px-4 py-3 sm:col-span-1 sm:min-h-[140px] sm:rounded-[26px] sm:px-6 sm:py-5">
 
       {/* 현금흐름 */}
       <div>
@@ -483,13 +467,13 @@ export default function HomePage() {
           {formatMonthTitle(currentMonth)} 얼마 모으려나
         </div>
 
-        <div className={`mt-1 text-[25px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:mt-2 sm:text-[32px]`}>
+        <div className={`mt-1 text-[27px] font-black tracking-[-0.05em] ${amountTone(netAmount)} sm:mt-2 sm:text-[32px]`}>
           {formatSignedMoney(netAmount)}
         </div>
       </div>
 
       {/* 수입 / 지출 (같은 행) */}
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
+      <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-3 sm:gap-3">
         <div>
           <div className="text-[11px] font-black text-[#7a6335] sm:text-[13px]">수입</div>
           <div className="text-[15px] font-black text-[#2a2112] sm:text-[20px]">
@@ -507,21 +491,21 @@ export default function HomePage() {
     </div>
 
     {/* 기린 (3) */}
-    <div className="flex min-h-[104px] items-center gap-4 rounded-[22px] bg-emerald-50 px-5 py-4 text-left sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
-      <img src="/icons/girin.png" className="h-14 w-14 object-contain sm:h-[56px] sm:w-[56px]" />
+    <div className="flex min-h-[142px] flex-col items-center justify-between gap-2 rounded-[22px] bg-emerald-50 px-3 py-3 text-center sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
+      <img src="/icons/girin.png" className="h-12 w-12 object-contain sm:h-[56px] sm:w-[56px]" />
 
       <div className="min-w-0 flex-1">
-        <div className="text-[13px] font-bold text-emerald-700 sm:text-[15px]">기린</div>
+        <div className="text-[12px] font-bold text-emerald-700 sm:text-[15px]">기린</div>
 
-        <div className="mt-0.5 text-[22px] font-black text-emerald-700 sm:mt-1 sm:text-[22px]">
+        <div className="mt-0.5 text-[19px] font-black text-emerald-700 sm:mt-1 sm:text-[22px]">
           {formatMoney(userSpendSummary.girin)}
         </div>
 
-        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 sm:mt-3 sm:grid sm:gap-2 sm:overflow-visible sm:pb-0">
+        <div className="mt-2 grid gap-1.5 sm:mt-3 sm:grid sm:gap-2 sm:overflow-visible sm:pb-0">
           {(girinTopCards.length ? girinTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`girin-${item.label}-${idx}`}
-              className="flex items-center justify-between rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold text-emerald-700 sm:px-3 sm:py-1.5 sm:text-[13px]"
+              className="flex min-w-0 items-center justify-between gap-1 rounded-full bg-white/80 px-2 py-1 text-[10px] font-extrabold text-emerald-700 sm:px-3 sm:py-1.5 sm:text-[13px]"
             >
               {(() => {
               const accountName = item.label ?? "-";
@@ -557,11 +541,11 @@ export default function HomePage() {
     </div>
 
     {/* 짱구 (3) */}
-    <div className="flex min-h-[104px] items-center gap-4 rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-5 py-4 text-left shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5">
-      <img src="/icons/zzangu.png" className="h-16 w-16 object-contain sm:h-[70px] sm:w-[70px]" />
+    <div className="flex min-h-[142px] flex-col items-center justify-between gap-2 rounded-[22px] border border-yellow-200 bg-[linear-gradient(135deg,#ffe08a,#ffd84d)] px-3 py-3 text-center shadow-[0_10px_22px_rgba(255,191,31,0.20)] sm:min-h-[140px] sm:flex-row sm:items-center sm:gap-4 sm:rounded-[26px] sm:px-6 sm:py-5 sm:text-left">
+      <img src="/icons/zzangu.png" className="h-12 w-12 object-contain sm:h-[70px] sm:w-[70px]" />
         <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-bold text-[#b45309] sm:text-[15px]">짱구</div>
-          <div className="mt-0.5 text-[22px] font-black text-[#b45309] sm:mt-1 sm:text-[22px]">
+          <div className="text-[12px] font-bold text-[#b45309] sm:text-[15px]">짱구</div>
+          <div className="mt-0.5 text-[19px] font-black text-[#b45309] sm:mt-1 sm:text-[22px]">
             {formatMoney(userSpendSummary.zzangu)}
           </div>
 
@@ -569,7 +553,7 @@ export default function HomePage() {
           {(zzanguTopCards.length ? zzanguTopCards : [{ label: "-", value: 0 }, { label: "-", value: 0 }]).map((item, idx) => (
             <div
               key={`zzangu-${item.label}-${idx}`}
-              className="flex items-center justify-between rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-bold text-[#b45309] sm:px-3 sm:text-[13px]"
+              className="flex min-w-0 items-center justify-between gap-1 rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-[#b45309] sm:px-3 sm:text-[13px]"
             >
               {(() => {
                 const accountName = item.label ?? "-";
