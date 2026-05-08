@@ -16,6 +16,7 @@ import {
 } from "@/lib/option-icons";
 
 type UploadTab = "manual" | "excel";
+type ExcelCardKind = "자동" | "신용" | "체크";
 
 type TableRow = string[];
 
@@ -424,6 +425,7 @@ export default function UploadPage() {
   });
 
   const [excelUserType, setExcelUserType] = useState("기린");
+  const [excelCardKind, setExcelCardKind] = useState<ExcelCardKind>("자동");
   const [bulkCategory, setBulkCategory] = useState("기타");
   const [draftRows, setDraftRows] = useState<ExcelDraftRow[]>([]);
 
@@ -859,7 +861,22 @@ const openRowEditor = (row: ExcelDraftRow) => {
     cardName: string | null | undefined,
     currentFileName: string | null | undefined
   ) {
-    return normalizeAccountLabel(cardName, currentFileName, detectedPreset);
+    const detectedAccount = normalizeAccountLabel(cardName, currentFileName, detectedPreset);
+
+    if (excelCardKind === "자동") {
+      return detectedAccount;
+    }
+
+    if (!detectedAccount || ["현금", "계좌", "기타"].includes(detectedAccount)) {
+      return detectedAccount;
+    }
+
+    const issuer = detectedAccount
+      .replace(/카드/g, "")
+      .split(/[|·]/)[0]
+      .trim();
+
+    return issuer ? `${issuer} · ${excelCardKind}` : detectedAccount;
   }
 
   function normalizeDuplicateText(value: string | null | undefined) {
@@ -1651,6 +1668,37 @@ const saveSingleManualForm = async () => {
       ))}
     </div>
 
+    <div className="mt-4 hidden rounded-[22px] border border-slate-100 bg-slate-50 p-3 sm:block">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <div className="text-xs font-black text-slate-500">카드 설정</div>
+          <div className="mt-0.5 text-[11px] font-bold text-slate-400">
+            엑셀 카드명이 카드사만 있을 때 신용/체크를 수동 지정해요.
+          </div>
+        </div>
+        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#0f766e] shadow-sm">
+          {excelCardKind}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {(["자동", "신용", "체크"] as ExcelCardKind[]).map((kind) => (
+          <button
+            key={kind}
+            type="button"
+            onClick={() => setExcelCardKind(kind)}
+            className={`h-10 rounded-[16px] text-xs font-black transition ${
+              excelCardKind === kind
+                ? "bg-[#21bdb7] text-white shadow-[0_10px_20px_rgba(33,189,183,0.18)]"
+                : "border border-slate-100 bg-white text-slate-500 hover:bg-[#effffe]"
+            }`}
+          >
+            {kind}
+          </button>
+        ))}
+      </div>
+    </div>
+
     <div className="mt-4 grid grid-cols-2 gap-2">
       <button
         type="button"
@@ -1786,7 +1834,7 @@ const saveSingleManualForm = async () => {
                   </span>
                 </td>
                 <td className="px-3 py-4 text-center align-middle font-bold text-slate-500">
-                  <span className="block whitespace-normal break-words">{normalizeAccountLabel(row.cardName, fileName, detectedPreset) || row.cardName}</span>
+                  <span className="block whitespace-normal break-words">{normalizeUploadAccountType(row.cardName, fileName) || row.cardName}</span>
                 </td>
                 <td className="px-3 py-4 text-right align-middle font-black text-rose-500 tabular-nums">
                   -{Math.abs(Number(row.amount ?? 0)).toLocaleString("ko-KR")}원
