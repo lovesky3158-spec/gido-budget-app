@@ -455,7 +455,7 @@ function IncomeDetailPopover({
   onIncomeDetailChange: (field: keyof IncomeDetail, value: string | IncomeExtraItem[]) => void;
 }) {
   return (
-    <div className="absolute left-1/2 top-[145px] z-[999] w-[calc(100vw-24px)] max-w-[640px] -translate-x-1/2 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_28px_70px_rgba(15,23,42,0.18)] sm:p-5">
+    <div className="absolute left-1/2 top-[145px] z-[999] w-[calc(100vw-24px)] max-w-[680px] -translate-x-1/2 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_28px_70px_rgba(15,23,42,0.18)] sm:p-5">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <div className="text-[18px] font-black tracking-[-0.04em] text-slate-900">
@@ -475,7 +475,7 @@ function IncomeDetailPopover({
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {[
           ["base", "baseNote", "기본금"],
           ["weekend", "weekendNote", "주말수당"],
@@ -484,7 +484,7 @@ function IncomeDetailPopover({
         ].map(([amountField, noteField, label]) => (
           <div
             key={amountField}
-            className="grid grid-cols-1 items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:grid-cols-[90px_140px_minmax(0,1fr)]"
+            className="grid min-w-[520px] grid-cols-[70px_150px_minmax(0,1fr)] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:min-w-0 sm:grid-cols-[90px_140px_minmax(0,1fr)]"
           >
             <div className="text-[13px] font-black text-slate-700">{label}</div>
 
@@ -542,7 +542,7 @@ function IncomeDetailPopover({
         </button>
       </div>
 
-      <div className="mt-2 space-y-2">
+      <div className="mt-2 space-y-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {(incomeDetail.extras ?? []).length === 0 ? (
           <div className="rounded-[14px] bg-slate-50 px-4 py-3 text-[12px] font-semibold text-slate-400 ring-1 ring-slate-100">
             추가 수입 항목이 없어요.
@@ -551,7 +551,7 @@ function IncomeDetailPopover({
           (incomeDetail.extras ?? []).map((extra, idx) => (
             <div
               key={extra.id}
-              className="grid grid-cols-[minmax(0,1fr)_30px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:grid-cols-[110px_120px_minmax(0,1fr)_30px]"
+              className="grid min-w-[560px] grid-cols-[110px_130px_minmax(0,1fr)_30px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:min-w-0 sm:grid-cols-[110px_120px_minmax(0,1fr)_30px]"
             >
               <input
                 type="text"
@@ -1527,6 +1527,7 @@ const jjangguTrend = useMemo(() => {
                     key={i}
                     onMouseEnter={() => setHoverIdx(i)}
                     onMouseLeave={() => setHoverIdx(null)}
+                    onClick={() => setHoverIdx((prev) => (prev === i ? null : i))}
                     className="cursor-pointer"
                   >
                     {/* 실제 보이는 점 */}
@@ -1591,13 +1592,14 @@ const jjangguTrend = useMemo(() => {
                   return (
                     <text
                       key={`month-${item.month}`}
+                      onClick={() => setHoverIdx((prev) => (prev === i ? null : i))}
+                      className="cursor-pointer fill-slate-500 text-[12px] font-black"
                       x={p.x}
                       y={assetChartHeight - 10}
                       textAnchor={
                         i === 0 ? "start" : i === assetPoints.length - 1 ? "end" : "middle"
                       }
-                      className="fill-slate-500 text-[12px] font-black"
-                    >
+                      >
                       {item.label}
                     </text>
                   );

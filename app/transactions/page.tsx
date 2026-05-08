@@ -191,6 +191,7 @@ export default function TransactionsPage() {
   const [monthFilter, setMonthFilter] = useState("");
   const [userFilter, setUserFilter] = useState("all");
   const [accountFilter, setAccountFilter] = useState("all");
+  const [flowFilter, setFlowFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [cardFilter, setCardFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -337,6 +338,7 @@ export default function TransactionsPage() {
       if (selectedDateFilter && parsed?.iso !== selectedDateFilter) return false;
       if (userFilter !== "all" && normalizeUserTag(r.user_type) !== userFilter) return false;
       if (accountFilter !== "all" && getDisplayAccount(r.account_type) !== accountFilter) return false;
+      if (flowFilter !== "all" && typeMeta.flow !== flowFilter) return false;
       if (categoryFilter !== "all" && typeMeta.category !== categoryFilter) return false;
       if (cardFilter !== "all" && cardLabel !== cardFilter) return false;
 
@@ -359,7 +361,7 @@ export default function TransactionsPage() {
 
       return true;
     });
-  }, [rows, monthFilter, userFilter, accountFilter, categoryFilter, cardFilter, search, selectedDateFilter]);
+  }, [rows, monthFilter, userFilter, accountFilter, flowFilter, categoryFilter, cardFilter, search, selectedDateFilter]);
 
   const groupedRows = useMemo(() => {
     const map = new Map<string, TransactionRow[]>();
@@ -530,6 +532,7 @@ export default function TransactionsPage() {
   const activeFilterCount = [
     userFilter !== "all",
     cardFilter !== "all",
+    flowFilter !== "all",
     categoryFilter !== "all",
     Boolean(search.trim()),
     Boolean(selectedDateFilter),
@@ -538,6 +541,7 @@ export default function TransactionsPage() {
   const filterSummary = [
     userFilter !== "all" ? userFilter : null,
     cardFilter !== "all" ? cardFilter : null,
+    flowFilter !== "all" ? flowFilter : null,
     categoryFilter !== "all" ? categoryFilter : null,
     selectedDateFilter ? "날짜" : null,
     search.trim() ? "검색" : null,
@@ -547,6 +551,7 @@ export default function TransactionsPage() {
     setUserFilter("all");
     setAccountFilter("all");
     setCardFilter("all");
+    setFlowFilter("all");
     setCategoryFilter("all");
     setSearch("");
     setSelectedDateFilter(null);
@@ -855,14 +860,34 @@ export default function TransactionsPage() {
           </div>
 
           <div>
+            <div className="mb-1.5 text-[11px] font-black text-slate-400">수입/지출</div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {["all", "수입", "지출"].map((flow) => (
+                <button
+                  key={flow}
+                  type="button"
+                  onClick={() => setFlowFilter(flow)}
+                  className={`h-9 rounded-full px-3 text-[11px] font-black transition ${
+                    flowFilter === flow
+                      ? "bg-[#21bdb7] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {flow === "all" ? "전체" : flow}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {categoryOptions.map((category) => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => setCategoryFilter(category)}
-                  className={`rounded-full px-3 py-2 text-[11px] font-black transition ${
+                  className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
                     categoryFilter === category
                       ? "bg-[#21bdb7] text-white shadow-sm"
                       : "bg-slate-100 text-slate-500"
@@ -1300,7 +1325,7 @@ export default function TransactionsPage() {
                     type="date"
                     value={editing.tx_date}
                     onChange={(e) => handleEditChange("tx_date", e.target.value)}
-                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
+                    className="h-11 w-full min-w-0 max-w-full appearance-none rounded-[16px] border border-slate-200 bg-slate-50 px-3 text-[13px] font-bold text-slate-700 outline-none focus:border-[#21bdb7] sm:h-12 sm:rounded-[18px] sm:text-sm"
                   />
                 </Field>
 

@@ -175,9 +175,9 @@ function SectionCard({
 }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-6">
-      <div className="mb-5">
+      <div className="mb-3 sm:mb-5">
         <div className="text-[20px] font-black tracking-[-0.04em] text-[#2a2112]">{title}</div>
-        {sub ? <div className="mt-1 text-[13px] font-semibold text-slate-500">{sub}</div> : null}
+        {sub ? <div className="mt-0.5 text-[13px] font-semibold text-slate-500 sm:mt-1">{sub}</div> : null}
       </div>
       {children}
     </div>
@@ -1315,13 +1315,13 @@ accountSummary.map((item) => {
                             <div
                               key={row.id}
                               className={[
-                                "w-full rounded-[18px] px-3 py-2 text-left transition sm:rounded-[20px] sm:px-4 sm:py-2.5",
+                                "w-full rounded-[18px] px-3 py-1.5 text-left transition sm:rounded-[20px] sm:px-4 sm:py-2.5",
                                 index === 0
                                   ? "bg-[linear-gradient(135deg,#f8fafc,#f1f5f9)] ring-1 ring-slate-200"
                                   : "bg-slate-50",
                               ].join(" ")}
                             >
-                              <div className="space-y-1.5">
+                              <div className="space-y-1">
                                 <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                                   <div className="flex min-w-0 items-center gap-2">
                                     <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">
@@ -1342,7 +1342,7 @@ accountSummary.map((item) => {
                                   </div>
                                 </div>
 
-                                <div className="flex min-w-0 flex-wrap items-center gap-1.5 pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                                <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
                                   <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
                                   <span className={`inline-flex max-w-[92px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:max-w-none ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
                                     {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
