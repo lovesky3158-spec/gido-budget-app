@@ -37,9 +37,10 @@ export type ParsedKbRow = {
   tx_date: string;
   description: string;
   category: string;
-  amount: number | null;
+  amount: number;
   cardName: string;
-  selected: boolean;
+  selected?: boolean;
+  flowType?: "수입" | "지출";
 };
 
 const COLUMN_HINTS: Record<MappingKey, string[]> = {
@@ -925,8 +926,13 @@ export function parseKbRowsDirect(
           ? (principal ?? 0) + (fee ?? 0)
           : (useAmount ?? 0);
 
-      if (lastMain.amount === null) lastMain.amount = delta || null;
-      else lastMain.amount += delta;
+        if (!lastMain) continue;
+
+        if (lastMain.amount == null) {
+        lastMain.amount = delta || 0;
+        } else {
+        lastMain.amount += delta;
+        }
 
       continue;
     }

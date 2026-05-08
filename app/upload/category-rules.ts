@@ -26,7 +26,7 @@ const CATEGORY_RULES: CategoryRule[] = [
   },
   {
     category: "카페",
-    strong: ["스타벅스", "투썸플레이스", "메가커피", "빽다방", "이디야", "할리스"],
+    strong: ["스타벅스", "투썸플레이스", "메가커피", "빽다방", "이디야", "할리스", "메가MGC"],
     weak: ["커피", "카페", "베이커리"],
     exclude: [],
   },
@@ -76,6 +76,13 @@ const CATEGORY_RULES: CategoryRule[] = [
     category: "주거",
     strong: ["관리비", "월세", "전세", "도시가스", "전기요금", "수도요금", "통신요금"],
     weak: ["가스", "전기", "수도", "통신", "인터넷"],
+    exclude: [],
+  },
+
+    {
+    category: "편의점",
+    strong: ["CU", "씨유", "GS", "지에스", "seveneleven", "세븐일레븐"],
+    weak: ["편의점"],
     exclude: [],
   },
 ];
