@@ -820,7 +820,7 @@ export default function TransactionsPage() {
                   ) : (
                     <span>{user.icon}</span>
                   )}
-                  {user.label}
+                  <span>{user.label}</span>
                 </button>
               ))}
             </div>
@@ -828,19 +828,27 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
-            <div className="flex flex-wrap gap-1.5">
-              {paymentOptions.map((payment) => (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                type="button"
+                onClick={() => setCardFilter("all")}
+                className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                  cardFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                💳 전체
+              </button>
+              {cardOptions.map((card) => (
                 <button
-                  key={payment}
+                  key={card}
                   type="button"
-                  onClick={() => setPaymentFilter(payment)}
-                  className={`rounded-full px-3 py-2 text-[11px] font-black transition ${
-                    paymentFilter === payment
-                      ? "bg-[#21bdb7] text-white shadow-sm"
-                      : "bg-slate-100 text-slate-500"
+                  onClick={() => setCardFilter(card)}
+                  className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                    cardFilter === card ? "bg-[#21bdb7] text-white" : "bg-[#effffe] text-[#0f766e]"
                   }`}
                 >
-                  {payment === "all" ? "전체" : payment}
+                  {renderIcon("accounts", card, "h-4 w-4 object-contain")}
+                  {card}
                 </button>
               ))}
             </div>
