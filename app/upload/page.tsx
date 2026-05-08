@@ -824,6 +824,7 @@ useEffect(() => {
         return {
           ...row,
           category: bulkCategory,
+          selected: false,
         };
       })
     );
