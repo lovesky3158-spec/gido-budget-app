@@ -22,7 +22,7 @@ import {
 } from "@/lib/option-icons";
 
 
-const DEFAULT_WIFE_MESSAGE = "럭키비키야 엄마아빠 부자되볼게!";
+const DEFAULT_WIFE_MESSAGE = "럭키비키야 엄마아빠 돈열심히 모아서 부자될게!! 빵빵이도~~ 💛";
 
 
 

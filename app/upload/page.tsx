@@ -496,10 +496,32 @@ export default function UploadPage() {
   }, [users, excelUserType]);
 
   useEffect(() => {
-    if (categories.length > 0 && !categories.includes(bulkCategory)) {
-      setBulkCategory(categories[0]);
-    }
-  }, [categories, bulkCategory]);
+    let mounted = true;
+
+    const syncCategoryMemoryFromDb = async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("description,type")
+        .not("description", "is", null)
+        .limit(1000);
+
+      if (!mounted || error || !data) return;
+
+      data.forEach((tx) => {
+        const description = String(tx.description ?? "").trim();
+        const [, category = ""] = String(tx.type ?? "").split("/");
+        if (description && category) {
+          setCategoryMemory(description, category.trim());
+        }
+      });
+    };
+
+    syncCategoryMemoryFromDb();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const selectedCount = useMemo(
     () => draftRows.filter((row) => row.selected).length,
@@ -1044,6 +1066,10 @@ async function buildPrevInstallmentMap() {
         setError(`저장 실패: ${insertError.message}`);
         return;
       }
+
+      selectedData.forEach((row) => {
+        setCategoryMemory(row.description, row.category || "기타");
+      });
 
       setSuccess(
         duplicateCount > 0
