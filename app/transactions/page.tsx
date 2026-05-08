@@ -736,67 +736,58 @@ export default function TransactionsPage() {
     </button>
   </div>
 </div>
-<div className="mx-auto max-w-6xl px-4 pt-2 sm:hidden">
-  <div className="rounded-[18px] border border-slate-200 bg-white px-3 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
-    <div className="mb-1.5 flex items-center justify-between">
-      <span className="text-[11px] font-black text-slate-500">이번달 요약</span>
-      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-black text-slate-500">{filtered.length}건</span>
-    </div>
-    <div className="grid grid-cols-2 gap-1.5">
-      <div className="flex min-w-0 items-center justify-between gap-2 rounded-[14px] bg-rose-50 px-2.5 py-1.5">
-        <span className="shrink-0 text-[10px] font-black text-rose-500">지출</span>
-        <span className="min-w-0 truncate text-right text-[13px] font-black tracking-[-0.04em] text-rose-500">{formatCompactWon(totalExpense)}원</span>
-      </div>
-      <div className="flex min-w-0 items-center justify-between gap-2 rounded-[14px] bg-sky-50 px-2.5 py-1.5">
-        <span className="shrink-0 text-[10px] font-black text-sky-600">순흐름</span>
-        <span className={`min-w-0 truncate text-right text-[13px] font-black tracking-[-0.04em] ${total >= 0 ? "text-sky-600" : "text-rose-500"}`}>{formatCompactWon(total)}원</span>
-      </div>
-    </div>
-  </div>
-</div>
 <div className="border-b border-slate-100 bg-white">
   <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6 sm:py-4">
     <div className="flex items-center gap-2">
+      <div className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[16px] border border-slate-200 bg-slate-50 px-3 shadow-sm sm:h-10 sm:rounded-full sm:px-4">
+        <span className="text-sm text-slate-400">🔍</span>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="거래 검색"
+          className="w-full min-w-0 flex-1 bg-transparent text-[12px] font-bold text-slate-700 outline-none placeholder:text-slate-300 sm:text-sm"
+        />
+      </div>
+
       <button
         type="button"
         onClick={() => {
           setShowFilterSheet((v) => !v);
           setOpenFilterPanel(null);
         }}
-        className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#21bdb7] px-3 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(33,189,183,0.22)] sm:h-10 sm:px-4 sm:text-sm"
+        className="flex h-10 shrink-0 items-center gap-1.5 rounded-[16px] border border-slate-200 bg-white px-3 text-[11px] font-black text-slate-700 shadow-sm sm:rounded-full sm:px-4 sm:text-sm"
       >
         <span>☰</span>
         <span>필터</span>
         {activeFilterCount > 0 ? (
-          <span className="ml-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] text-[#0f766e]">
+          <span className="ml-0.5 rounded-full bg-[#21bdb7] px-1.5 py-0.5 text-[9px] text-white">
             {activeFilterCount}
           </span>
         ) : null}
       </button>
 
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
-        <span className="truncate text-[11px] font-extrabold text-slate-500 sm:text-sm">
-          {filterSummary || "전체 조건"}
-        </span>
-      </div>
-
       <button
         type="button"
         onClick={resetFilters}
-        className="flex h-9 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm sm:h-10 sm:text-sm"
+        className="hidden h-10 shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 text-[10px] font-black text-slate-500 shadow-sm sm:flex sm:text-sm"
       >
         초기화
       </button>
     </div>
 
-    <div className="mt-2 flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 shadow-sm sm:h-10 sm:px-4">
-      <span className="text-sm text-slate-400">🔍</span>
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="거래명 검색"
-        className="w-full min-w-0 flex-1 bg-transparent text-[12px] font-bold text-slate-600 outline-none placeholder:text-slate-300 sm:text-sm"
-      />
+    <div className="mt-1.5 flex items-center justify-between gap-2 sm:mt-2">
+      <span className="min-w-0 truncate text-[10px] font-extrabold text-slate-400 sm:text-sm">
+        {filterSummary || "전체 조건"}
+      </span>
+      {activeFilterCount > 0 ? (
+        <button
+          type="button"
+          onClick={resetFilters}
+          className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-black text-slate-500 sm:hidden"
+        >
+          초기화
+        </button>
+      ) : null}
     </div>
 
     {showFilterSheet ? (
@@ -829,7 +820,7 @@ export default function TransactionsPage() {
                   ) : (
                     <span>{user.icon}</span>
                   )}
-                  <span>{user.label}</span>
+                  {user.label}
                 </button>
               ))}
             </div>
@@ -837,27 +828,19 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
-            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <button
-                type="button"
-                onClick={() => setCardFilter("all")}
-                className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
-                  cardFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
-                }`}
-              >
-                💳 전체
-              </button>
-              {cardOptions.map((card) => (
+            <div className="flex flex-wrap gap-1.5">
+              {paymentOptions.map((payment) => (
                 <button
-                  key={card}
+                  key={payment}
                   type="button"
-                  onClick={() => setCardFilter(card)}
-                  className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
-                    cardFilter === card ? "bg-[#21bdb7] text-white" : "bg-[#effffe] text-[#0f766e]"
+                  onClick={() => setPaymentFilter(payment)}
+                  className={`rounded-full px-3 py-2 text-[11px] font-black transition ${
+                    paymentFilter === payment
+                      ? "bg-[#21bdb7] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  {renderIcon("accounts", card, "h-4 w-4 object-contain")}
-                  {card}
+                  {payment === "all" ? "전체" : payment}
                 </button>
               ))}
             </div>
@@ -865,26 +848,19 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
-            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <button
-                type="button"
-                onClick={() => setCategoryFilter("all")}
-                className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
-                  categoryFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
-                }`}
-              >
-                전체
-              </button>
+            <div className="flex flex-wrap gap-1.5">
               {categoryOptions.map((category) => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => setCategoryFilter(category)}
-                  className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
-                    categoryFilter === category ? "bg-[#21bdb7] text-white" : "bg-[#fff7d6] text-[#8a5b00]"
+                  className={`rounded-full px-3 py-2 text-[11px] font-black transition ${
+                    categoryFilter === category
+                      ? "bg-[#21bdb7] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  {category}
+                  {category === "all" ? "전체" : category}
                 </button>
               ))}
             </div>
@@ -894,7 +870,7 @@ export default function TransactionsPage() {
             <button
               type="button"
               onClick={() => setSelectedDateFilter(null)}
-              className="h-9 rounded-full bg-rose-50 px-3 text-[11px] font-black text-rose-500"
+              className="rounded-full bg-rose-50 px-4 py-2 text-[11px] font-black text-rose-500"
             >
               날짜 필터 해제 · {selectedDateFilter}
             </button>
@@ -905,6 +881,29 @@ export default function TransactionsPage() {
   </div>
 </div>
 
+<div className="mx-auto max-w-6xl px-4 pt-3 sm:hidden">
+  <div className="rounded-[22px] border border-slate-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+    <div className="grid grid-cols-3 divide-x divide-slate-100">
+      <div className="min-w-0 pr-3">
+        <div className="text-[10px] font-black text-slate-400">수입</div>
+        <div className="mt-1 truncate text-[15px] font-black tracking-[-0.05em] text-sky-600">+{formatCompactWon(totalIncome)}원</div>
+        <div className="mt-1 text-[9px] font-black text-slate-300">총 입금</div>
+      </div>
+      <div className="min-w-0 px-3">
+        <div className="text-[10px] font-black text-slate-400">지출</div>
+        <div className="mt-1 truncate text-[15px] font-black tracking-[-0.05em] text-rose-500">-{formatCompactWon(totalExpense)}원</div>
+        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-full rounded-full bg-rose-300" style={{ width: `${Math.min(100, Math.round((totalExpense / Math.max(totalIncome, totalExpense, 1)) * 100))}%` }} />
+        </div>
+      </div>
+      <div className="min-w-0 pl-3">
+        <div className="text-[10px] font-black text-slate-400">순흐름</div>
+        <div className={`mt-1 truncate text-[15px] font-black tracking-[-0.05em] ${total >= 0 ? "text-[#0faaa4]" : "text-rose-500"}`}>{total >= 0 ? "+" : "-"}{formatCompactWon(Math.abs(total))}원</div>
+        <div className="mt-1 text-[9px] font-black text-slate-300">수입 - 지출</div>
+      </div>
+    </div>
+  </div>
+</div>
 <main className="bg-[#f6fbfb] px-3 pt-4 sm:px-6 sm:pt-8">
         {errorMessage ? (
           <div className="mb-5 rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-600">
