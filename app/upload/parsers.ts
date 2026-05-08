@@ -13,7 +13,7 @@ type MappingKey =
 
 type MappingState = Record<MappingKey, string>;
 
-type ExcelDraftRow = {
+export type ExcelDraftRow = {
   id: string;
   tx_date: string;
   description: string;
@@ -32,16 +32,6 @@ type BuildDraftRowsParams = {
   makeId: (prefix: string) => string;
 };
 
-export type ParsedKbRow = {
-  id: string;
-  tx_date: string;
-  description: string;
-  category: string;
-  amount: number;
-  cardName: string;
-  selected?: boolean;
-  flowType?: "수입" | "지출";
-};
 
 const COLUMN_HINTS: Record<MappingKey, string[]> = {
   date: ["날짜", "거래일", "거래일자", "사용일", "승인일", "이용일자", "일자", "date"],
@@ -881,7 +871,7 @@ function isKbSummaryRowText(text: string) {
 export function parseKbRowsDirect(
   cleaned: string[][],
   makeId: (prefix: string) => string
-): ParsedKbRow[] {
+): ExcelDraftRow[] {
   const pair = findKbHeaderPair(cleaned);
   if (!pair) return [];
 
@@ -889,8 +879,8 @@ export function parseKbRowsDirect(
   const cols = buildKbColumnIndexes(top, sub);
   const rows = cleaned.slice(topIndex + 2);
 
-  const result: ParsedKbRow[] = [];
-  let lastMain: ParsedKbRow | null = null;
+const result: ExcelDraftRow[] = [];
+let lastMain: ExcelDraftRow | null = null;
 
   for (const row of rows) {
     const rowText = row.join(" ").trim();
@@ -954,7 +944,7 @@ export function parseKbRowsDirect(
 
     if (amount === null) continue;
 
-    const item: ParsedKbRow = {
+    const item: ExcelDraftRow = {
       id: makeId("excel"),
       tx_date: date,
       description: desc,

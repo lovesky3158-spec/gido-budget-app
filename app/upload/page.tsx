@@ -1023,30 +1023,31 @@ async function buildPrevInstallmentMap() {
 
   const prevMap = await buildPrevInstallmentMap();
 
-  const payload: TransactionInsertRow[] = selectedData.map((row) => {
-    const rawAmount = Math.abs(Number(row.amount ?? 0));
-    // 엑셀 카드내역은 금액이 양수로 들어와도 기본은 지출입니다.
-    // 행 수정 팝업에서 수입으로 바꾼 경우에만 수입으로 저장합니다.
-    const flowType = row.flowType ?? "지출";
-    const finalAmount = flowType === "수입" ? rawAmount : -rawAmount;
-    const memoMeta = buildUploadMeta(row);
+const payload: TransactionInsertRow[] = selectedData.map((row) => {
+  const rawAmount = Math.abs(Number(row.amount ?? 0));
 
-    return {
-      tx_date: row.tx_date || null,
-      description: row.description || null,
-      type: `${flowType}/${row.category || "기타"}`,
-      amount: finalAmount,
-      balance: null,
-      user_type: normalizeUserTag(excelUserType),
-      account_type: normalizeUploadAccountType(row.cardName, fileName),
-      source_file: fileName || null,
-      memo: memoMeta.memo,
-      is_fixed: memoMeta.is_fixed,
-      installment_total: memoMeta.installment_total,
-      installment_current: memoMeta.installment_current,
-      installment_key: memoMeta.installment_key,
-    };
-  });
+  // 엑셀 카드내역 업로드는 기본적으로 카드 사용내역이므로 무조건 지출로 저장합니다.
+  // 수입 등록은 수동등록 화면에서만 처리합니다.
+  const flowType: "지출" = "지출";
+  const finalAmount = -rawAmount;
+  const memoMeta = buildUploadMeta(row);
+
+  return {
+    tx_date: row.tx_date || null,
+    description: row.description || null,
+    type: `${flowType}/${row.category || "기타"}`,
+    amount: finalAmount,
+    balance: null,
+    user_type: normalizeUserTag(excelUserType),
+    account_type: normalizeUploadAccountType(row.cardName, fileName),
+    source_file: fileName || null,
+    memo: memoMeta.memo,
+    is_fixed: memoMeta.is_fixed,
+    installment_total: memoMeta.installment_total,
+    installment_current: memoMeta.installment_current,
+    installment_key: memoMeta.installment_key,
+  };
+});
 
     try {
       setIsSaving(true);
