@@ -17,6 +17,7 @@ import {
 
 type UploadTab = "manual" | "excel";
 type ExcelCardKind = "자동" | "신용" | "체크";
+type ExcelAccountChoice = "자동" | string;
 
 type TableRow = string[];
 
@@ -426,6 +427,7 @@ export default function UploadPage() {
 
   const [excelUserType, setExcelUserType] = useState("기린");
   const [excelCardKind, setExcelCardKind] = useState<ExcelCardKind>("자동");
+  const [excelAccountChoice, setExcelAccountChoice] = useState<ExcelAccountChoice>("자동");
   const [bulkCategory, setBulkCategory] = useState("기타");
   const [draftRows, setDraftRows] = useState<ExcelDraftRow[]>([]);
 
@@ -863,6 +865,10 @@ const openRowEditor = (row: ExcelDraftRow) => {
   ) {
     const detectedAccount = normalizeAccountLabel(cardName, currentFileName, detectedPreset);
 
+    if (excelAccountChoice !== "자동") {
+      return normalizeAccountLabel(excelAccountChoice) || excelAccountChoice;
+    }
+
     if (excelCardKind === "자동") {
       return detectedAccount;
     }
@@ -1285,6 +1291,18 @@ const saveSingleManualForm = async () => {
     setOptionIcons(next);
     saveOptionIcons(next);
   };
+
+  const excelAccountChoices = useMemo(() => {
+    const cardAccounts = accounts.filter((account) => {
+      const normalized = String(account ?? "").trim();
+      if (!normalized) return false;
+      if (["현금", "계좌", "기타"].includes(normalized)) return false;
+      return normalized.includes("신용") || normalized.includes("체크") || normalized.includes("법인") || normalized.includes("카드");
+    });
+
+    return ["자동", ...cardAccounts];
+  }, [accounts]);
+
   const presetLabel =
     detectedPreset === "kbcard"
       ? "국민카드 프리셋"
@@ -1669,33 +1687,52 @@ const saveSingleManualForm = async () => {
     </div>
 
     <div className="mt-4 hidden rounded-[22px] border border-slate-100 bg-slate-50 p-3 sm:block">
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <div>
           <div className="text-xs font-black text-slate-500">카드 설정</div>
           <div className="mt-0.5 text-[11px] font-bold text-slate-400">
-            엑셀 카드명이 카드사만 있을 때 신용/체크를 수동 지정해요.
+            프리셋 카드로 강제 등록하거나, 카드사만 자동 감지 후 신용/체크만 보정해요.
           </div>
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#0f766e] shadow-sm">
-          {excelCardKind}
+        <span className="max-w-[170px] truncate rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#0f766e] shadow-sm">
+          {excelAccountChoice !== "자동" ? excelAccountChoice : excelCardKind}
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        {(["자동", "신용", "체크"] as ExcelCardKind[]).map((kind) => (
-          <button
-            key={kind}
-            type="button"
-            onClick={() => setExcelCardKind(kind)}
-            className={`h-10 rounded-[16px] text-xs font-black transition ${
-              excelCardKind === kind
-                ? "bg-[#21bdb7] text-white shadow-[0_10px_20px_rgba(33,189,183,0.18)]"
-                : "border border-slate-100 bg-white text-slate-500 hover:bg-[#effffe]"
-            }`}
-          >
-            {kind}
-          </button>
-        ))}
+      <div className="mb-3">
+        <label className="mb-1.5 block text-[11px] font-black text-slate-400">등록 카드</label>
+        <select
+          value={excelAccountChoice}
+          onChange={(e) => setExcelAccountChoice(e.target.value)}
+          className="app-input-soft h-11 w-full rounded-[16px] px-3 text-sm font-black"
+        >
+          {excelAccountChoices.map((account) => (
+            <option key={account} value={account}>
+              {account === "자동" ? "자동 매핑" : account}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <div className="mb-1.5 text-[11px] font-black text-slate-400">카드구분 보정</div>
+        <div className="grid grid-cols-3 gap-2">
+          {(["자동", "신용", "체크"] as ExcelCardKind[]).map((kind) => (
+            <button
+              key={kind}
+              type="button"
+              onClick={() => setExcelCardKind(kind)}
+              disabled={excelAccountChoice !== "자동"}
+              className={`h-10 rounded-[16px] text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-45 ${
+                excelCardKind === kind && excelAccountChoice === "자동"
+                  ? "bg-[#21bdb7] text-white shadow-[0_10px_20px_rgba(33,189,183,0.18)]"
+                  : "border border-slate-100 bg-white text-slate-500 hover:bg-[#effffe]"
+              }`}
+            >
+              {kind}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
 
