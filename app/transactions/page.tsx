@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { TransactionList, type CommonTransactionRow } from "@/components/common/TransactionList";
 import { normalizeAccountLabel, normalizeUserTag } from "@/lib/finance-labels";
 import {
   formatSignedMoney,
@@ -1091,125 +1092,16 @@ export default function TransactionsPage() {
               표시할 거래내역이 없습니다.
             </div>
           ) : (
-            <div className="space-y-6 pb-8">
-              {groupedRows.map((group) => (
-                <section key={group.date}>
-                  <div className="mb-2 grid grid-cols-[1fr_auto] items-center gap-3 px-1">
-                    <div className="text-[15px] font-extrabold text-slate-700">{group.date}</div>
-                      <div className="flex items-center justify-end gap-2 text-right">
-                        <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-400">
-                          일 합계
-                        </span>
-<span className="text-xs font-black text-slate-400">
-  {formatSignedAmount(group.total)}
-</span>
-                      </div>
-                  </div>
-
-                  <div className="space-y-2.5">
-                    {group.items.map((item) => {
-                      const typeMeta = splitType(item.type);
-                      const rawAmount = Number(item.amount ?? 0);
-                      const amount =
-                        (typeMeta.flow === "지출" || (item.type ?? "").startsWith("지출/")) && rawAmount > 0
-                          ? -rawAmount
-                          : rawAmount;
-                      const displayAccount = getDisplayAccount(item.account_type);
-
-                      return (
-<div
-  key={item.id}
-  role="button"
-  tabIndex={0}
-  onClick={() => openEdit(item)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" || e.key === " ") openEdit(item);
-  }}
-  className={`relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-[#d8f3f1] bg-white px-3.5 py-3 pl-11 text-left shadow-sm transition active:scale-[0.99] hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 sm:pl-14 ${
-    amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
-  }`}
->
-  <button
-    type="button"
-    onClick={(e) => {
-      e.stopPropagation();
-      toggleSelected(item.id);
-    }}
-    className={`absolute left-3 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border text-[12px] font-black transition sm:left-5 sm:h-7 sm:w-7 ${
-      selectedIdSet.has(String(item.id))
-        ? "border-[#21bdb7] bg-[#21bdb7] text-white shadow-sm"
-        : "border-slate-200 bg-white text-transparent hover:border-[#21bdb7]"
-    }`}
-    aria-label="거래 선택"
-  >
-    ✓
-  </button>
-
-  <div className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
-    <div className="hidden row-span-2 flex-col items-stretch justify-center gap-1 sm:flex">
-      <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
-        {typeMeta.flow || "미분류"}
-      </span>
-      <span className={`truncate rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>
-        {typeMeta.category || "기타"}
-      </span>
-    </div>
-
-    <div className="min-w-0">
-      <div className="mb-1 flex items-center gap-1.5 sm:hidden">
-        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>{typeMeta.flow || "미분류"}</span>
-        <span className={`truncate rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>{typeMeta.category || "기타"}</span>
-      </div>
-      <div className="truncate text-[15px] font-black text-slate-800 sm:text-[16px]">
-        {item.description || "-"}
-      </div>
-    </div>
-
-    <div className="min-w-[82px] text-right sm:min-w-[90px]">
-      <div
-        className={`whitespace-nowrap text-[14px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${
-          amount < 0 ? "text-rose-500" : "text-sky-500"
-        }`}
-      >
-        {formatSignedAmount(amount)}
-      </div>
-    </div>
-
-    <div className="col-start-1 col-end-3 flex min-w-0 flex-wrap items-center gap-1.5 sm:col-start-2 sm:col-end-4">
-      <span className="rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">
-        {parseShortDate(item.tx_date)?.display ?? item.tx_date ?? "-"}
-      </span>
-
-      {(() => {
-        const userName = normalizeUserTag(item.user_type) || "미지정";
-
-        const userTone = userName === "기린"
-          ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]"
-          : userName === "짱구"
-            ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]"
-            : "border-slate-100 bg-[#f7fbfb] text-slate-500";
-
-        return (
-          <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${userTone}`}>
-            {renderIcon("users", userName, "h-3.5 w-3.5 object-contain")}
-            {userName}
-          </span>
-        );
-      })()}
-
-      <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
-        {renderIcon("accounts", displayAccount, "h-3.5 w-3.5 object-contain")}
-        {displayAccount}
-      </span>
-    </div>
-  </div>
-</div>
-
-                      );
-                    })}
-                  </div>
-                </section>
-              ))}
+            <div className="pb-8">
+              <TransactionList
+                rows={filtered as CommonTransactionRow[]}
+                groupByDate
+                showMemo
+                selectedIds={selectedIds}
+                onToggleSelected={toggleSelected}
+                onRowClick={(row) => openEdit(row as TransactionRow)}
+                optionIcons={optionIcons}
+              />
             </div>
           )}
         </div>

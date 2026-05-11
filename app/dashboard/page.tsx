@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { TransactionList, type CommonTransactionRow } from "@/components/common/TransactionList";
 import {
   normalizeAccountLabel,
   normalizeUserTag,
@@ -34,6 +35,7 @@ type TransactionRow = {
   user_type: string | null;
   account_type: string | null;
   source_file?: string | null;
+  memo?: string | null;
   created_at?: string | null;
 };
 
@@ -220,6 +222,7 @@ export default function DashboardPage() {
   const [cardFilter, setCardFilter] = useState("all");
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [detailCategory, setDetailCategory] = useState<string | null>(null);
   const [budgetMap, setBudgetMap] = useState<Record<string, number>>({});
   const [budgetLoaded, setBudgetLoaded] = useState(false);
   const expensePathRef = useRef<SVGPathElement | null>(null);
@@ -443,6 +446,14 @@ export default function DashboardPage() {
       .sort((a, b) => Math.abs(getNormalizedAmount(b)) - Math.abs(getNormalizedAmount(a)))
       .slice(0, 7);
   }, [expenseRows, activeCategory]);
+
+  const reportDetailRows = useMemo(() => {
+    if (!detailCategory) return [];
+
+    return expenseRows
+      .filter((row) => (splitType(row.type).category || "기타") === detailCategory)
+      .sort((a, b) => Math.abs(getNormalizedAmount(b)) - Math.abs(getNormalizedAmount(a)));
+  }, [expenseRows, detailCategory]);
 
   const recurringCandidates = useMemo(() => {
     const map = new Map<
@@ -1318,69 +1329,15 @@ accountSummary.map((item) => {
                 title={activeCategory ? `${activeCategory} TOP 7` : "소비별 TOP 7"}
                 sub={activeCategory ? "선택한 카테고리 내 상위 지출" : "선택 조건 기준으로 금액이 큰 지출"}
               >
-                <div className="space-y-3">
-                  {bigExpenseRows.length === 0 ? (
-                    <div className="rounded-[22px] bg-slate-50 px-4 py-4 text-sm font-bold text-slate-500">
-                      지출 데이터가 없습니다.
-                    </div>
-                  ) : (
-                        bigExpenseRows.slice(0, 7).map((row, index) => {
-                          const amount = Math.abs(getNormalizedAmount(row));
-                          const percentOfGroup = totalExpense > 0 ? Math.round((amount / totalExpense) * 100) : 0;
-                          const userName = normalizeUserTag(row.user_type) || "미지정";
-                          const userIcon = resolveOptionIcon("users", userName, optionIcons);
-
-                          const accountName = normalizeAccountLabel(row.account_type) || "미지정";
-                          const accountIcon = resolveOptionIcon("accounts", accountName, optionIcons);
-
-                          return (
-                            <div
-                              key={row.id}
-                              className={[
-                                "w-full rounded-[18px] px-3 py-1.5 text-left transition sm:rounded-[20px] sm:px-4 sm:py-2.5",
-                                index === 0
-                                  ? "bg-[linear-gradient(135deg,#f8fafc,#f1f5f9)] ring-1 ring-slate-200"
-                                  : "bg-slate-50",
-                              ].join(" ")}
-                            >
-                              <div className="space-y-1">
-                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-                                  <div className="flex min-w-0 items-center gap-2">
-                                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">
-                                      TOP {index + 1}
-                                    </span>
-                                    <span className="min-w-0 truncate text-[13px] font-black leading-tight text-[#2a2112] sm:text-[15px]">
-                                      {row.description || "-"}
-                                    </span>
-                                  </div>
-
-                                  <div className="shrink-0 whitespace-nowrap text-right text-[15px] font-black text-rose-600 sm:text-[18px]">
-                                    -{formatAbsMoney(amount)}
-                                  </div>
-                                </div>
-
-                                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-                                  <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden pr-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
-                                    <span className="shrink-0">{parseDateMeta(row.tx_date)?.display ?? row.tx_date ?? "-"}</span>
-                                    <span className={`inline-flex max-w-[92px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:max-w-none ${userName === "기린" ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]" : userName === "짱구" ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]" : "border-slate-100 bg-white text-slate-500"}`}>
-                                      {userIcon && isImageIcon(userIcon) ? <img src={userIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
-                                      <span className="truncate">{userName}</span>
-                                    </span>
-                                    <span className="inline-flex max-w-[104px] items-center gap-1 rounded-full border border-slate-100 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-500 sm:max-w-none">
-                                      {accountIcon && isImageIcon(accountIcon) ? <img src={accountIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" /> : null}
-                                      <span className="truncate">{accountName}</span>
-                                    </span>
-                                  </div>
-
-                                  <div className="shrink-0 whitespace-nowrap text-right text-[10px] font-black text-[#0f766e] sm:text-[11px]">
-                                    점유율 {percentOfGroup}%
-                                  </div>
-                                </div>
-                              </div>                            </div>
-                          );
-                        })                  
-                  )}
-                </div>
+                <TransactionList
+                  rows={bigExpenseRows as CommonTransactionRow[]}
+                  compact
+                  showRank
+                  showMemo
+                  optionIcons={optionIcons}
+                  emptyText="지출 데이터가 없습니다."
+                  onRowClick={(row) => setDetailCategory(splitType(row.type).category || "기타")}
+                />
               </SectionCard>
               <div className="xl:col-span-2">
 <SectionCard
@@ -1465,6 +1422,52 @@ accountSummary.map((item) => {
           </section>
         </>
       )}
+
+      {detailCategory ? (
+        <div
+          className="fixed inset-0 z-[99999] flex items-end justify-center bg-slate-950/45 px-3 pb-3 pt-10 backdrop-blur-sm sm:items-center sm:py-6"
+          onMouseDown={() => setDetailCategory(null)}
+        >
+          <div
+            className="max-h-[88vh] w-full max-w-3xl overflow-hidden rounded-[28px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)] sm:rounded-[34px]"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-5 sm:px-7">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="inline-flex rounded-full bg-[#d8f3f1] px-3 py-1 text-[11px] font-black text-[#0f766e]">
+                    REPORT DETAIL
+                  </div>
+                  <h2 className="mt-2 truncate text-xl font-black tracking-[-0.04em] text-slate-800 sm:text-2xl">
+                    {detailCategory} 상세내역
+                  </h2>
+                  <p className="mt-1 text-xs font-bold text-slate-400">
+                    현재 리포트 필터 기준 · 메모 포함
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setDetailCategory(null)}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-lg font-black text-slate-400 shadow-sm transition hover:bg-slate-50 hover:text-slate-600"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div className="max-h-[64vh] overflow-y-auto bg-[#f8fffe] px-3 py-4 sm:px-5">
+              <TransactionList
+                rows={reportDetailRows as CommonTransactionRow[]}
+                groupByDate
+                showMemo
+                optionIcons={optionIcons}
+                emptyText="상세내역이 없습니다."
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
