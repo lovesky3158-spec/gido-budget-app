@@ -1423,11 +1423,11 @@ const jjangguTrend = useMemo(() => {
                 type="button"
                 onClick={() => {
                   const idx = monthOptions.indexOf(monthFilter);
-                  if (idx > 0) {
-                    setMonthFilter(monthOptions[idx - 1]);
+                  if (idx >= 0 && idx < monthOptions.length - 1) {
+                    setMonthFilter(monthOptions[idx + 1]);
                   }
                 }}
-                disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
+                disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
                 className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-white transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ◀
@@ -1455,11 +1455,11 @@ const jjangguTrend = useMemo(() => {
                 type="button"
                 onClick={() => {
                   const idx = monthOptions.indexOf(monthFilter);
-                  if (idx >= 0 && idx < monthOptions.length - 1) {
-                    setMonthFilter(monthOptions[idx + 1]);
+                  if (idx > 0) {
+                    setMonthFilter(monthOptions[idx - 1]);
                   }
                 }}
-                disabled={!monthFilter || monthOptions.indexOf(monthFilter) >= monthOptions.length - 1}
+                disabled={!monthFilter || monthOptions.indexOf(monthFilter) <= 0}
                 className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/30 text-sm font-black text-slate-900 transition hover:bg-white/50 disabled:opacity-30 sm:h-11 sm:w-11 sm:text-lg"
               >
                 ▶

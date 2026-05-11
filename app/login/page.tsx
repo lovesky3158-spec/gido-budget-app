@@ -121,6 +121,10 @@ export default function LoginPage() {
         >
           {busy ? "로그인 중..." : "로그인"}
         </button>
+
+        <div className="mt-4 rounded-2xl bg-[#fff9df] px-4 py-3 text-center text-[11px] font-bold leading-relaxed text-[#8a5b00]">
+          초대 메일로 처음 들어온 경우에는 메일 링크를 다시 눌러 비밀번호를 설정해주세요.
+        </div>
       </form>
     </main>
   );

@@ -211,6 +211,12 @@ function parseNumber(value: string | number | null | undefined) {
   return Number.isFinite(num) ? num : null;
 }
 
+function formatAmountInput(value: string) {
+  const raw = String(value ?? "").replace(/[^0-9]/g, "");
+  if (!raw) return "";
+  return Number(raw).toLocaleString("ko-KR");
+}
+
 function formatMoney(value: number | null | undefined) {
   if (value === null || value === undefined) return "-";
   const num = Number(value);
@@ -1155,7 +1161,8 @@ const addManualRow = () => {
 
 const updateManualForm = (key: keyof ManualDraftRow, value: string) => {
   setManualForm((prev) => {
-    const next: ManualDraftRow = { ...prev, [key]: value };
+    const nextValue = key === "amount" ? formatAmountInput(value) : value;
+    const next: ManualDraftRow = { ...prev, [key]: nextValue };
 
     if (key === "category") {
       next.categoryLocked = true;
@@ -1227,6 +1234,8 @@ const saveSingleManualForm = async () => {
       amount: "",
       userType: users[0] ?? "기린",
       accountType: accounts[0] ?? "현금",
+      memo: "",
+      categoryLocked: false,
     });
   } catch {
     setError("저장 중 오류가 발생했습니다.");
@@ -1247,7 +1256,8 @@ const saveSingleManualForm = async () => {
     setManualRows((prev) =>
       prev.map((row) => {
         if (row.id !== id) return row;
-        const next: ManualDraftRow = { ...row, [key]: value };
+        const nextValue = key === "amount" ? formatAmountInput(value) : value;
+        const next: ManualDraftRow = { ...row, [key]: nextValue };
 
         if (key === "category") {
           next.categoryLocked = true;
@@ -2289,7 +2299,7 @@ const saveSingleManualForm = async () => {
             type="text"
             value={manualForm.amount}
             onChange={(e) => updateManualForm("amount", e.target.value)}
-            placeholder="0"
+            placeholder="1,000,000"
             className={`app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 text-right font-black tabular-nums ${
               manualForm.flowType === "지출" ? "text-rose-500" : "text-sky-500"
             }`}
@@ -2678,7 +2688,7 @@ const saveSingleManualForm = async () => {
           onClick={() => setShowOptionsModal(false)}
         >
           <div
-            className="w-full max-w-4xl rounded-[30px] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.25)]"
+            className="max-h-[88vh] w-[min(1120px,calc(100vw-24px))] overflow-hidden rounded-[30px] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.25)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
@@ -2696,7 +2706,7 @@ const saveSingleManualForm = async () => {
               </button>
             </div>
 
-            <div className="grid gap-6 px-6 py-6 md:grid-cols-3">
+            <div className="grid max-h-[calc(88vh-112px)] gap-4 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 md:grid-cols-[0.85fr_1fr_1.45fr]">
               <OptionManager
                 group="users"
                 title="사용자"
@@ -2792,14 +2802,14 @@ function OptionManager({
         </button>
       </div>
 
-      <div className="mt-4 space-y-2">
+      <div className={group === "categories" ? "mt-4 grid grid-cols-2 gap-2" : "mt-4 space-y-2"}>
         {items.map((item) => {
           const iconSrc = icons[item] || getDefaultOptionIcon(group, item);
 
           return (
             <div
               key={item}
-              className="flex items-center justify-between gap-2 rounded-[16px] bg-slate-50 px-3 py-2"
+              className="flex min-w-0 items-center justify-between gap-2 rounded-[16px] bg-slate-50 px-2.5 py-2 sm:px-3"
             >
               <div className="flex min-w-0 items-center gap-2">
                 {iconEnabled ? (
@@ -2822,12 +2832,12 @@ function OptionManager({
                   </label>
                 ) : null}
 
-                <span className="truncate text-sm font-medium text-slate-700">{item}</span>
+                <span className="min-w-0 truncate text-xs font-bold text-slate-700 sm:text-sm">{item}</span>
               </div>
 
               <button
                 onClick={() => onRemove(item)}
-                className="rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-500 transition hover:bg-rose-100"
+                className="shrink-0 rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-bold text-rose-500 transition hover:bg-rose-100"
               >
                 삭제
               </button>

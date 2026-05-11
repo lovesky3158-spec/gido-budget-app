@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ["/login", "/auth/set-password"];
 const GIDO_LOGIN_AT_KEY = "gido_login_at";
 const GIDO_INITIAL_HOME_DONE_KEY = "gido_initial_home_done";
 const GIDO_LOGIN_TTL_MS = 60 * 60 * 1000;
@@ -21,7 +21,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       const { data } = await supabase.auth.getSession();
 
       const currentPath = pathname ?? "";
-      const isPublic = PUBLIC_PATHS.includes(currentPath);
+      const isPublic = PUBLIC_PATHS.some((path) => currentPath === path || currentPath.startsWith(`${path}/`));
 
       if (data.session && typeof window !== "undefined") {
         const rawLoginAt = window.localStorage.getItem(GIDO_LOGIN_AT_KEY);
@@ -53,6 +53,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       if (
         data.session &&
         typeof window !== "undefined" &&
+        !isPublic &&
         currentPath &&
         currentPath !== "/" &&
         !window.sessionStorage.getItem(GIDO_INITIAL_HOME_DONE_KEY)
@@ -81,7 +82,9 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     };
   }, [pathname, router]);
 
-  if (!checked && !PUBLIC_PATHS.includes(pathname ?? "")) {
+  const isCurrentPublic = PUBLIC_PATHS.some((path) => (pathname ?? "") === path || (pathname ?? "").startsWith(`${path}/`));
+
+  if (!checked && !isCurrentPublic) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center text-sm font-bold text-[#8a5b00]">
         로그인 확인 중...

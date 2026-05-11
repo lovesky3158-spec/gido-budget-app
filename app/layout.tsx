@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mgido.vercel.app"),
   title: "기도쀼 가계부",
   description: "부부 자산과 소비를 함께 관리하는 가계부",
   manifest: "/manifest.webmanifest",
