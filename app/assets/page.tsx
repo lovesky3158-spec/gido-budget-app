@@ -44,6 +44,8 @@ type IncomeExtraItem = {
 };
 
 type IncomeDetail = {
+  received: string;
+  receivedNote: string;
   base: string;
   baseNote: string;
   weekend: string;
@@ -56,6 +58,8 @@ type IncomeDetail = {
 };
 
 const EMPTY_INCOME_DETAIL: IncomeDetail = {
+  received: "",
+  receivedNote: "",
   base: "",
   baseNote: "",
   weekend: "",
@@ -171,7 +175,9 @@ function hasIncomeDetail(detail?: IncomeDetail) {
   if (!detail) return false;
 
   return Boolean(
-    detail.base ||
+    detail.received ||
+      detail.receivedNote ||
+      detail.base ||
       detail.weekend ||
       detail.special ||
       detail.tax ||
@@ -183,19 +189,37 @@ function hasIncomeDetail(detail?: IncomeDetail) {
   );
 }
 
+function calcSalaryDetailTotal(detail?: IncomeDetail) {
+  if (!detail) return 0;
+  return (
+    parseSignedNumber(detail.base) +
+    parseSignedNumber(detail.weekend) +
+    parseSignedNumber(detail.special) -
+    parseSignedNumber(detail.tax)
+  );
+}
+
+function calcExtraIncomeTotal(detail?: IncomeDetail) {
+  return (detail?.extras ?? []).reduce((sum, item) => sum + parseSignedNumber(item.amount), 0);
+}
+
 function calcIncomeDetailTotal(detail?: IncomeDetail) {
   if (!detail || !hasIncomeDetail(detail)) return 0;
 
-  const base = parseSignedNumber(detail.base);
-  const weekend = parseSignedNumber(detail.weekend);
-  const special = parseSignedNumber(detail.special);
-  const tax = parseSignedNumber(detail.tax);
-  const extras = (detail.extras ?? []).reduce(
-    (sum, item) => sum + parseSignedNumber(item.amount),
-    0
-  );
+  const received = parseSignedNumber(detail.received);
+  const salaryDetail = calcSalaryDetailTotal(detail);
+  const salary = received || salaryDetail;
 
-  return base + weekend + special - tax + extras;
+  return salary + calcExtraIncomeTotal(detail);
+}
+
+function getSalaryReconcileState(detail?: IncomeDetail) {
+  const received = parseSignedNumber(detail?.received);
+  const salaryDetail = calcSalaryDetailTotal(detail);
+  const hasManualDetail = Boolean(detail?.base || detail?.weekend || detail?.special || detail?.tax);
+  const diff = salaryDetail - received;
+
+  return { received, salaryDetail, hasManualDetail, diff, matched: received > 0 && hasManualDetail && diff === 0 };
 }
 
 function mergeIncomeDetail(autoDetail?: IncomeDetail, manualDetail?: IncomeDetail) {
@@ -203,8 +227,10 @@ function mergeIncomeDetail(autoDetail?: IncomeDetail, manualDetail?: IncomeDetai
   const manual = manualDetail ?? EMPTY_INCOME_DETAIL;
 
   return {
-    base: String(parseSignedNumber(auto.base) + parseSignedNumber(manual.base) || ""),
-    baseNote: [auto.baseNote, manual.baseNote].filter(Boolean).join(" / "),
+    received: String(parseSignedNumber(auto.received) + parseSignedNumber(manual.received) || ""),
+    receivedNote: [auto.receivedNote, manual.receivedNote].filter(Boolean).join(" / "),
+    base: manual.base,
+    baseNote: manual.baseNote,
     weekend: manual.weekend,
     weekendNote: manual.weekendNote,
     special: manual.special,
@@ -498,7 +524,7 @@ function IncomeDetailPopover({
             {name} 수입 상세 정산
           </div>
           <div className="mt-1 text-[12px] font-semibold text-slate-500">
-            기본금 + 수당 - 세금 + 기타 기준
+            실수령금액과 상세 정산 내역을 맞춰요
           </div>
         </div>
 
@@ -511,11 +537,26 @@ function IncomeDetailPopover({
         </button>
       </div>
 
+      <div className="mb-4 rounded-[18px] bg-[#effffe] px-4 py-3 ring-1 ring-[#b7efe9]">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[13px] font-black text-[#0f766e]">실수령금액</div>
+            <div className="mt-0.5 text-[11px] font-semibold text-[#0f766e]/70">upload/수동등록 월급 입금액 자동 반영</div>
+          </div>
+          <div className="text-[20px] font-black tracking-[-0.04em] text-[#0f766e]">
+            {formatMoney(parseSignedNumber(incomeDetail.received))}
+          </div>
+        </div>
+        {incomeDetail.receivedNote ? (
+          <div className="mt-2 text-[11px] font-bold text-[#0f766e]/70">{incomeDetail.receivedNote}</div>
+        ) : null}
+      </div>
+
       <div className="space-y-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {[
-          ["base", "baseNote", "기본금"],
-          ["weekend", "weekendNote", "주말수당"],
-          ["special", "specialNote", "특별수당"],
+          ["base", "baseNote", "기본급"],
+          ["weekend", "weekendNote", "특근수당"],
+          ["special", "specialNote", "성과급"],
           ["tax", "taxNote", "세금"],
         ].map(([amountField, noteField, label]) => (
           <div
@@ -550,17 +591,35 @@ function IncomeDetailPopover({
         ))}
       </div>
 
-      <div className="mt-3 flex items-center justify-between rounded-[16px] bg-white px-4 py-3 ring-1 ring-slate-200">
-        <span className="text-[13px] font-black text-slate-600">1차 정산 계</span>
-        <span className="text-[18px] font-black text-slate-900">
-          {formatMoney(
-            parseSignedNumber(incomeDetail.base) +
-              parseSignedNumber(incomeDetail.weekend) +
-              parseSignedNumber(incomeDetail.special) -
-              parseSignedNumber(incomeDetail.tax)
-          )}
-        </span>
-      </div>
+      {(() => {
+        const state = getSalaryReconcileState(incomeDetail);
+        const hasReceived = state.received > 0;
+        const tone = state.matched
+          ? "bg-emerald-50 text-emerald-700 ring-emerald-100"
+          : hasReceived && state.hasManualDetail
+            ? "bg-amber-50 text-amber-700 ring-amber-100"
+            : "bg-white text-slate-700 ring-slate-200";
+
+        return (
+          <div className={`mt-3 rounded-[16px] px-4 py-3 ring-1 ${tone}`}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[13px] font-black">상세 정산계</span>
+              <span className="text-[18px] font-black">{formatMoney(state.salaryDetail)}</span>
+            </div>
+            {hasReceived && state.hasManualDetail ? (
+              <div className="mt-1 text-[11px] font-black">
+                {state.matched
+                  ? "✅ 실수령금액과 상세 정산계가 일치합니다."
+                  : `⚠ 실수령금액과 ${formatMoney(Math.abs(state.diff))} 차이납니다.`}
+              </div>
+            ) : hasReceived ? (
+              <div className="mt-1 text-[11px] font-bold opacity-80">
+                상세내역을 입력하면 실수령금액과 일치 여부를 확인해요.
+              </div>
+            ) : null}
+          </div>
+        );
+      })()}
 
       <div className="mt-4 flex items-center justify-between">
         <div className="text-[14px] font-black text-slate-900">기타 수입</div>
@@ -664,7 +723,7 @@ function IncomeDetailPopover({
       <div className="mt-4 flex items-center justify-between rounded-[18px] bg-[#f0fdf4] px-5 py-4 ring-1 ring-emerald-100">
         <div>
           <div className="text-[13px] font-black text-emerald-700">최종 계</div>
-          <div className="mt-0.5 text-[11px] font-semibold text-emerald-600">총 수입</div>
+          <div className="mt-0.5 text-[11px] font-semibold text-emerald-600">실수령금액 + 기타수입</div>
         </div>
         <div className="text-[24px] font-black tracking-[-0.05em] text-emerald-600">
           {formatMoney(calcIncomeDetailTotal(incomeDetail))}
@@ -1073,13 +1132,13 @@ export default function AssetsPage() {
       const detail = monthData[user] ?? { ...EMPTY_INCOME_DETAIL, extras: [] };
 
       if (isSalaryCategory(category)) {
-        const nextBase = parseSignedNumber(detail.base) + Math.abs(amount);
-        const count = String(detail.baseNote || "").match(/자동 월급 (\d+)건/)?.[1];
+        const nextReceived = parseSignedNumber(detail.received) + Math.abs(amount);
+        const count = String(detail.receivedNote || "").match(/자동 실수령 (\d+)건/)?.[1];
         const nextCount = count ? Number(count) + 1 : 1;
         monthData[user] = {
           ...detail,
-          base: String(nextBase),
-          baseNote: `자동 월급 ${nextCount}건`,
+          received: String(nextReceived),
+          receivedNote: `자동 실수령 ${nextCount}건`,
         };
       } else {
         monthData[user] = {

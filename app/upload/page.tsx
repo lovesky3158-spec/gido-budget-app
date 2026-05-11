@@ -469,20 +469,7 @@ export default function UploadPage() {
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
-  const [manualRows, setManualRows] = useState<ManualDraftRow[]>([
-    {
-      id: makeId("manual"),
-      tx_date: "",
-      description: "",
-      flowType: "지출",
-      category: "기타",
-      amount: "",
-      userType: "기린",
-      accountType: "현금",
-      memo: "",
-      categoryLocked: false,
-    },
-  ]);
+  const [manualRows, setManualRows] = useState<ManualDraftRow[]>([]);
   const [showManualAddModal, setShowManualAddModal] = useState(false);
   const [manualForm, setManualForm] = useState<ManualDraftRow>({
     id: makeId("manual"),
@@ -1404,6 +1391,22 @@ const saveSingleManualForm = async () => {
     saveOptionIcons(nextIcons);
   };
 
+  const addCategoryFromManual = () => {
+    const raw = window.prompt("추가할 카테고리명을 입력하세요.");
+    const value = String(raw ?? "").trim();
+    if (!value) return;
+
+    setCategories((prev) => {
+      if (prev.includes(value)) return prev;
+      const next = [...prev, value];
+      saveList("categories", next);
+      return next;
+    });
+
+    setManualForm((prev) => ({ ...prev, category: value, categoryLocked: true }));
+    setOptionDraft((prev) => ({ ...prev, categories: "" }));
+  };
+
   
   const updateOptionIcon = (group: OptionGroupKey, value: string, dataUrl: string) => {
     const next: OptionIconMap = {
@@ -2248,17 +2251,26 @@ const saveSingleManualForm = async () => {
         </Field>
 
         <Field label="카테고리">
-          <select
-            value={manualForm.category}
-            onChange={(e) => updateManualForm("category", e.target.value)}
-            className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
-          >
-            {manualCategoryOptions.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={manualForm.category}
+              onChange={(e) => updateManualForm("category", e.target.value)}
+              className="app-input h-12 min-w-0 flex-1 rounded-[18px] border-slate-200 bg-slate-50 font-bold"
+            >
+              {manualCategoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={addCategoryFromManual}
+              className="h-12 shrink-0 rounded-[18px] bg-slate-900 px-3 text-xs font-black text-white shadow-sm transition hover:bg-slate-700"
+            >
+              + 추가
+            </button>
+          </div>
           {!manualForm.categoryLocked && manualForm.description.trim() ? (
             <div className="mt-1 text-[11px] font-black text-[#21bdb7]">
               거래명 기준 자동 추천됨
