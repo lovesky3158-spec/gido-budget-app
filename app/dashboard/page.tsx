@@ -575,6 +575,18 @@ export default function DashboardPage() {
       if (!meta) continue;
 
       const category = splitType(row.type).category || "기타";
+      const normalizedCategory = category.replace(/\s/g, "");
+      const normalizedDesc = desc.toLowerCase();
+      const isRegularCategory =
+        normalizedCategory.includes("정기지출") ||
+        normalizedCategory.includes("고정비") ||
+        normalizedCategory.includes("구독") ||
+        normalizedCategory.includes("보험") ||
+        normalizedCategory.includes("통신");
+
+      const isInstallment = normalizedCategory.includes("할부") || normalizedDesc.includes("할부");
+      if (!isRegularCategory || isInstallment) continue;
+
       const key = `${category}||${desc.toLowerCase()}`;
 
       if (!map.has(key)) {

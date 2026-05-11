@@ -799,7 +799,7 @@ export default function TransactionsPage() {
     </div>
 
     {showFilterSheet ? (
-      <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)] sm:static sm:mt-2 sm:max-h-none sm:overflow-visible sm:rounded-[24px] sm:p-4 sm:shadow-[0_14px_40px_rgba(15,23,42,0.08)]">
+      <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto overflow-x-hidden rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)] sm:static sm:mt-2 sm:max-h-none sm:overflow-visible sm:overflow-x-hidden sm:rounded-[24px] sm:p-4 sm:shadow-[0_14px_40px_rgba(15,23,42,0.08)]">
         <div className="mb-3 flex items-center justify-between sm:hidden">
           <div className="text-sm font-black text-slate-800">필터</div>
           <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
@@ -836,11 +836,11 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
-            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex flex-wrap gap-1.5 pb-1">
               <button
                 type="button"
                 onClick={() => setCardFilter("all")}
-                className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                className={`flex h-9 min-w-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
                   cardFilter === "all" ? "bg-[#21bdb7] text-white" : "bg-slate-100 text-slate-500"
                 }`}
               >
@@ -851,12 +851,12 @@ export default function TransactionsPage() {
                   key={card}
                   type="button"
                   onClick={() => setCardFilter(card)}
-                  className={`flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
+                  className={`flex h-9 max-w-full min-w-0 items-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
                     cardFilter === card ? "bg-[#21bdb7] text-white" : "bg-[#effffe] text-[#0f766e]"
                   }`}
                 >
-                  {renderIcon("accounts", card, "h-4 w-4 object-contain")}
-                  {card}
+                  {renderIcon("accounts", card, "h-4 w-4 shrink-0 object-contain")}
+                  <span className="min-w-0 truncate">{card}</span>
                 </button>
               ))}
             </div>
@@ -884,19 +884,19 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
-            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex flex-wrap gap-1.5 pb-1">
               {categoryOptions.map((category) => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => setCategoryFilter(category)}
-                  className={`h-9 shrink-0 rounded-full px-3 text-[11px] font-black transition ${
+                  className={`h-9 max-w-full min-w-0 rounded-full px-3 text-[11px] font-black transition ${
                     categoryFilter === category
                       ? "bg-[#21bdb7] text-white shadow-sm"
                       : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  {category === "all" ? "전체" : category}
+                  <span className="block min-w-0 truncate">{category === "all" ? "전체" : category}</span>
                 </button>
               ))}
             </div>

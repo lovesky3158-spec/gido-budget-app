@@ -216,6 +216,7 @@ export default function HomePage() {
         const response = await supabase
           .from("transactions")
           .select("id, tx_date, description, type, amount, user_type, account_type, created_at")
+          .order("tx_date", { ascending: false })
           .order("created_at", { ascending: false })
           .limit(1200);
 
@@ -327,11 +328,15 @@ export default function HomePage() {
     () =>
       [...selectedMonthRows]
         .sort((a, b) => {
-          const at = a.created_at ?? a.tx_date ?? "";
-          const bt = b.created_at ?? b.tx_date ?? "";
-          return at < bt ? 1 : -1;
+          const ad = a.tx_date ?? "";
+          const bd = b.tx_date ?? "";
+          if (ad !== bd) return ad < bd ? 1 : -1;
+
+          const ac = a.created_at ?? "";
+          const bc = b.created_at ?? "";
+          return ac < bc ? 1 : -1;
         })
-        .slice(0, 3),
+        .slice(0, 5),
     [selectedMonthRows]
   );
 
@@ -462,7 +467,7 @@ export default function HomePage() {
                 표시할 월 데이터가 없습니다.
               </div>
             ) : (
-              <div className="grid gap-4 lg:grid-cols-[430px_minmax(0,1fr)] lg:items-start">
+              <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
                 <div className="grid gap-4 rounded-[26px] border border-slate-200 bg-white p-3 shadow-[0_18px_44px_rgba(139,92,0,0.10)] sm:rounded-[34px] sm:p-5">
                   <div className="rounded-[22px] border border-[#f4dc87] bg-[linear-gradient(135deg,#fffaf0,#fff2bd)] p-5 sm:rounded-[28px] sm:p-6">
                     <div className="flex items-start justify-between gap-3">
@@ -599,7 +604,7 @@ export default function HomePage() {
                         최근 거래
                       </h2>
                       <p className="mt-1 text-[13px] text-[#7a6335]">
-                        가장 최근 입력된 거래
+                        거래일자 기준 최근 거래
                       </p>
                     </div>
 
