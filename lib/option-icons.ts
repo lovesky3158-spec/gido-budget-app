@@ -33,13 +33,15 @@ export function getDefaultOptionIcon(group: OptionGroupKey, value: string) {
 
   if (group === "accounts") {
     const accountKey = key.split("|")[0].replace(/카드/g, "").trim();
-    if (accountKey === "신한") return "/icons/sh.png";
-    if (accountKey === "국민") return "/icons/kb.png";
-    if (accountKey === "농협") return "/icons/nh.png";
-    if (accountKey === "우리") return "/icons/woori.png";
-    if (accountKey === "현금") return "💵";
-    if (accountKey === "계좌") return "🏦";
-    if (accountKey === "기타") return "💳";
+    const compactKey = accountKey.replace(/[\s/·_-]/g, "");
+
+    if (compactKey.includes("신한") || compactKey.toLowerCase().includes("shinhan")) return "/icons/sh.png";
+    if (compactKey.includes("국민") || compactKey.toLowerCase().includes("kb")) return "/icons/kb.png";
+    if (compactKey.includes("농협") || compactKey.toLowerCase().includes("nh")) return "/icons/nh.png";
+    if (compactKey.includes("우리") || compactKey.toLowerCase().includes("woori")) return "/icons/woori.png";
+    if (compactKey.includes("현금") || compactKey.toLowerCase().includes("cash")) return "💵";
+    if (compactKey.includes("계좌") || compactKey.includes("은행")) return "🏦";
+    if (compactKey.includes("기타")) return "💳";
   }
 
   if (group === "categories") {

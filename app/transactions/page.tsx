@@ -203,6 +203,10 @@ export default function TransactionsPage() {
   const [editing, setEditing] = useState<EditForm | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Array<string | number>>([]);
+  const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false);
+  const [bulkCategory, setBulkCategory] = useState("");
+  const [bulkSaving, setBulkSaving] = useState(false);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
 
   useEffect(() => {
@@ -324,6 +328,22 @@ export default function TransactionsPage() {
     const dynamic = rows.map((r) => r.type).filter((v): v is string => Boolean(v));
     return Array.from(new Set([...defaults, ...dynamic]));
   }, [rows]);
+
+  useEffect(() => {
+    if (!bulkCategory && categoryOptions.length > 0) {
+      setBulkCategory(categoryOptions[0]);
+    }
+  }, [bulkCategory, categoryOptions]);
+
+  const selectedIdSet = useMemo(() => {
+    return new Set(selectedIds.map((id) => String(id)));
+  }, [selectedIds]);
+
+  const selectedRows = useMemo(() => {
+    return rows.filter((row) => selectedIdSet.has(String(row.id)));
+  }, [rows, selectedIdSet]);
+
+  const selectedCount = selectedIds.length;
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -556,6 +576,59 @@ export default function TransactionsPage() {
     setSearch("");
     setSelectedDateFilter(null);
     setOpenFilterPanel(null);
+  };
+
+  const toggleSelected = (id: string | number) => {
+    const key = String(id);
+    setSelectedIds((prev) => {
+      if (prev.some((value) => String(value) === key)) {
+        return prev.filter((value) => String(value) !== key);
+      }
+      return [...prev, id];
+    });
+  };
+
+  const selectAllFiltered = () => {
+    setSelectedIds(filtered.map((row) => row.id));
+  };
+
+  const clearSelection = () => {
+    setSelectedIds([]);
+  };
+
+  const handleBulkCategorySave = async () => {
+    if (selectedRows.length === 0 || !bulkCategory) return;
+
+    const ok = window.confirm(`선택한 ${selectedRows.length}건의 카테고리를 [${bulkCategory}]로 변경할까요?`);
+    if (!ok) return;
+
+    setBulkSaving(true);
+    setErrorMessage("");
+
+    const updates = selectedRows.map((row) => {
+      const typeMeta = splitType(row.type);
+      const amount = getNormalizedAmount(row);
+      const flow = typeMeta.flow || (amount > 0 ? "수입" : "지출");
+
+      return supabase
+        .from("transactions")
+        .update({ type: `${flow}/${bulkCategory}` })
+        .eq("id", row.id);
+    });
+
+    const results = await Promise.all(updates);
+    const firstError = results.find((result) => result.error)?.error;
+
+    setBulkSaving(false);
+
+    if (firstError) {
+      setErrorMessage(`일괄 변경 실패: ${firstError.message}`);
+      return;
+    }
+
+    setBulkCategoryOpen(false);
+    setSelectedIds([]);
+    await fetchData();
   };
 
   const openEdit = (row: TransactionRow) => {
@@ -946,8 +1019,35 @@ export default function TransactionsPage() {
                 전체 내역 {filtered.length}건
               </div>
               <div className="mt-0.5 text-xs text-slate-400">
-                거래 카드를 탭하면 수정할 수 있어요
+                체크 후 카테고리 일괄 변경, 카드를 탭하면 상세 수정
               </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={selectAllFiltered}
+                disabled={filtered.length === 0}
+                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-[11px] font-black text-slate-500 shadow-sm disabled:opacity-40"
+              >
+                현재목록 전체선택
+              </button>
+              <button
+                type="button"
+                onClick={clearSelection}
+                disabled={selectedCount === 0}
+                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-[11px] font-black text-slate-500 shadow-sm disabled:opacity-40"
+              >
+                선택해제
+              </button>
+              <button
+                type="button"
+                onClick={() => setBulkCategoryOpen(true)}
+                disabled={selectedCount === 0}
+                className="h-9 rounded-full bg-[#21bdb7] px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(33,189,183,0.20)] disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
+              >
+                카테고리 변경 {selectedCount > 0 ? `${selectedCount}건` : ""}
+              </button>
             </div>
 
             <div className="hidden items-center gap-1.5 overflow-x-auto rounded-full bg-white/80 px-2 py-1.5 text-xs font-bold text-slate-600 shadow-sm backdrop-blur sm:flex">
@@ -1013,14 +1113,34 @@ export default function TransactionsPage() {
                       const displayAccount = getDisplayAccount(item.account_type);
 
                       return (
-<button
+<div
   key={item.id}
-  type="button"
+  role="button"
+  tabIndex={0}
   onClick={() => openEdit(item)}
-  className={`relative w-full overflow-hidden rounded-[24px] border border-[#d8f3f1] bg-white px-3.5 py-3 text-left shadow-sm transition active:scale-[0.99] hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 ${
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") openEdit(item);
+  }}
+  className={`relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-[#d8f3f1] bg-white px-3.5 py-3 pl-11 text-left shadow-sm transition active:scale-[0.99] hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 sm:pl-14 ${
     amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
   }`}
 >
+  <button
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      toggleSelected(item.id);
+    }}
+    className={`absolute left-3 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border text-[12px] font-black transition sm:left-5 sm:h-7 sm:w-7 ${
+      selectedIdSet.has(String(item.id))
+        ? "border-[#21bdb7] bg-[#21bdb7] text-white shadow-sm"
+        : "border-slate-200 bg-white text-transparent hover:border-[#21bdb7]"
+    }`}
+    aria-label="거래 선택"
+  >
+    ✓
+  </button>
+
   <div className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
     <div className="hidden row-span-2 flex-col items-stretch justify-center gap-1 sm:flex">
       <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
@@ -1079,7 +1199,7 @@ export default function TransactionsPage() {
       </span>
     </div>
   </div>
-</button>
+</div>
 
                       );
                     })}
@@ -1241,6 +1361,66 @@ export default function TransactionsPage() {
                   );
                 })}       
               </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {bulkCategoryOpen ? (
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/45 px-3 py-4 backdrop-blur-sm"
+          onMouseDown={() => {
+            if (!bulkSaving) setBulkCategoryOpen(false);
+          }}
+        >
+          <div
+            className="w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-[0_32px_90px_rgba(15,23,42,0.28)]"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-5">
+              <div className="inline-flex rounded-full bg-[#d8f3f1] px-3 py-1 text-[11px] font-black text-[#0f766e]">
+                BULK CATEGORY
+              </div>
+              <h2 className="mt-2 text-xl font-black tracking-[-0.04em] text-slate-800">
+                카테고리 일괄 변경
+              </h2>
+              <p className="mt-1 text-xs font-bold text-slate-400">
+                선택한 {selectedCount}건의 수입/지출은 유지하고 카테고리만 바꿔요.
+              </p>
+            </div>
+
+            <div className="px-5 py-5">
+              <label className="mb-2 block text-sm font-black text-slate-600">변경할 카테고리</label>
+              <select
+                value={bulkCategory}
+                onChange={(e) => setBulkCategory(e.target.value)}
+                className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
+              >
+                {categoryOptions.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex gap-2 border-t border-slate-100 bg-slate-50/70 px-5 py-4">
+              <button
+                type="button"
+                onClick={() => setBulkCategoryOpen(false)}
+                disabled={bulkSaving}
+                className="h-11 flex-1 rounded-[18px] border border-slate-200 bg-white text-sm font-black text-slate-500 disabled:opacity-40"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkCategorySave}
+                disabled={bulkSaving || selectedCount === 0 || !bulkCategory}
+                className="h-11 flex-1 rounded-[18px] bg-[#21bdb7] text-sm font-black text-white shadow-[0_10px_22px_rgba(33,189,183,0.22)] disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
+              >
+                {bulkSaving ? "변경 중..." : "변경 적용"}
+              </button>
             </div>
           </div>
         </div>
