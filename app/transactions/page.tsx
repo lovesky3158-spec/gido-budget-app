@@ -581,7 +581,7 @@ export default function TransactionsPage() {
       tx_date: editing.tx_date ? isoToShortDate(editing.tx_date) : null,
       description: editing.description.trim() || null,
       type: editing.type.trim() || null,
-      amount: parseNullableNumber(editing.amount),
+      amount: getEditSignedAmount(editing),
       balance: parseNullableNumber(editing.balance),
       user_type: normalizeUserTag(editing.user_type.trim() || null) || null,
       account_type: normalizeAccountLabel(editing.account_type.trim() || null) || null,
@@ -1400,8 +1400,8 @@ export default function TransactionsPage() {
                     type="text"
                     value={formatNumberWithComma(editing.amount)}
                     onChange={(e) => {
-                      const raw = e.target.value.replace(/,/g, "");
-                      if (!/^\d*$/.test(raw)) return;
+                      const raw = e.target.value.replace(/[,\s원₩]/g, "");
+                      if (!/^-?\d*$/.test(raw)) return;
                       handleEditChange("amount", raw);
                     }}
                     className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-black tabular-nums text-rose-400"

@@ -1054,16 +1054,28 @@ const payload: TransactionInsertRow[] = selectedData.map((row) => {
 
       const { uniqueRows, duplicateCount } = await filterDuplicateTransactions(payload);
 
-      if (uniqueRows.length === 0) {
-        setError(
-          duplicateCount > 0
-            ? `모든 행이 이미 저장된 내역입니다. (중복 ${duplicateCount}건)`
-            : "저장할 데이터가 없습니다."
+      let rowsToInsert = uniqueRows;
+      let excludedDuplicateCount = duplicateCount;
+
+      if (duplicateCount > 0) {
+        const excludeDuplicates = window.confirm(
+          `이미 저장된 것으로 보이는 중복 ${duplicateCount}건이 있습니다.\n\n` +
+            "[확인] 중복을 제외하고 저장\n" +
+            "[취소] 중복도 포함해서 전체 저장"
         );
+
+        if (!excludeDuplicates) {
+          rowsToInsert = payload;
+          excludedDuplicateCount = 0;
+        }
+      }
+
+      if (rowsToInsert.length === 0) {
+        setError("저장할 데이터가 없습니다.");
         return;
       }
 
-      const { error: insertError } = await supabase.from("transactions").insert(uniqueRows);
+      const { error: insertError } = await supabase.from("transactions").insert(rowsToInsert);
 
       if (insertError) {
         setError(`저장 실패: ${insertError.message}`);
@@ -1075,9 +1087,9 @@ const payload: TransactionInsertRow[] = selectedData.map((row) => {
       });
 
       setSuccess(
-        duplicateCount > 0
-          ? `${uniqueRows.length}건 저장 완료 · 중복 ${duplicateCount}건 제외`
-          : `${uniqueRows.length}건 저장 완료`
+        excludedDuplicateCount > 0
+          ? `${rowsToInsert.length}건 저장 완료 · 중복 ${excludedDuplicateCount}건 제외`
+          : `${rowsToInsert.length}건 저장 완료`
       );
       setDraftRows((prev) => prev.map((row) => ({ ...row, selected: false })));
     } catch (err) {

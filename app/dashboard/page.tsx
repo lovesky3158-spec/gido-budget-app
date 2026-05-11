@@ -812,7 +812,7 @@ const resetFilters = () => {
                   <div className="flex max-h-[170px] flex-wrap gap-1.5 overflow-y-auto pr-1">
                     {[
                       { key: "all", label: "전체" },
-                      { key: "신한", label: "신한|체크" },
+                      { key: "신한", label: "신한|신용" },
                       { key: "국민", label: "국민|신용" },
                       { key: "농협", label: "농협|체크" },
                       { key: "현금", label: "현금" },
@@ -871,7 +871,7 @@ const resetFilters = () => {
             <div className="inline-flex flex-wrap items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
               {[
                 { key: "all", label: "전체" },
-                { key: "신한", label: "신한|체크" },
+                { key: "신한", label: "신한|신용" },
                 { key: "국민", label: "국민|신용" },
                 { key: "농협", label: "농협|체크" },
                 { key: "현금", label: "현금" },
