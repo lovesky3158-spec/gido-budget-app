@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { supabase } from "@/lib/supabase";
 import * as TxParsers from "./parsers";
 import { setCategoryMemory } from "./category-memory";
+import CATEGORY_RULES from "./category-rules";
 import { normalizeAccountLabel, normalizeUserTag } from "@/lib/finance-labels";
 import {
   getDefaultOptionIcon,
@@ -56,6 +57,7 @@ type ManualDraftRow = {
   userType: string;
   accountType: string;
   memo?: string;
+  categoryLocked?: boolean;
 };
 
 type TransactionInsertRow = {
@@ -109,6 +111,7 @@ const DEFAULT_CATEGORIES = [
   "여가",
   "병원",
   "주거",
+  "월급",
   "기타",
 ];
 
@@ -299,29 +302,50 @@ function findBestHeaderIndex(rows: string[][]) {
   return bestIndex;
 }
 
-function inferCategory(description: string) {
+function inferCategoryMeta(
+  description: string,
+  flowType: "지출" | "수입" = "지출"
+): { category: string; flowType: "지출" | "수입"; score: number } {
   const text = normalizeTypeText(description);
+  if (!text) return { category: flowType === "수입" ? "월급" : "기타", flowType, score: 0 };
 
-  const rules: Array<{ category: string; keywords: string[] }> = [
-    { category: "카페", keywords: ["스타벅스", "투썸", "메가커피", "커피", "카페", "빽다방"] },
-    { category: "식대", keywords: ["식당", "국밥", "장어", "배민", "요기요", "버거", "치킨", "식사", "도시락"] },
-    { category: "장보기", keywords: ["이마트", "홈플러스", "롯데마트", "코스트코", "트레이더스", "마트"] },
-    { category: "생활", keywords: ["다이소", "쿠팡", "올리브영", "생활", "무신사"] },
-    { category: "교통", keywords: ["버스", "지하철", "택시", "주유", "주차", "교통", "t머니"] },
-    { category: "쇼핑", keywords: ["쇼핑", "네이버", "지마켓", "11번가", "ssf", "오늘의집"] },
-    { category: "여가", keywords: ["영화", "cgv", "넷플릭스", "디즈니", "놀이", "여가", "숙박", "stay"] },
-    { category: "병원", keywords: ["병원", "약국", "의원", "치과", "검사", "한의원"] },
-    { category: "주거", keywords: ["관리비", "월세", "전세", "가스", "전기", "수도", "통신"] },
-  ];
+  let bestCategory = flowType === "수입" ? "월급" : "기타";
+  let bestFlowType: "지출" | "수입" = flowType;
+  let bestScore = 0;
 
-  for (const rule of rules) {
-    if (rule.keywords.some((keyword) => text.includes(normalizeTypeText(keyword)))) {
-      return rule.category;
+  for (const rule of CATEGORY_RULES) {
+    // 수동등록은 사용자가 선택한 지출/수입을 우선으로 둔다.
+    // 예: 지출 선택 상태에서 "급여"가 들어가도 수입 카테고리로 튀지 않게 막음.
+    if (rule.flowType && rule.flowType !== flowType) continue;
+
+    let score = 0;
+
+    for (const keyword of rule.exclude ?? []) {
+      if (text.includes(normalizeTypeText(keyword))) score -= 100;
+    }
+
+    for (const keyword of rule.strong ?? []) {
+      if (text.includes(normalizeTypeText(keyword))) score += 5;
+    }
+
+    for (const keyword of rule.weak ?? []) {
+      if (text.includes(normalizeTypeText(keyword))) score += 1;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestCategory = rule.category;
+      bestFlowType = rule.flowType ?? flowType;
     }
   }
 
-  return "기타";
+  return { category: bestCategory, flowType: bestFlowType, score: bestScore };
 }
+
+function inferCategory(description: string) {
+  return inferCategoryMeta(description, "지출").category;
+}
+
 
 function getMappingPresetKey(headers: string[]) {
   return headers.map((h) => normalizeHeader(h)).join("|");
@@ -450,6 +474,7 @@ export default function UploadPage() {
       userType: "기린",
       accountType: "현금",
       memo: "",
+      categoryLocked: false,
     },
   ]);
   const [showManualAddModal, setShowManualAddModal] = useState(false);
@@ -463,7 +488,16 @@ export default function UploadPage() {
     userType: users[0] ?? "기린",
     accountType: accounts[0] ?? "현금",
     memo: "",
+    categoryLocked: false,
   });
+
+
+  const manualCategoryOptions = useMemo(() => {
+    const merged = [...categories];
+    if (manualForm.category && !merged.includes(manualForm.category)) merged.push(manualForm.category);
+    if (!merged.includes("월급")) merged.push("월급");
+    return merged;
+  }, [categories, manualForm.category]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -480,6 +514,8 @@ export default function UploadPage() {
       amount: "",
       userType: users[0] ?? "기린",
       accountType: accounts[0] ?? "현금",
+      memo: "",
+      categoryLocked: false,
     });
     setShowManualAddModal(true);
 
@@ -1112,12 +1148,29 @@ const addManualRow = () => {
     userType: users[0] ?? "기린",
     accountType: accounts[0] ?? "현금",
     memo: "",
+    categoryLocked: false,
   });
   setShowManualAddModal(true);
 };
 
 const updateManualForm = (key: keyof ManualDraftRow, value: string) => {
-  setManualForm((prev) => ({ ...prev, [key]: value }));
+  setManualForm((prev) => {
+    const next: ManualDraftRow = { ...prev, [key]: value };
+
+    if (key === "category") {
+      next.categoryLocked = true;
+      return next;
+    }
+
+    if ((key === "description" || key === "flowType") && !prev.categoryLocked) {
+      const desc = key === "description" ? value : prev.description;
+      const flowType = (key === "flowType" ? value : prev.flowType) as "지출" | "수입";
+      const inferred = inferCategoryMeta(desc, flowType);
+      next.category = inferred.category;
+    }
+
+    return next;
+  });
 };
 
 const appendManualForm = () => {
@@ -1192,7 +1245,23 @@ const saveSingleManualForm = async () => {
     value: string
   ) => {
     setManualRows((prev) =>
-      prev.map((row) => (row.id === id ? { ...row, [key]: value } : row))
+      prev.map((row) => {
+        if (row.id !== id) return row;
+        const next: ManualDraftRow = { ...row, [key]: value };
+
+        if (key === "category") {
+          next.categoryLocked = true;
+          return next;
+        }
+
+        if ((key === "description" || key === "flowType") && !row.categoryLocked) {
+          const desc = key === "description" ? value : row.description;
+          const flowType = (key === "flowType" ? value : row.flowType) as "지출" | "수입";
+          next.category = inferCategoryMeta(desc, flowType).category;
+        }
+
+        return next;
+      })
     );
   };
 
@@ -1246,6 +1315,8 @@ const saveSingleManualForm = async () => {
           amount: "",
           userType: users[0] ?? "기린",
           accountType: accounts[0] ?? "현금",
+          memo: "",
+          categoryLocked: false,
         },
       ]);
     } catch {
@@ -2172,12 +2243,17 @@ const saveSingleManualForm = async () => {
             onChange={(e) => updateManualForm("category", e.target.value)}
             className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
           >
-            {categories.map((category) => (
+            {manualCategoryOptions.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>
             ))}
           </select>
+          {!manualForm.categoryLocked && manualForm.description.trim() ? (
+            <div className="mt-1 text-[11px] font-black text-[#21bdb7]">
+              거래명 기준 자동 추천됨
+            </div>
+          ) : null}
         </Field>
 
         <Field label="사용자">
