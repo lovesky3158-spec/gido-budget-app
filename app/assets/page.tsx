@@ -15,9 +15,11 @@ import {
 type TransactionRow = {
   id: string | number;
   tx_date: string | null;
+  description?: string | null;
   type: string | null;
   amount: number | null;
   user_type: string | null;
+  memo?: string | null;
   created_at?: string | null;
 };
 
@@ -38,6 +40,7 @@ type IncomeExtraItem = {
   title: string;
   amount: string;
   note: string;
+  source?: "auto" | "manual";
 };
 
 type IncomeDetail = {
@@ -193,6 +196,39 @@ function calcIncomeDetailTotal(detail?: IncomeDetail) {
   );
 
   return base + weekend + special - tax + extras;
+}
+
+function mergeIncomeDetail(autoDetail?: IncomeDetail, manualDetail?: IncomeDetail) {
+  const auto = autoDetail ?? EMPTY_INCOME_DETAIL;
+  const manual = manualDetail ?? EMPTY_INCOME_DETAIL;
+
+  return {
+    base: String(parseSignedNumber(auto.base) + parseSignedNumber(manual.base) || ""),
+    baseNote: [auto.baseNote, manual.baseNote].filter(Boolean).join(" / "),
+    weekend: manual.weekend,
+    weekendNote: manual.weekendNote,
+    special: manual.special,
+    specialNote: manual.specialNote,
+    tax: manual.tax,
+    taxNote: manual.taxNote,
+    extras: [...(auto.extras ?? []), ...(manual.extras ?? [])],
+  } satisfies IncomeDetail;
+}
+
+function isSalaryCategory(category: string) {
+  const key = String(category ?? "").replace(/\s+/g, "").toLowerCase();
+  return ["월급", "급여", "salary", "payroll"].some((keyword) => key.includes(keyword));
+}
+
+function makeIncomeTxTitle(row: TransactionRow, category: string) {
+  const desc = String(row.description ?? "").trim();
+  if (category && category !== "기타") return category;
+  return desc || "기타수입";
+}
+
+function makeIncomeTxNote(row: TransactionRow) {
+  const parts = [row.tx_date, row.description, row.memo].map((v) => String(v ?? "").trim()).filter(Boolean);
+  return parts.join(" · ");
 }
 function TopSummaryCard({
   title,
@@ -532,8 +568,8 @@ function IncomeDetailPopover({
           type="button"
           onClick={() =>
             onIncomeDetailChange("extras", [
-              ...(incomeDetail.extras ?? []),
-              { id: makeId(), title: "", amount: "", note: "" },
+              ...(incomeDetail.extras ?? []).filter((item) => item.source !== "auto" && !String(item.id).startsWith("tx-")),
+              { id: makeId(), title: "", amount: "", note: "", source: "manual" },
             ])
           }
           className="rounded-full bg-slate-900 px-3 py-1.5 text-[12px] font-black text-white transition hover:bg-slate-700"
@@ -548,59 +584,80 @@ function IncomeDetailPopover({
             추가 수입 항목이 없어요.
           </div>
         ) : (
-          (incomeDetail.extras ?? []).map((extra, idx) => (
-            <div
-              key={extra.id}
-              className="grid min-w-[560px] grid-cols-[110px_130px_minmax(0,1fr)_30px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:min-w-0 sm:grid-cols-[110px_120px_minmax(0,1fr)_30px]"
-            >
-              <input
-                type="text"
-                value={extra.title}
-                onChange={(e) => {
-                  const next = [...(incomeDetail.extras ?? [])];
-                  next[idx] = { ...extra, title: e.target.value };
-                  onIncomeDetailChange("extras", next);
-                }}
-                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-700 outline-none focus:border-[#14b8a6]"
-                placeholder="구분"
-              />
+          (incomeDetail.extras ?? []).map((extra, idx) => {
+            const isAuto = extra.source === "auto" || String(extra.id).startsWith("tx-");
+            const inputClass = isAuto
+              ? "bg-white/70 text-slate-500"
+              : "bg-white text-slate-700";
 
-              <input
-                type="text"
-                value={formatInputMoney(extra.amount)}
-                onChange={(e) => {
-                  const next = [...(incomeDetail.extras ?? [])];
-                  next[idx] = { ...extra, amount: formatInputChange(e.target.value) };
-                  onIncomeDetailChange("extras", next);
-                }}
-                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-black text-slate-900 outline-none focus:border-[#14b8a6]"
-                placeholder="금액"
-              />
-
-              <input
-                type="text"
-                value={extra.note}
-                onChange={(e) => {
-                  const next = [...(incomeDetail.extras ?? [])];
-                  next[idx] = { ...extra, note: e.target.value };
-                  onIncomeDetailChange("extras", next);
-                }}
-                className="h-9 min-w-0 rounded-full border border-slate-200 bg-white px-3 text-left text-[13px] font-semibold text-slate-700 outline-none focus:border-[#14b8a6]"
-                placeholder="비고"
-              />
-
-              <button
-                type="button"
-                onClick={() => {
-                  const next = (incomeDetail.extras ?? []).filter((_, i) => i !== idx);
-                  onIncomeDetailChange("extras", next);
-                }}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
+            return (
+              <div
+                key={extra.id}
+                className="grid min-w-[560px] grid-cols-[110px_130px_minmax(0,1fr)_52px] items-center gap-2 rounded-[16px] bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200 sm:min-w-0 sm:grid-cols-[110px_120px_minmax(0,1fr)_52px]"
               >
-                ×
-              </button>
-            </div>
-          ))
+                <input
+                  type="text"
+                  value={extra.title}
+                  readOnly={isAuto}
+                  onChange={(e) => {
+                    if (isAuto) return;
+                    const next = [...(incomeDetail.extras ?? [])];
+                    next[idx] = { ...extra, title: e.target.value };
+                    onIncomeDetailChange("extras", next.filter((item) => item.source !== "auto" && !String(item.id).startsWith("tx-")));
+                  }}
+                  className={`h-9 min-w-0 rounded-full border border-slate-200 px-3 text-left text-[13px] font-black outline-none focus:border-[#14b8a6] ${inputClass}`}
+                  placeholder="구분"
+                />
+
+                <input
+                  type="text"
+                  value={formatInputMoney(extra.amount)}
+                  readOnly={isAuto}
+                  onChange={(e) => {
+                    if (isAuto) return;
+                    const next = [...(incomeDetail.extras ?? [])];
+                    next[idx] = { ...extra, amount: formatInputChange(e.target.value) };
+                    onIncomeDetailChange("extras", next.filter((item) => item.source !== "auto" && !String(item.id).startsWith("tx-")));
+                  }}
+                  className={`h-9 min-w-0 rounded-full border border-slate-200 px-3 text-left text-[13px] font-black outline-none focus:border-[#14b8a6] ${isAuto ? "bg-white/70 text-slate-500" : "bg-white text-slate-900"}`}
+                  placeholder="금액"
+                />
+
+                <input
+                  type="text"
+                  value={extra.note}
+                  readOnly={isAuto}
+                  onChange={(e) => {
+                    if (isAuto) return;
+                    const next = [...(incomeDetail.extras ?? [])];
+                    next[idx] = { ...extra, note: e.target.value };
+                    onIncomeDetailChange("extras", next.filter((item) => item.source !== "auto" && !String(item.id).startsWith("tx-")));
+                  }}
+                  className={`h-9 min-w-0 rounded-full border border-slate-200 px-3 text-left text-[13px] font-semibold outline-none focus:border-[#14b8a6] ${inputClass}`}
+                  placeholder="비고"
+                />
+
+                {isAuto ? (
+                  <span className="rounded-full bg-emerald-50 px-2 py-1 text-center text-[10px] font-black text-emerald-600 ring-1 ring-emerald-100">
+                    자동
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = (incomeDetail.extras ?? [])
+                        .filter((_, i) => i !== idx)
+                        .filter((item) => item.source !== "auto" && !String(item.id).startsWith("tx-"));
+                      onIncomeDetailChange("extras", next);
+                    }}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-50 text-[13px] font-black text-rose-500 transition hover:bg-rose-100"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
 
@@ -913,7 +970,7 @@ export default function AssetsPage() {
 
       const { data } = await supabase
         .from("transactions")
-        .select("id, tx_date, type, amount, user_type, created_at")
+        .select("id, tx_date, description, type, amount, user_type, memo, created_at")
         .order("tx_date", { ascending: false })
         .order("created_at", { ascending: false });
 
@@ -992,6 +1049,60 @@ export default function AssetsPage() {
     return result;
   }, [rows, timelineMonthOptions]);
 
+  const autoIncomeDetails = useMemo(() => {
+    const result: IncomeDetailMap = {};
+
+    for (const row of rows) {
+      const meta = parseDateMeta(row.tx_date);
+      if (!meta) continue;
+
+      const user = normalizeUserTag(row.user_type);
+      if (user !== "기린" && user !== "짱구") continue;
+
+      const amount = getNormalizedAmount(row);
+      if (amount <= 0) continue;
+
+      const typeMeta = splitType(row.type);
+      const category = typeMeta.category || "기타수입";
+
+      const monthData = result[meta.ym] ?? {
+        기린: { ...EMPTY_INCOME_DETAIL, extras: [] },
+        짱구: { ...EMPTY_INCOME_DETAIL, extras: [] },
+      };
+
+      const detail = monthData[user] ?? { ...EMPTY_INCOME_DETAIL, extras: [] };
+
+      if (isSalaryCategory(category)) {
+        const nextBase = parseSignedNumber(detail.base) + Math.abs(amount);
+        const count = String(detail.baseNote || "").match(/자동 월급 (\d+)건/)?.[1];
+        const nextCount = count ? Number(count) + 1 : 1;
+        monthData[user] = {
+          ...detail,
+          base: String(nextBase),
+          baseNote: `자동 월급 ${nextCount}건`,
+        };
+      } else {
+        monthData[user] = {
+          ...detail,
+          extras: [
+            ...(detail.extras ?? []),
+            {
+              id: `tx-${row.id}`,
+              title: makeIncomeTxTitle(row, category),
+              amount: String(Math.abs(amount)),
+              note: makeIncomeTxNote(row),
+              source: "auto",
+            },
+          ],
+        };
+      }
+
+      result[meta.ym] = monthData;
+    }
+
+    return result;
+  }, [rows]);
+
   const manualSummaryByMonth = useMemo(() => {
     const result = new Map<string, { 기린: number; 짱구: number }>();
 
@@ -1033,8 +1144,8 @@ export default function AssetsPage() {
       const girinCarry = prevGirin;
       const jjangguCarry = prevJjanggu;
 
-      const girinDetail = incomeDetails[month]?.기린;
-      const jjangguDetail = incomeDetails[month]?.짱구;
+      const girinDetail = mergeIncomeDetail(autoIncomeDetails[month]?.기린, incomeDetails[month]?.기린);
+      const jjangguDetail = mergeIncomeDetail(autoIncomeDetails[month]?.짱구, incomeDetails[month]?.짱구);
 
       const girinIncome = hasIncomeDetail(girinDetail)
         ? calcIncomeDetailTotal(girinDetail)
@@ -1070,7 +1181,7 @@ export default function AssetsPage() {
     }
 
     return entries;
-  }, [timelineMonthOptions, txSummaryByMonth, manualSummaryByMonth, baseAssets, incomeDetails]);
+  }, [timelineMonthOptions, txSummaryByMonth, manualSummaryByMonth, baseAssets, incomeDetails, autoIncomeDetails]);
 
   const currentEntry = useMemo(() => {
     return timeline.find((item) => item.month === monthFilter) ?? null;
@@ -1090,7 +1201,7 @@ export default function AssetsPage() {
     return manualCards[month]?.[name] ?? [];
   };
   const getIncomeDetail = (month: string, name: "기린" | "짱구") => {
-    return incomeDetails[month]?.[name] ?? EMPTY_INCOME_DETAIL;
+    return mergeIncomeDetail(autoIncomeDetails[month]?.[name], incomeDetails[month]?.[name]);
   };
 
   const updateIncomeDetail = (

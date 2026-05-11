@@ -526,7 +526,10 @@ export function pickBestHtmlTable(tables: string[][][]) {
 function inferCategoryMeta(description: string): { category: string; flowType: "지출" | "수입" } {
   const remembered = getRememberedCategory(description);
   if (remembered) {
-    return { category: remembered, flowType: remembered === "월급" ? "수입" : "지출" };
+    const rememberedFlow = ["월급", "기타수입", "환급", "캐시백", "이자", "용돈"].some((keyword) => remembered.includes(keyword))
+      ? "수입"
+      : "지출";
+    return { category: remembered, flowType: rememberedFlow };
   }
 
   const text = normalizeTypeText(description);
