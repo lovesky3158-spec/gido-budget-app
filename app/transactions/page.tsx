@@ -2,12 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { TransactionList, type CommonTransactionRow } from "@/components/common/TransactionList";
 import { normalizeAccountLabel, normalizeUserTag } from "@/lib/finance-labels";
 import {
   formatSignedMoney,
   getNormalizedAmount,
-  isoToShortDate,
   parseShortDate,
   splitType,
 } from "@/lib/finance-utils";
@@ -17,6 +15,11 @@ import {
   resolveOptionIcon,
   type OptionIconMap,
 } from "@/lib/option-icons";
+import TransactionDetailModal, {
+  buildTransactionUpdatePayload,
+  makeTransactionEditForm,
+  type TransactionEditForm,
+} from "@/components/common/TransactionDetailModal";
 type TransactionRow = {
   id: string | number;
   tx_date: string | null;
@@ -31,22 +34,6 @@ type TransactionRow = {
   created_at?: string | null;
 };
 
-type EditForm = {
-  id: string | number;
-  tx_date: string;
-  description: string;
-  type: string;
-  amount: string;
-  balance: string;
-  user_type: string;
-  account_type: string;
-  memo: string;
-};
-function formatNumberWithComma(value: string | number) {
-  const num = String(value).replace(/,/g, "");
-  if (!num) return "";
-  return Number(num).toLocaleString();
-}
 
 function formatCompactWon(value: number) {
   const abs = Math.abs(value);
@@ -85,12 +72,6 @@ function formatMonthLabel(month: string) {
   };
 }
 
-function parseNullableNumber(value: string) {
-  const cleaned = value.replace(/[,\s원₩]/g, "").trim();
-  if (!cleaned) return null;
-  const num = Number(cleaned);
-  return Number.isFinite(num) ? num : null;
-}
 
 
 
@@ -139,54 +120,7 @@ function getAccountTone(value: string | null) {
   return "bg-slate-100 text-slate-500";
 }
 
-function makeEditForm(row: TransactionRow): EditForm {
-  return {
-    id: row.id,
-    tx_date: parseShortDate(row.tx_date)?.iso ?? "",
-    description: row.description ?? "",
-    type: row.type ?? "",
-    amount: row.amount !== null && row.amount !== undefined ? String(Math.abs(row.amount)) : "",
-    balance: row.balance !== null && row.balance !== undefined ? String(row.balance) : "",
-    user_type: normalizeUserTag(row.user_type ?? ""),
-    account_type: normalizeAccountLabel(row.account_type ?? ""),
-    memo: row.memo ?? "",
-  };
-}
-function getEditSignedAmount(editing: EditForm) {
-  const typeMeta = splitType(editing.type);
-  const raw = Math.abs(Number(editing.amount || 0));
 
-  if (typeMeta.flow === "지출" || editing.type.startsWith("지출/")) {
-    return -raw;
-  }
-
-  if (typeMeta.flow === "수입" || editing.type.startsWith("수입/")) {
-    return raw;
-  }
-
-  return raw;
-}
-
-function getTypeFlowOptions(typeOptions: string[]) {
-  return Array.from(
-    new Set(
-      typeOptions
-        .map((type) => splitType(type).flow)
-        .filter(Boolean)
-    )
-  );
-}
-
-function getTypeCategoryOptions(typeOptions: string[], flow: string) {
-  return Array.from(
-    new Set(
-      typeOptions
-        .filter((type) => splitType(type).flow === flow)
-        .map((type) => splitType(type).category)
-        .filter(Boolean)
-    )
-  );
-}
 export default function TransactionsPage() {
   const [rows, setRows] = useState<TransactionRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -204,7 +138,7 @@ export default function TransactionsPage() {
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [openFilterPanel, setOpenFilterPanel] = useState<"user" | "card" | "category" | null>(null);
 
-  const [editing, setEditing] = useState<EditForm | null>(null);
+  const [editing, setEditing] = useState<TransactionEditForm | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Array<string | number>>([]);
@@ -636,7 +570,7 @@ export default function TransactionsPage() {
   };
 
   const openEdit = (row: TransactionRow) => {
-    setEditing(makeEditForm(row));
+    setEditing(makeTransactionEditForm(row));
   };
 
   const closeEdit = () => {
@@ -644,7 +578,7 @@ export default function TransactionsPage() {
     setEditing(null);
   };
 
-  const handleEditChange = (key: keyof EditForm, value: string) => {
+  const handleEditChange = (key: keyof TransactionEditForm, value: string) => {
     setEditing((prev) => (prev ? { ...prev, [key]: value } : prev));
   };
 
@@ -654,16 +588,7 @@ export default function TransactionsPage() {
     setSaveLoading(true);
     setErrorMessage("");
 
-    const payload = {
-      tx_date: editing.tx_date ? isoToShortDate(editing.tx_date) : null,
-      description: editing.description.trim() || null,
-      type: editing.type.trim() || null,
-      amount: getEditSignedAmount(editing),
-      balance: parseNullableNumber(editing.balance),
-      user_type: normalizeUserTag(editing.user_type.trim() || null) || null,
-      account_type: normalizeAccountLabel(editing.account_type.trim() || null) || null,
-      memo: editing.memo.trim() || null,
-    };
+    const payload = buildTransactionUpdatePayload(editing);
 
     const { error } = await supabase
       .from("transactions")
@@ -1092,16 +1017,125 @@ export default function TransactionsPage() {
               표시할 거래내역이 없습니다.
             </div>
           ) : (
-            <div className="pb-8">
-              <TransactionList
-                rows={filtered as CommonTransactionRow[]}
-                groupByDate
-                showMemo
-                selectedIds={selectedIds}
-                onToggleSelected={toggleSelected}
-                onRowClick={(row) => openEdit(row as TransactionRow)}
-                optionIcons={optionIcons}
-              />
+            <div className="space-y-6 pb-8">
+              {groupedRows.map((group) => (
+                <section key={group.date}>
+                  <div className="mb-2 grid grid-cols-[1fr_auto] items-center gap-3 px-1">
+                    <div className="text-[15px] font-extrabold text-slate-700">{group.date}</div>
+                      <div className="flex items-center justify-end gap-2 text-right">
+                        <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-400">
+                          일 합계
+                        </span>
+<span className="text-xs font-black text-slate-400">
+  {formatSignedAmount(group.total)}
+</span>
+                      </div>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {group.items.map((item) => {
+                      const typeMeta = splitType(item.type);
+                      const rawAmount = Number(item.amount ?? 0);
+                      const amount =
+                        (typeMeta.flow === "지출" || (item.type ?? "").startsWith("지출/")) && rawAmount > 0
+                          ? -rawAmount
+                          : rawAmount;
+                      const displayAccount = getDisplayAccount(item.account_type);
+
+                      return (
+<div
+  key={item.id}
+  role="button"
+  tabIndex={0}
+  onClick={() => openEdit(item)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") openEdit(item);
+  }}
+  className={`relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-[#d8f3f1] bg-white px-3.5 py-3 pl-11 text-left shadow-sm transition active:scale-[0.99] hover:-translate-y-[1px] hover:border-[#21bdb7]/50 hover:bg-[#fbfffe] hover:shadow-md before:absolute before:left-0 before:top-5 before:h-[calc(100%-40px)] before:w-1 before:rounded-r-full sm:rounded-[28px] sm:px-5 sm:py-4 sm:pl-14 ${
+    amount < 0 ? "before:bg-rose-300" : "before:bg-sky-300"
+  }`}
+>
+  <button
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      toggleSelected(item.id);
+    }}
+    className={`absolute left-3 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border text-[12px] font-black transition sm:left-5 sm:h-7 sm:w-7 ${
+      selectedIdSet.has(String(item.id))
+        ? "border-[#21bdb7] bg-[#21bdb7] text-white shadow-sm"
+        : "border-slate-200 bg-white text-transparent hover:border-[#21bdb7]"
+    }`}
+    aria-label="거래 선택"
+  >
+    ✓
+  </button>
+
+  <div className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[58px_1fr_auto] sm:gap-x-4">
+    <div className="hidden row-span-2 flex-col items-stretch justify-center gap-1 sm:flex">
+      <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>
+        {typeMeta.flow || "미분류"}
+      </span>
+      <span className={`truncate rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>
+        {typeMeta.category || "기타"}
+      </span>
+    </div>
+
+    <div className="min-w-0">
+      <div className="mb-1 flex items-center gap-1.5 sm:hidden">
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getTypeTone(typeMeta.flow)}`}>{typeMeta.flow || "미분류"}</span>
+        <span className={`truncate rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${getCategoryTone(typeMeta.category || "기타")}`}>{typeMeta.category || "기타"}</span>
+      </div>
+      <div className="truncate text-[15px] font-black text-slate-800 sm:text-[16px]">
+        {item.description || "-"}
+      </div>
+    </div>
+
+    <div className="min-w-[82px] text-right sm:min-w-[90px]">
+      <div
+        className={`whitespace-nowrap text-[14px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${
+          amount < 0 ? "text-rose-500" : "text-sky-500"
+        }`}
+      >
+        {formatSignedAmount(amount)}
+      </div>
+    </div>
+
+    <div className="col-start-1 col-end-3 flex min-w-0 flex-wrap items-center gap-1.5 sm:col-start-2 sm:col-end-4">
+      <span className="rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">
+        {parseShortDate(item.tx_date)?.display ?? item.tx_date ?? "-"}
+      </span>
+
+      {(() => {
+        const userName = normalizeUserTag(item.user_type) || "미지정";
+
+        const userTone = userName === "기린"
+          ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]"
+          : userName === "짱구"
+            ? "border-[#f1d67a] bg-[#fff7d6] text-[#8a5b00]"
+            : "border-slate-100 bg-[#f7fbfb] text-slate-500";
+
+        return (
+          <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${userTone}`}>
+            {renderIcon("users", userName, "h-3.5 w-3.5 object-contain")}
+            {userName}
+          </span>
+        );
+      })()}
+
+      <span className="inline-flex items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+        {renderIcon("accounts", displayAccount, "h-3.5 w-3.5 object-contain")}
+        {displayAccount}
+      </span>
+    </div>
+  </div>
+</div>
+
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
             </div>
           )}
         </div>
@@ -1322,241 +1356,20 @@ export default function TransactionsPage() {
         </div>
       ) : null}
 
-      {editing ? (() => {
-        const editTypeMeta = splitType(editing.type);
-        const editAmount = getEditSignedAmount(editing);
-        const flowOptions = getTypeFlowOptions(typeOptions);
-        const categoryOptionsForFlow = getTypeCategoryOptions(typeOptions, editTypeMeta.flow);
-
-        const setEditFlow = (flow: string) => {
-          const nextCategory = getTypeCategoryOptions(typeOptions, flow)[0] ?? "기타";
-          handleEditChange("type", `${flow}/${nextCategory}`);
-        };
-
-        const setEditCategory = (category: string) => {
-          const flow = editTypeMeta.flow || "지출";
-          handleEditChange("type", `${flow}/${category}`);
-        };
-
-        return (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center overflow-x-hidden bg-slate-950/45 px-3 py-4 backdrop-blur-sm touch-pan-y">
-            <div className="max-h-[90vh] w-full max-w-[calc(100vw-24px)] overflow-x-hidden overflow-y-auto rounded-[26px] bg-white sm:max-w-2xl sm:rounded-[34px] shadow-[0_32px_90px_rgba(15,23,42,0.28)]" style={{ touchAction: "pan-y" }}>
-            <div className="relative border-b border-slate-100 bg-[linear-gradient(135deg,#f8fffe_0%,#effffe_100%)] px-5 py-4 sm:px-7 sm:py-6">
-              <button
-                type="button"
-                onClick={closeEdit}
-                className="absolute right-4 top-4 flex h-8 w-8 sm:right-5 sm:top-5 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white text-lg font-black text-slate-400 shadow-sm transition hover:bg-slate-50 hover:text-slate-600"
-              >
-                ×
-              </button>
-
-              <div className="pr-12">
-                <div className="inline-flex rounded-full bg-[#d8f3f1] px-3 py-1 text-[11px] font-black text-[#0f766e]">
-                  TRANSACTION EDIT
-                </div>
-                <h2 className="mt-2 text-xl font-black sm:mt-3 sm:text-2xl tracking-[-0.04em] text-slate-800">
-                  거래내역 수정
-                </h2>
-                <p className="mt-1 text-xs font-medium sm:text-sm text-slate-400">
-                  카드·분류·금액을 확인하고 필요한 값만 수정해요.
-                </p>
-              </div>
-            </div>
-
-            <div className="px-5 py-4 sm:px-7 sm:py-6">
-              <div className="mb-4 rounded-[22px] border border-[#d8f3f1] bg-[#f8fffe] p-3 sm:mb-5 sm:rounded-[26px] sm:p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="truncate text-base font-black text-slate-800 sm:text-lg">
-                      {editing.description || "거래명 없음"}
-                    </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#0f766e]">
-                        {editing.type || "분류 없음"}
-                      </span>
-                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-slate-400">
-                        {editing.tx_date || "날짜 없음"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="shrink-0 text-right">
-                    <div
-                      className={`whitespace-nowrap text-lg font-black tabular-nums sm:text-xl ${
-                        editAmount < 0 ? "text-rose-400" : "text-sky-500"
-                      }`}
-                    >
-                      {formatSignedAmount(editAmount)}
-                    </div>
-                    <div className="mt-1 text-[10px] font-bold text-slate-300">
-                      현재 금액
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-4">
-                <Field label="날짜">
-                  <input
-                    type="date"
-                    value={editing.tx_date}
-                    onChange={(e) => handleEditChange("tx_date", e.target.value)}
-                    className="h-11 w-full min-w-0 max-w-full appearance-none rounded-[16px] border border-slate-200 bg-slate-50 px-3 text-[13px] font-bold text-slate-700 outline-none focus:border-[#21bdb7] sm:h-12 sm:rounded-[18px] sm:text-sm"
-                  />
-                </Field>
-
-                <Field label="지출/수입">
-                  <div className="grid grid-cols-2 gap-2">
-                    {["지출", "수입"].map((flow) => (
-                      <button
-                        key={flow}
-                        type="button"
-                        onClick={() => setEditFlow(flow)}
-                        className={`h-12 rounded-[18px] text-sm font-black transition ${
-                          editTypeMeta.flow === flow
-                            ? "bg-[#21bdb7] text-white shadow-sm"
-                            : "border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100"
-                        }`}
-                      >
-                        {flow}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                <Field label="상세분류">
-                  <select
-                    value={editTypeMeta.category}
-                    onChange={(e) => setEditCategory(e.target.value)}
-                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
-                  >
-                    <option value="">선택</option>
-                    {categoryOptionsForFlow.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field label="사용자">
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { key: "기린", icon: "/icons/girin.png" },
-                      { key: "짱구", icon: "/icons/zzangu.png" },
-                    ].map((user) => (
-                      <button
-                        key={user.key}
-                        type="button"
-                        onClick={() => handleEditChange("user_type", user.key)}
-                        className={`flex h-12 items-center justify-center gap-2 rounded-[18px] text-sm font-black transition ${
-                          editing.user_type === user.key
-                            ? "bg-[#21bdb7] text-white shadow-sm"
-                            : "border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100"
-                        }`}
-                      >
-                        <img src={user.icon} className="h-3.5 w-3.5 shrink-0 object-contain sm:h-5 sm:w-5" />
-                        {user.key}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                <Field label="내용" className="sm:col-span-2">
-                  <input
-                    type="text"
-                    value={editing.description}
-                    onChange={(e) => handleEditChange("description", e.target.value)}
-                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
-                  />
-                </Field>
-
-                <Field label="메모" className="sm:col-span-2">
-                  <input
-                    type="text"
-                    value={editing.memo}
-                    onChange={(e) => handleEditChange("memo", e.target.value)}
-                    placeholder="참고용 메모"
-                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
-                  />
-                </Field>
-
-                <Field label="금액">
-                  <input
-                    type="text"
-                    value={formatNumberWithComma(editing.amount)}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[,\s원₩]/g, "");
-                      if (!/^\d*$/.test(raw)) return;
-                      handleEditChange("amount", raw);
-                    }}
-                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-black tabular-nums text-rose-400"
-                    placeholder="19000 / 350000"
-                  />
-                </Field>
-
-                <Field label="결제수단">
-                  <div className="relative">
-                    <select
-                      value={editing.account_type}
-                      onChange={(e) => handleEditChange("account_type", e.target.value)}
-                      style={{ paddingLeft: "48px", paddingRight: "40px" }}
-                      className="app-input h-12 w-full appearance-none rounded-[18px] border-slate-200 bg-slate-50 font-bold text-slate-700"
-                    >
-                      <option value="">선택</option>
-                      {accountOptions.map((account) => (
-                        <option key={account} value={account}>
-                          {account}
-                        </option>
-                      ))}
-                    </select>
-
-                    <div className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center">
-                      {renderIcon("accounts", editing.account_type)}
-                    </div>
-
-                    <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
-                      ▼
-                    </div>
-                  </div>
-                </Field>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7 sm:py-5">
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={deleteLoading || saveLoading}
-                className="w-full rounded-[18px] bg-rose-50 px-5 py-3 text-sm sm:w-auto font-black text-rose-500 transition hover:bg-rose-100 disabled:opacity-60"
-              >
-                {deleteLoading ? "삭제 중..." : "삭제"}
-              </button>
-
-              <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={saveLoading || deleteLoading}
-                  className="w-full rounded-[18px] bg-[#21bdb7] px-6 py-3 text-sm sm:w-auto font-black text-white shadow-[0_12px_26px_rgba(33,189,183,0.24)] transition hover:bg-[#18aaa4] disabled:opacity-60"
-                >
-                  {saveLoading ? "저장 중..." : "저장"}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={closeEdit}
-                  disabled={deleteLoading || saveLoading}
-                  className="w-full rounded-[18px] border border-slate-200 bg-white px-5 py-3 text-sm sm:w-auto font-black text-slate-500 transition hover:bg-slate-50 disabled:opacity-60"
-                >
-                  취소
-                </button>
-              </div>
-            </div>
-          </div>
-              </div>
-        );
-      })() : null}
+      {editing ? (
+        <TransactionDetailModal
+          editing={editing}
+          typeOptions={typeOptions}
+          accountOptions={accountOptions}
+          optionIcons={optionIcons}
+          saveLoading={saveLoading}
+          deleteLoading={deleteLoading}
+          onChange={handleEditChange}
+          onClose={closeEdit}
+          onSave={handleSave}
+          onDelete={handleDelete}
+        />
+      ) : null}
           </div>
         );
       }
