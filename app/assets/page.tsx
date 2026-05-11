@@ -556,7 +556,7 @@ function IncomeDetailPopover({
         {[
           ["base", "baseNote", "기본급"],
           ["weekend", "weekendNote", "특근수당"],
-          ["special", "specialNote", "성과급"],
+          ["special", "specialNote", "기타수당"],
           ["tax", "taxNote", "세금"],
         ].map(([amountField, noteField, label]) => (
           <div
@@ -1355,21 +1355,30 @@ export default function AssetsPage() {
   };
 
   const totalSummary = currentEntry
-    ? {
-        carryIn: currentEntry.기린.carryIn + currentEntry.짱구.carryIn,
-        income: currentEntry.기린.income + currentEntry.짱구.income,
-        expense: currentEntry.기린.expense + currentEntry.짱구.expense,
-        manualNet: currentEntry.기린.manualNet + currentEntry.짱구.manualNet,
-        ending: currentEntry.기린.ending + currentEntry.짱구.ending,
-      }
+    ? (() => {
+        const carryIn = currentEntry.기린.carryIn + currentEntry.짱구.carryIn;
+        const income = currentEntry.기린.income + currentEntry.짱구.income;
+        const expense = currentEntry.기린.expense + currentEntry.짱구.expense;
+        const manualNet = currentEntry.기린.manualNet + currentEntry.짱구.manualNet;
+
+        return {
+          carryIn,
+          income,
+          expense,
+          manualNet,
+          // 현재자산 = 전월이월 + 이번달수입 - 총지출 + 기타보유금
+          ending: carryIn + income - expense + manualNet,
+        };
+      })()
     : { carryIn: 0, income: 0, expense: 0, manualNet: 0, ending: 0 };
 
   const assetTrend = useMemo(() => {
     return timeline.slice(-6).map((entry) => {
-      const ending = entry.기린.ending + entry.짱구.ending;
       const income = entry.기린.income + entry.짱구.income;
       const expense = entry.기린.expense + entry.짱구.expense;
       const manualNet = entry.기린.manualNet + entry.짱구.manualNet;
+      const carryIn = entry.기린.carryIn + entry.짱구.carryIn;
+      const ending = carryIn + income - expense + manualNet;
 
       return {
         month: entry.month,
@@ -1794,7 +1803,7 @@ const jjangguTrend = useMemo(() => {
                   expense={currentEntry.기린.expense}
                   manualItems={getManualItems(monthFilter, "기린")}
                   manualNet={currentEntry.기린.manualNet}
-                  ending={currentEntry.기린.ending}
+                  ending={currentEntry.기린.carryIn + currentEntry.기린.income - currentEntry.기린.expense + currentEntry.기린.manualNet}
                   incomeDetail={getIncomeDetail(monthFilter, "기린")}
                   onIncomeDetailChange={(field, value) =>
                     updateIncomeDetail(monthFilter, "기린", field, value)
@@ -1817,7 +1826,7 @@ const jjangguTrend = useMemo(() => {
                   expense={currentEntry.짱구.expense}
                   manualItems={getManualItems(monthFilter, "짱구")}
                   manualNet={currentEntry.짱구.manualNet}
-                  ending={currentEntry.짱구.ending}
+                  ending={currentEntry.짱구.carryIn + currentEntry.짱구.income - currentEntry.짱구.expense + currentEntry.짱구.manualNet}
                   incomeDetail={getIncomeDetail(monthFilter, "짱구")}
                   onIncomeDetailChange={(field, value) =>
                     updateIncomeDetail(monthFilter, "짱구", field, value)
