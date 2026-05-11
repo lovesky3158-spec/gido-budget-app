@@ -55,6 +55,7 @@ type ManualDraftRow = {
   amount: string;
   userType: string;
   accountType: string;
+  memo?: string;
 };
 
 type TransactionInsertRow = {
@@ -448,6 +449,7 @@ export default function UploadPage() {
       amount: "",
       userType: "기린",
       accountType: "현금",
+      memo: "",
     },
   ]);
   const [showManualAddModal, setShowManualAddModal] = useState(false);
@@ -460,6 +462,7 @@ export default function UploadPage() {
     amount: "",
     userType: users[0] ?? "기린",
     accountType: accounts[0] ?? "현금",
+    memo: "",
   });
 
   useEffect(() => {
@@ -1026,10 +1029,8 @@ async function buildPrevInstallmentMap() {
 const payload: TransactionInsertRow[] = selectedData.map((row) => {
   const rawAmount = Math.abs(Number(row.amount ?? 0));
 
-  // 엑셀 카드내역 업로드는 기본적으로 카드 사용내역이므로 무조건 지출로 저장합니다.
-  // 수입 등록은 수동등록 화면에서만 처리합니다.
-  const flowType: "지출" = "지출";
-  const finalAmount = -rawAmount;
+  const flowType = row.flowType ?? "지출";
+  const finalAmount = flowType === "수입" ? rawAmount : -rawAmount;
   const memoMeta = buildUploadMeta(row);
 
   return {
@@ -1110,6 +1111,7 @@ const addManualRow = () => {
     amount: "",
     userType: users[0] ?? "기린",
     accountType: accounts[0] ?? "현금",
+    memo: "",
   });
   setShowManualAddModal(true);
 };
@@ -1152,6 +1154,7 @@ const saveSingleManualForm = async () => {
         user_type: normalizeUserTag(manualForm.userType) || "미지정",
         account_type: normalizeAccountLabel(manualForm.accountType) || "미지정",
         source_file: "manual_input",
+        memo: manualForm.memo?.trim() || null,
       },
     ]);
 
@@ -1219,6 +1222,7 @@ const saveSingleManualForm = async () => {
         user_type: normalizeUserTag(row.userType) || "미지정",
         account_type: normalizeAccountLabel(row.accountType) || "미지정",
         source_file: "manual_input",
+        memo: row.memo?.trim() || null,
       };
     });
 
@@ -1510,6 +1514,7 @@ const saveSingleManualForm = async () => {
                 <div className="min-w-0">
                   <div className="truncate text-[14px] font-black text-slate-800">{row.description || "-"}</div>
                   <div className="mt-1 text-[11px] font-bold text-slate-400">{row.tx_date ? fromIsoDate(row.tx_date) : "-"} · {row.category} · {row.userType}</div>
+                  {row.memo ? <div className="mt-1 truncate text-[11px] font-bold text-slate-400">메모: {row.memo}</div> : null}
                 </div>
                 <div className={`shrink-0 text-[14px] font-black ${signed < 0 ? "text-rose-500" : "text-sky-500"}`}>{signed < 0 ? "-" : "+"}{amount.toLocaleString()}원</div>
               </div>
@@ -1555,7 +1560,7 @@ const saveSingleManualForm = async () => {
                   <td className="px-4 py-4">
                     <div className="font-black text-slate-800">{row.description || "-"}</div>
                     <div className="mt-1 text-xs font-bold text-slate-300">
-                      수동 입력 예정
+                      {row.memo ? `메모: ${row.memo}` : "수동 입력 예정"}
                     </div>
                   </td>
 
@@ -2212,6 +2217,16 @@ const saveSingleManualForm = async () => {
             className={`app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 text-right font-black tabular-nums ${
               manualForm.flowType === "지출" ? "text-rose-500" : "text-sky-500"
             }`}
+          />
+        </Field>
+
+        <Field label="메모" className="sm:col-span-2">
+          <input
+            type="text"
+            value={manualForm.memo ?? ""}
+            onChange={(e) => updateManualForm("memo", e.target.value)}
+            placeholder="예: 참고용 문구 / 정산 메모 / 특이사항"
+            className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
           />
         </Field>
       </div>

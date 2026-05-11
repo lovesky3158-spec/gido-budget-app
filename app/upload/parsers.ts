@@ -523,15 +523,16 @@ export function pickBestHtmlTable(tables: string[][][]) {
   return bestTable;
 }
 
-function inferCategory(description: string) {
+function inferCategoryMeta(description: string): { category: string; flowType: "지출" | "수입" } {
   const remembered = getRememberedCategory(description);
   if (remembered) {
-    return remembered;
+    return { category: remembered, flowType: remembered === "월급" ? "수입" : "지출" };
   }
 
   const text = normalizeTypeText(description);
 
   let bestCategory = "기타";
+  let bestFlowType: "지출" | "수입" = "지출";
   let bestScore = 0;
 
   for (const rule of CATEGORY_RULES) {
@@ -562,10 +563,11 @@ function inferCategory(description: string) {
     if (score > bestScore) {
       bestScore = score;
       bestCategory = rule.category;
+      bestFlowType = rule.flowType ?? "지출";
     }
   }
 
-  return bestCategory;
+  return { category: bestCategory, flowType: bestFlowType };
 }
 
 function getCell(row: string[], headers: string[], headerName: string) {
@@ -716,15 +718,17 @@ function buildKbDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
 
     if (amount === null) continue;
 
+    const categoryMeta = inferCategoryMeta(desc);
+
     const item: ExcelDraftRow = {
       id: makeId("excel"),
       tx_date: dateText,
       description: desc,
-      category: inferCategory(desc),
+      category: categoryMeta.category,
       amount,
       cardName,
       selected: true,
-      flowType: "지출",
+      flowType: categoryMeta.flowType,
     };
 
     result.push(item);
@@ -760,15 +764,17 @@ export function buildDraftRows(params: BuildDraftRowsParams): ExcelDraftRow[] {
     if (!desc) continue;
     if (amount === null) continue;
 
+    const categoryMeta = inferCategoryMeta(desc);
+
     rows.push({
       id: makeId("excel"),
       tx_date: dateText,
       description: desc,
-      category: inferCategory(desc),
+      category: categoryMeta.category,
       amount,
       cardName,
       selected: true,
-      flowType: "지출",
+      flowType: categoryMeta.flowType,
     });
   }
 
@@ -944,15 +950,17 @@ let lastMain: ExcelDraftRow | null = null;
 
     if (amount === null) continue;
 
+    const categoryMeta = inferCategoryMeta(desc);
+
     const item: ExcelDraftRow = {
       id: makeId("excel"),
       tx_date: date,
       description: desc,
-      category: inferCategory(desc),
+      category: categoryMeta.category,
       amount,
       cardName: card || "국민카드",
       selected: true,
-      flowType: "지출",
+      flowType: categoryMeta.flowType,
     };
 
     result.push(item);

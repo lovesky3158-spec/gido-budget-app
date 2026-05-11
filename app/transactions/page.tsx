@@ -26,6 +26,7 @@ type TransactionRow = {
   user_type: string | null;
   account_type: string | null;
   source_file?: string | null;
+  memo?: string | null;
   created_at?: string | null;
 };
 
@@ -38,6 +39,7 @@ type EditForm = {
   balance: string;
   user_type: string;
   account_type: string;
+  memo: string;
 };
 function formatNumberWithComma(value: string | number) {
   const num = String(value).replace(/,/g, "");
@@ -142,22 +144,23 @@ function makeEditForm(row: TransactionRow): EditForm {
     tx_date: parseShortDate(row.tx_date)?.iso ?? "",
     description: row.description ?? "",
     type: row.type ?? "",
-    amount: row.amount !== null && row.amount !== undefined ? String(row.amount) : "",
+    amount: row.amount !== null && row.amount !== undefined ? String(Math.abs(row.amount)) : "",
     balance: row.balance !== null && row.balance !== undefined ? String(row.balance) : "",
     user_type: normalizeUserTag(row.user_type ?? ""),
     account_type: normalizeAccountLabel(row.account_type ?? ""),
+    memo: row.memo ?? "",
   };
 }
 function getEditSignedAmount(editing: EditForm) {
   const typeMeta = splitType(editing.type);
-  const raw = Number(editing.amount || 0);
+  const raw = Math.abs(Number(editing.amount || 0));
 
-  if ((typeMeta.flow === "지출" || editing.type.startsWith("지출/")) && raw > 0) {
+  if (typeMeta.flow === "지출" || editing.type.startsWith("지출/")) {
     return -raw;
   }
 
-  if ((typeMeta.flow === "수입" || editing.type.startsWith("수입/")) && raw < 0) {
-    return Math.abs(raw);
+  if (typeMeta.flow === "수입" || editing.type.startsWith("수입/")) {
+    return raw;
   }
 
   return raw;
@@ -658,6 +661,7 @@ export default function TransactionsPage() {
       balance: parseNullableNumber(editing.balance),
       user_type: normalizeUserTag(editing.user_type.trim() || null) || null,
       account_type: normalizeAccountLabel(editing.account_type.trim() || null) || null,
+      memo: editing.memo.trim() || null,
     };
 
     const { error } = await supabase
@@ -1575,17 +1579,27 @@ export default function TransactionsPage() {
                   />
                 </Field>
 
+                <Field label="메모" className="sm:col-span-2">
+                  <input
+                    type="text"
+                    value={editing.memo}
+                    onChange={(e) => handleEditChange("memo", e.target.value)}
+                    placeholder="참고용 메모"
+                    className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-bold"
+                  />
+                </Field>
+
                 <Field label="금액">
                   <input
                     type="text"
                     value={formatNumberWithComma(editing.amount)}
                     onChange={(e) => {
                       const raw = e.target.value.replace(/[,\s원₩]/g, "");
-                      if (!/^-?\d*$/.test(raw)) return;
+                      if (!/^\d*$/.test(raw)) return;
                       handleEditChange("amount", raw);
                     }}
                     className="app-input h-12 w-full rounded-[18px] border-slate-200 bg-slate-50 font-black tabular-nums text-rose-400"
-                    placeholder="-19000 / 350000"
+                    placeholder="19000 / 350000"
                   />
                 </Field>
 

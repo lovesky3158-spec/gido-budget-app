@@ -1228,8 +1228,30 @@ accountSummary.map((item) => {
                             </div>
                           </div>
 
-                          <div className="mt-3 text-center text-[11px] font-black text-slate-400">
-                            도넛 조각을 눌러 카테고리를 선택해요
+                          <div className="mt-4 grid w-full grid-cols-2 gap-2">
+                            {categorySummary.slice(0, 8).map((item) => {
+                              const selected = activeCategory === item.category;
+
+                              return (
+                                <button
+                                  key={item.category}
+                                  type="button"
+                                  onClick={() => setActiveCategory(item.category)}
+                                  className={[
+                                    "flex min-w-0 items-center gap-2 rounded-[14px] px-2.5 py-2 text-left transition",
+                                    selected ? "bg-white ring-1 ring-[#21bdb7]" : "bg-white/70 ring-1 ring-[#d8f3f1]",
+                                  ].join(" ")}
+                                >
+                                  <span className="shrink-0 text-[15px]">{item.emoji}</span>
+                                  <span className="min-w-0 flex-1 truncate text-[11px] font-black text-[#2a2112]">
+                                    {item.category}
+                                  </span>
+                                  <span className="shrink-0 text-[10px] font-black text-slate-400">
+                                    {item.percent}%
+                                  </span>
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

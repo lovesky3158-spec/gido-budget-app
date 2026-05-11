@@ -1,11 +1,19 @@
 export type CategoryRule = {
   category: string;
+  flowType?: "지출" | "수입";
   strong?: string[];
   weak?: string[];
   exclude?: string[];
 };
 
 const CATEGORY_RULES: CategoryRule[] = [
+  {
+    category: "월급",
+    flowType: "수입",
+    strong: ["월급", "급여", "급료", "상여", "성과급", "보너스", "salary", "payroll"],
+    weak: ["입금", "급여이체"],
+    exclude: [],
+  },
   {
     category: "보험",
     strong: ["한화손해보험", "삼성화재", "현대해상", "db손해보험", "메리츠화재", "kb손해보험"],
