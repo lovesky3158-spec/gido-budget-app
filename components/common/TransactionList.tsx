@@ -198,7 +198,7 @@ export function TransactionList({
                     </button>
                   ) : null}
 
-                  <div className={`grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-1 ${compact ? "" : "sm:grid-cols-[58px_1fr_auto] sm:gap-x-4"}`}>
+                  <div className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 ${compact ? "" : "sm:grid-cols-[58px_1fr_auto] sm:gap-x-4"}`}>
                     {!compact ? (
                       <div className="hidden row-span-2 flex-col items-stretch justify-center gap-1 sm:flex">
                         <span className={`rounded-full px-2 py-1 text-center text-[10px] font-black leading-none ${typeTone(typeMeta.flow)}`}>
@@ -211,12 +211,12 @@ export function TransactionList({
                     ) : null}
 
                     <div className="min-w-0">
-                      <div className="mb-1 flex items-center gap-1.5 sm:hidden">
+                      <div className="mobile-nowrap-scroll mb-1 flex items-center gap-1.5 sm:hidden">
                         {showRank ? (
                           <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-500 ring-1 ring-slate-200">TOP {index + 1}</span>
                         ) : null}
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${typeTone(typeMeta.flow)}`}>{typeMeta.flow || "미분류"}</span>
-                        <span className={`truncate rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${categoryTone(typeMeta.category || "기타")}`}>{typeMeta.category || "기타"}</span>
+                        <span className={`mobile-chip rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${typeTone(typeMeta.flow)}`}>{typeMeta.flow || "미분류"}</span>
+                        <span className={`truncate mobile-chip rounded-full px-2 py-0.5 text-[10px] font-black leading-none ${categoryTone(typeMeta.category || "기타")}`}>{typeMeta.category || "기타"}</span>
                       </div>
                       <div className="flex min-w-0 items-center gap-2">
                         {showRank ? (
@@ -226,17 +226,17 @@ export function TransactionList({
                       </div>
                     </div>
 
-                    <div className="min-w-[82px] text-right sm:min-w-[90px]">
-                      <div className={`whitespace-nowrap text-[14px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${amountTone(amount)}`}>
+                    <div className="min-w-[76px] shrink-0 text-right sm:min-w-[90px]">
+                      <div className={`whitespace-nowrap text-[13px] font-black tracking-[-0.03em] tabular-nums sm:text-[17px] ${amountTone(amount)}`}>
                         {compactMoney(amount)}
                       </div>
                     </div>
 
-                    <div className={`${compact ? "col-start-1 col-end-3" : "col-start-1 col-end-3 sm:col-start-2 sm:col-end-4"} flex min-w-0 flex-wrap items-center gap-1.5`}>
-                      <span className="rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">{formatDate(item)}</span>
+                    <div className={`${compact ? "col-start-1 col-end-3" : "col-start-1 col-end-3 sm:col-start-2 sm:col-end-4"} mobile-nowrap-scroll flex min-w-0 items-center gap-1.5 sm:flex-wrap`}>
+                      <span className="mobile-chip rounded-full bg-[#f6fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-400">{formatDate(item)}</span>
 
                       <span
-                        className={`inline-flex max-w-[110px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${
+                        className={`mobile-chip inline-flex max-w-[110px] items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${
                           userName === "기린"
                             ? "border-[#99f6e4] bg-[#ecfdf5] text-[#0f766e]"
                             : userName === "짱구"
@@ -248,7 +248,7 @@ export function TransactionList({
                         <span className="truncate">{userName}</span>
                       </span>
 
-                      <span className="inline-flex max-w-[130px] items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
+                      <span className="mobile-chip inline-flex max-w-[130px] items-center gap-1 rounded-full border border-slate-100 bg-[#f7fbfb] px-2 py-0.5 text-[10px] font-extrabold text-slate-500">
                         {renderIcon("accounts", accountName, "h-3.5 w-3.5 shrink-0 object-contain")}
                         <span className="truncate">{accountName}</span>
                       </span>

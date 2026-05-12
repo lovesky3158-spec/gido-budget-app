@@ -42,6 +42,8 @@
 
 html {
   background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -523,5 +525,32 @@ button {
     min-height: 46px;
     border-radius: 16px;
     font-size: 14px;
+  }
+}
+
+
+/* Galaxy/Android Chrome mobile width guard */
+@media (max-width: 640px) {
+  .mobile-one-line {
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .mobile-nowrap-scroll {
+    min-width: 0;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-nowrap-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 }

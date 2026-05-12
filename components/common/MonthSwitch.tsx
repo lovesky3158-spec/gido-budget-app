@@ -30,19 +30,19 @@ export default function MonthSwitch({ value, options, onChange }: Props) {
   };
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-2 shadow-sm">
+    <div className="inline-flex max-w-full items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-1.5 shadow-sm sm:gap-2 sm:px-2 sm:py-2">
       <button
         type="button"
         onClick={handlePrev}
         disabled={!canPrev}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-slate-500 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-base sm:h-10 sm:w-10 sm:text-lg font-bold text-slate-500 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35"
         aria-label="이전 월"
       >
         ‹
       </button>
 
-      <div className="min-w-[140px] px-3 text-center">
-        <div className="text-[15px] font-extrabold tracking-tight text-slate-800">
+      <div className="min-w-[108px] px-1 text-center sm:min-w-[140px] sm:px-3">
+        <div className="text-[13px] font-extrabold sm:text-[15px] tracking-tight text-slate-800">
           {formatMonthLabel(value)}
         </div>
       </div>
@@ -51,7 +51,7 @@ export default function MonthSwitch({ value, options, onChange }: Props) {
         type="button"
         onClick={handleNext}
         disabled={!canNext}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-slate-500 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-base sm:h-10 sm:w-10 sm:text-lg font-bold text-slate-500 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35"
         aria-label="다음 월"
       >
         ›
