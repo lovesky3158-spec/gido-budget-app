@@ -838,7 +838,7 @@ export default function TransactionsPage() {
         <div className="grid gap-4">
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">사용자</div>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {[
                 { key: "all", label: "전체", icon: "👥" },
                 { key: "기린", label: "기린", icon: "/icons/girin.png" },
@@ -848,7 +848,7 @@ export default function TransactionsPage() {
                   key={user.key}
                   type="button"
                   onClick={() => setUserFilter(user.key)}
-                  className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${
+                  className={`flex h-9 w-auto min-w-[82px] items-center justify-center gap-1 rounded-full px-3 text-[11px] font-black transition ${
                     userFilter === user.key
                       ? "bg-[#21bdb7] text-white shadow-sm"
                       : "bg-slate-100 text-slate-500"
@@ -868,13 +868,13 @@ export default function TransactionsPage() {
 
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">수입/지출</div>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {["all", "수입", "지출"].map((flow) => (
                 <button
                   key={flow}
                   type="button"
                   onClick={() => setFlowFilter(flow)}
-                  className={`h-9 rounded-full px-3 text-[11px] font-black transition ${
+                  className={`h-9 w-auto min-w-[82px] rounded-full px-3 text-[11px] font-black transition ${
                     flowFilter === flow
                       ? "bg-[#21bdb7] text-white shadow-sm"
                       : "bg-slate-100 text-slate-500"
