@@ -1087,7 +1087,7 @@ const resetFilters = () => {
     <div className="flex items-center gap-2">
       {/* 사용자 */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-black text-slate-500">사용자</span>
+        <span className="text-[10px] font-black text-slate-500">사용자</span>
 
         <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
           {[
@@ -1099,7 +1099,12 @@ const resetFilters = () => {
               key={user.key}
               type="button"
               onClick={() => setUserFilter(user.key)}
-              className={filterButtonClass(userFilter === user.key, "user")}
+              className={[
+  "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-[10px] font-black transition",
+  userFilter === user.key
+    ? "bg-[#facc15] text-[#3b2f00]"
+    : "bg-white/70 text-slate-600 hover:bg-white",
+].join(" ")}
             >
               {user.icon ? (
                 <span className={filterIconClass}>
@@ -1114,7 +1119,7 @@ const resetFilters = () => {
 
       {/* 결제수단 */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-black text-slate-500">결제수단</span>
+        <span className="text-[10px] font-black text-slate-500">결제수단</span>
 
         <div className="inline-flex items-center gap-1 rounded-full bg-[#ecfdf5] p-1 ring-1 ring-[#99f6e4]/80">
           {[
@@ -1129,7 +1134,7 @@ const resetFilters = () => {
               type="button"
               onClick={() => setCardFilter(card.key)}
               className={[
-                "inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition",
+                "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-[10px] font-black transition",
                 cardFilter === card.key
                   ? "bg-[#14b8a6] text-white shadow-sm ring-1 ring-[#0f766e]/10"
                   : "bg-white text-[#0f766e] hover:bg-[#f0fdfa]",
@@ -1157,7 +1162,7 @@ const resetFilters = () => {
 
       {/* 카테고리 */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-black text-slate-500">카테고리</span>
+        <span className="text-[10px] font-black text-slate-500">카테고리</span>
 
         <div className="relative">
           <select
@@ -1166,9 +1171,9 @@ const resetFilters = () => {
               setCategoryFilter(e.target.value);
               setActiveCategory(e.target.value === "all" ? null : e.target.value);
             }}
-            className="h-8 w-[140px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[11px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
+            className="h-8 w-[140px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[10px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
           >
-            <option value="all">전체 카테고리</option>
+            <option value="all">카테고리</option>
             {categoryOptions.map((category) => (
               <option key={category} value={category}>
                 {getCategoryEmoji(category)} {category}
