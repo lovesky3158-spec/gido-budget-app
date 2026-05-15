@@ -145,6 +145,7 @@ export default function TransactionsPage() {
   const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false);
   const [bulkCategory, setBulkCategory] = useState("");
   const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
 
   useEffect(() => {
@@ -569,6 +570,32 @@ export default function TransactionsPage() {
     await fetchData();
   };
 
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+
+    const ok = window.confirm(`선택한 ${selectedIds.length}건을 삭제할까요? 삭제 후에는 되돌릴 수 없습니다.`);
+    if (!ok) return;
+
+    setBulkDeleting(true);
+    setErrorMessage("");
+
+    const { error } = await supabase
+      .from("transactions")
+      .delete()
+      .in("id", selectedIds);
+
+    setBulkDeleting(false);
+
+    if (error) {
+      setErrorMessage(`선택 삭제 실패: ${error.message}`);
+      return;
+    }
+
+    setSelectedIds([]);
+    await fetchData();
+  };
+
   const openEdit = (row: TransactionRow) => {
     setEditing(makeTransactionEditForm(row));
   };
@@ -799,12 +826,16 @@ export default function TransactionsPage() {
     </div>
 
     {showFilterSheet ? (
-      <div className="fixed inset-x-3 bottom-[92px] z-40 max-h-[68vh] overflow-y-auto overflow-x-hidden rounded-[28px] border border-slate-100 bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.22)] sm:static sm:mt-2 sm:max-h-none sm:overflow-visible sm:overflow-x-hidden sm:rounded-[24px] sm:p-4 sm:shadow-[0_14px_40px_rgba(15,23,42,0.08)]">
-        <div className="mb-3 flex items-center justify-between sm:hidden">
-          <div className="text-sm font-black text-slate-800">필터</div>
-          <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
+      <div className="fixed inset-0 z-40 flex items-end bg-slate-950/35 px-3 pb-3 pt-20 backdrop-blur-sm sm:items-start sm:justify-center sm:px-6 sm:pb-0 sm:pt-28" onMouseDown={() => setShowFilterSheet(false)}>
+        <div className="max-h-[78vh] w-full max-w-4xl overflow-y-auto overflow-x-hidden rounded-[28px] border border-slate-100 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.22)] sm:max-h-[72vh] sm:rounded-[30px] sm:p-5" onMouseDown={(e) => e.stopPropagation()}>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <div className="text-sm font-black text-slate-800 sm:text-base">거래내역 필터</div>
+            <div className="mt-0.5 text-[11px] font-bold text-slate-400">사용자 → 수입/지출 → 결제수단 → 카테고리 순서로 적용돼요.</div>
+          </div>
+          <button type="button" onClick={() => setShowFilterSheet(false)} className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-base font-black text-slate-500">×</button>
         </div>
-        <div className="grid gap-3">
+        <div className="grid gap-4">
           <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">사용자</div>
             <div className="grid grid-cols-3 gap-1.5">
@@ -829,6 +860,27 @@ export default function TransactionsPage() {
                     <span>{user.icon}</span>
                   )}
                   <span>{user.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+
+          <div>
+            <div className="mb-1.5 text-[11px] font-black text-slate-400">수입/지출</div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {["all", "수입", "지출"].map((flow) => (
+                <button
+                  key={flow}
+                  type="button"
+                  onClick={() => setFlowFilter(flow)}
+                  className={`h-9 rounded-full px-3 text-[11px] font-black transition ${
+                    flowFilter === flow
+                      ? "bg-[#21bdb7] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {flow === "all" ? "전체" : flow}
                 </button>
               ))}
             </div>
@@ -863,28 +915,17 @@ export default function TransactionsPage() {
           </div>
 
           <div>
-            <div className="mb-1.5 text-[11px] font-black text-slate-400">수입/지출</div>
-            <div className="grid grid-cols-3 gap-1.5">
-              {["all", "수입", "지출"].map((flow) => (
-                <button
-                  key={flow}
-                  type="button"
-                  onClick={() => setFlowFilter(flow)}
-                  className={`h-9 rounded-full px-3 text-[11px] font-black transition ${
-                    flowFilter === flow
-                      ? "bg-[#21bdb7] text-white shadow-sm"
-                      : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  {flow === "all" ? "전체" : flow}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
             <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
             <div className="flex flex-wrap gap-1.5 pb-1">
+              <button
+                type="button"
+                onClick={() => setCategoryFilter("all")}
+                className={`h-9 rounded-full px-3 text-[11px] font-black transition ${
+                  categoryFilter === "all" ? "bg-[#21bdb7] text-white shadow-sm" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                전체
+              </button>
               {categoryOptions.map((category) => (
                 <button
                   key={category}
@@ -896,7 +937,7 @@ export default function TransactionsPage() {
                       : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  <span className="block min-w-0 truncate">{category === "all" ? "전체" : category}</span>
+                  <span className="block min-w-0 truncate">{category}</span>
                 </button>
               ))}
             </div>
@@ -912,6 +953,24 @@ export default function TransactionsPage() {
             </button>
           ) : null}
         </div>
+
+        <div className="mt-5 flex gap-2 border-t border-slate-100 pt-4">
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="h-11 flex-1 rounded-[18px] border border-slate-200 bg-white text-[13px] font-black text-slate-500"
+          >
+            초기화
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowFilterSheet(false)}
+            className="h-11 flex-[1.4] rounded-[18px] bg-[#21bdb7] text-[13px] font-black text-white shadow-[0_10px_24px_rgba(33,189,183,0.22)]"
+          >
+            적용하고 닫기
+          </button>
+        </div>
+      </div>
       </div>
     ) : null}
   </div>
@@ -946,10 +1005,10 @@ export default function TransactionsPage() {
           <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="text-[17px] font-extrabold text-[#11b5b0]">
-                전체 내역 {filtered.length}건
+                {selectedCount > 0 ? `${selectedCount}건 선택됨` : `전체 내역 ${filtered.length}건`}
               </div>
               <div className="mt-0.5 text-xs text-slate-400">
-                체크 후 카테고리 일괄 변경, 카드를 탭하면 상세 수정
+                {selectedCount > 0 ? "선택한 내역을 일괄 변경하거나 삭제할 수 있어요" : "체크 후 카테고리 일괄 변경, 카드를 탭하면 상세 수정"}
               </div>
             </div>
 
@@ -977,6 +1036,14 @@ export default function TransactionsPage() {
                 className="h-9 rounded-full bg-[#21bdb7] px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(33,189,183,0.20)] disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
               >
                 카테고리 변경 {selectedCount > 0 ? `${selectedCount}건` : ""}
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkDelete}
+                disabled={selectedCount === 0 || bulkDeleting}
+                className="h-9 rounded-full bg-rose-50 px-4 text-[11px] font-black text-rose-500 ring-1 ring-rose-100 disabled:bg-slate-100 disabled:text-slate-300 disabled:ring-slate-100"
+              >
+                {bulkDeleting ? "삭제 중..." : "선택삭제"}
               </button>
             </div>
 

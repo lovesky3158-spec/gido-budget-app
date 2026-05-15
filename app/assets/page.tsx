@@ -984,7 +984,7 @@ function PersonAssetCard({
         <div>
           <div className="text-[13px] font-black text-slate-900">기타보유금</div>
           <div className="mt-0.5 text-[11px] font-semibold text-slate-400">
-            적금 · 현금보정 · 별도 보유금
+            해당월에만 반영되는 보유잔액 보정값
           </div>
         </div>
         <button
@@ -1214,8 +1214,10 @@ export default function AssetsPage() {
         ? calcIncomeDetailTotal(jjangguDetail)
         : tx.짱구.income;
 
-      const girinEnding = girinCarry + girinIncome - tx.기린.expense + manual.기린;
-      const jjangguEnding = jjangguCarry + jjangguIncome - tx.짱구.expense + manual.짱구;
+      const girinBaseEnding = girinCarry + girinIncome - tx.기린.expense;
+      const jjangguBaseEnding = jjangguCarry + jjangguIncome - tx.짱구.expense;
+      const girinEnding = girinBaseEnding + manual.기린;
+      const jjangguEnding = jjangguBaseEnding + manual.짱구;
 
       entries.push({
         month,
@@ -1235,8 +1237,9 @@ export default function AssetsPage() {
         },
       });
 
-      prevGirin = girinEnding;
-      prevJjanggu = jjangguEnding;
+      // 기타보유금은 해당월 보유잔액 보정값으로만 반영하고 다음달 이월에는 누적하지 않습니다.
+      prevGirin = girinBaseEnding;
+      prevJjanggu = jjangguBaseEnding;
     }
 
     return entries;
