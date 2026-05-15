@@ -851,7 +851,7 @@ const resetFilters = () => {
 
   const filterButtonClass = (active: boolean, tone: "user" | "card" | "category") =>
     [
-      "inline-flex h-8 min-w-[64px] items-center justify-center gap-1 rounded-[15px] border px-2 text-[11px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:gap-1.5 sm:rounded-[18px] sm:px-3 sm:text-[13px]",
+      "inline-flex h-8 min-w-[56px] items-center justify-center gap-1 rounded-[15px] border px-2 text-[11px] font-black transition-all duration-200 sm:h-9 sm:min-w-[68px] sm:gap-1 sm:rounded-[16px] sm:px-2.5 sm:text-[12px]",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
@@ -862,7 +862,7 @@ const resetFilters = () => {
     ].join(" ");
 
   const filterIconClass =
-    "flex h-5 w-5 shrink-0 items-center justify-center rounded-[9px] bg-white ring-1 ring-slate-200 sm:h-6 sm:w-6 sm:rounded-[10px]";
+    "flex h-5 w-5 shrink-0 items-center justify-center rounded-[9px] bg-white ring-1 ring-slate-200";
   return (
     <main className="min-h-screen bg-white pb-12">
       {loading ? (
@@ -1083,95 +1083,103 @@ const resetFilters = () => {
         </div>
 
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
-          <div className="hidden min-w-0 flex-nowrap items-center gap-2 overflow-x-auto rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:flex sm:w-auto sm:flex-wrap sm:gap-5 sm:overflow-visible sm:rounded-[30px] sm:px-5 sm:py-3">
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-black text-slate-500">사용자</span>
+          <div className="hidden rounded-[26px] border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:block">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[12px] font-black text-slate-500">사용자</span>
+                <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
+                  {[
+                    { key: "all", label: "전체", icon: null },
+                    { key: "기린", label: "기린", icon: "/icons/girin.png" },
+                    { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
+                  ].map((user) => (
+                    <button
+                      key={user.key}
+                      type="button"
+                      onClick={() => setUserFilter(user.key)}
+                      className={filterButtonClass(userFilter === user.key, "user")}
+                    >
+                      {user.icon ? (
+                        <span className={filterIconClass}>
+                          <img src={user.icon} alt="" className="h-4 w-4 object-contain" />
+                        </span>
+                      ) : null}
+                      <span>{user.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
-              {[
-                { key: "all", label: "전체", icon: null },
-                { key: "기린", label: "기린", icon: "/icons/girin.png" },
-                { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
-              ].map((user) => (
-                  <button
-                    key={user.key}
-                    type="button"
-                    onClick={() => setUserFilter(user.key)}
-                    className={filterButtonClass(userFilter === user.key, "user")}
+              <div className="flex items-center gap-2">
+                <span className="text-[12px] font-black text-slate-500">카테고리</span>
+                <div className="relative">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => {
+                      setCategoryFilter(e.target.value);
+                      setActiveCategory(e.target.value === "all" ? null : e.target.value);
+                    }}
+                    className="h-10 min-w-[150px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-9 text-[12px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
                   >
-                    {user.icon ? (
+                    <option value="all">🧾 전체 카테고리</option>
+                    {categoryOptions.map((category) => (
+                      <option key={category} value={category}>{getCategoryEmoji(category)} {category}</option>
+                    ))}
+                  </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">▼</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={resetFilters}
+                disabled={activeFilterCount === 0}
+                className="ml-auto h-10 rounded-full border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                초기화
+              </button>
+            </div>
+
+            <div className="mt-3 flex items-center gap-2">
+              <span className="shrink-0 text-[12px] font-black text-slate-500">결제수단</span>
+              <div className="inline-flex flex-wrap items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
+                {[
+                  { key: "all", label: "전체" },
+                  { key: "신한", label: "신한|신용" },
+                  { key: "국민", label: "국민|신용" },
+                  { key: "농협", label: "농협|체크" },
+                  { key: "현금", label: "현금" },
+                  { key: "기타", label: "기타" },
+                ].map((card) => {
+                  const icon =
+                    card.key === "all"
+                      ? ""
+                      : resolveOptionIcon("accounts", card.label, optionIcons);
+
+                  return (
+                    <button
+                      key={card.key}
+                      type="button"
+                      onClick={() => setCardFilter(card.key)}
+                      className={filterButtonClass(cardFilter === card.key, "card")}
+                    >
                       <span className={filterIconClass}>
-                        <img src={user.icon} alt="" className="h-5 w-5 object-contain" />
+                        {card.key === "all" ? (
+                          <span>💳</span>
+                        ) : icon && isImageIcon(icon) ? (
+                          <img src={icon} alt="" className="h-4 w-4 object-contain" />
+                        ) : icon ? (
+                          <span className="text-[12px]">{icon}</span>
+                        ) : (
+                          <span className="text-[12px]">{card.label[0]}</span>
+                        )}
                       </span>
-                    ) : null}
-                    <span>{user.label}</span>
-                  </button>
-                ))}
+                      <span>{card.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="shrink-0 text-[12px] font-black text-slate-500">카테고리</span>
-
-            <div className="inline-flex max-w-[420px] items-center gap-1 overflow-x-auto rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
-              {[{ key: "all", label: "전체", emoji: "🧾" }, ...categoryOptions.map((category) => ({ key: category, label: category, emoji: getCategoryEmoji(category) }))].map((category) => (
-                <button
-                  key={category.key}
-                  type="button"
-                  onClick={() => {
-                    setCategoryFilter(category.key);
-                    setActiveCategory(category.key === "all" ? null : category.key);
-                  }}
-                  className={filterButtonClass(categoryFilter === category.key, "category")}
-                >
-                  <span className={filterIconClass}>{category.emoji}</span>
-                  <span>{category.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-black text-slate-500">결제수단</span>
-
-            <div className="inline-flex flex-wrap items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
-              {[
-                { key: "all", label: "전체" },
-                { key: "신한", label: "신한|신용" },
-                { key: "국민", label: "국민|신용" },
-                { key: "농협", label: "농협|체크" },
-                { key: "현금", label: "현금" },
-                { key: "기타", label: "기타" },
-              ].map((card) => {
-                const icon =
-                  card.key === "all"
-                    ? ""
-                    : resolveOptionIcon("accounts", card.label, optionIcons);
-
-                return (
-                  <button
-                    key={card.key}
-                    type="button"
-                    onClick={() => setCardFilter(card.key)}
-                    className={filterButtonClass(cardFilter === card.key, "card")}
-                  >
-                    <span className={filterIconClass}>
-                      {card.key === "all" ? (
-                        <span>💳</span>
-                      ) : icon && isImageIcon(icon) ? (
-                        <img src={icon} alt="" className="h-4 w-4 object-contain" />
-                      ) : icon ? (
-                        <span className="text-[12px]">{icon}</span>
-                      ) : (
-                        <span className="text-[12px]">{card.label[0]}</span>
-                      )}
-                    </span>
-
-                    <span>{card.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-4">
