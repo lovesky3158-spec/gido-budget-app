@@ -1152,7 +1152,7 @@ const resetFilters = () => {
             onChange={(e) => {
               if (e.target.value !== "more") setCardFilter(e.target.value);
             }}
-            className="h-8 w-[68px] rounded-full border border-dashed border-[#99f6e4] bg-white px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-[#f0fdfa]"
+            className="h-8 w-[78px] appearance-none rounded-full border border-dashed border-[#99f6e4] bg-white pl-3 pr-6 text-[9px] font-black text-[#0f766e] outline-none hover:bg-[#f0fdfa]"
           >
             <option value="more">더보기</option>
             <option value="기타">기타</option>
@@ -1181,7 +1181,7 @@ const resetFilters = () => {
             ))}
           </select>
 
-          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">
+          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">
             ▼
           </span>
         </div>
