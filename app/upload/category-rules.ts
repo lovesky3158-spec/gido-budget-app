@@ -36,7 +36,7 @@ const CATEGORY_RULES: CategoryRule[] = [
   {
     category: "금융",
     strong: ["카드대금", "이자", "연회비", "수수료"],
-    weak: ["금융", "납부"],
+    weak: ["납부"],
     exclude: [],
   },
   {
@@ -90,7 +90,7 @@ const CATEGORY_RULES: CategoryRule[] = [
   {
     category: "주거",
     strong: ["관리비", "월세", "전세", "도시가스", "전기요금", "수도요금", "통신요금"],
-    weak: ["가스", "전기", "수도", "통신", "인터넷"],
+    weak: ["가스", "전기", "수도", "통신", "인터넷","주택금융","관리비"],
     exclude: [],
   },
 
