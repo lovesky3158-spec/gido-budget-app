@@ -1024,7 +1024,7 @@ const resetFilters = () => {
                       { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
                     ].map((user) => (
                       <button key={user.key} type="button" onClick={() => setUserFilter(user.key)} className={`flex h-9 items-center justify-center gap-1 rounded-full text-[11px] font-black transition ${userFilter === user.key ? "bg-[#21bdb7] text-white shadow-sm ring-2 ring-[#99f6e4]/50" : user.key === "all" ? "bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#99f6e4]" : "bg-slate-100 text-slate-500"}`}>
-                        {user.icon.startsWith("/") ? <img src={user.icon} alt="" className="h-4 w-4 object-contain" /> : <span>{user.icon}</span>}
+                        {user.icon.startsWith("/") ? <img src={user.icon} alt="" className="h-3 w-3 object-contain" /> : <span>{user.icon}</span>}
                         <span>{user.label}</span>
                       </button>
                     ))}
@@ -1100,7 +1100,7 @@ const resetFilters = () => {
               type="button"
               onClick={() => setUserFilter(user.key)}
               className={[
-  "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-[10px] font-black transition",
+  "inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-full px-2 text-[9px] font-black transition",
   userFilter === user.key
     ? "bg-[#facc15] text-[#3b2f00]"
     : "bg-white/70 text-slate-600 hover:bg-white",
@@ -1134,14 +1134,14 @@ const resetFilters = () => {
               type="button"
               onClick={() => setCardFilter(card.key)}
               className={[
-                "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-[10px] font-black transition",
+  "inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-full px-2 text-[9px] font-black transition",
                 cardFilter === card.key
                   ? "bg-[#14b8a6] text-white shadow-sm ring-1 ring-[#0f766e]/10"
                   : "bg-white text-[#0f766e] hover:bg-[#f0fdfa]",
               ].join(" ")}
             >
-              <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-white/90">
-                <img src={card.icon} alt="" className="h-4 w-4 object-contain" />
+              <span className="grid h-4 w-4 place-items-center overflow-hidden rounded-full bg-white/90">
+                <img src={card.icon} alt="" className="h-3 w-3 object-contain" />
               </span>
               <span>{card.label}</span>
             </button>
@@ -1152,7 +1152,7 @@ const resetFilters = () => {
             onChange={(e) => {
               if (e.target.value !== "more") setCardFilter(e.target.value);
             }}
-            className="h-8 w-[82px] rounded-full border border-dashed border-[#99f6e4] bg-white px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-[#f0fdfa]"
+            className="h-8 w-[68px] rounded-full border border-dashed border-[#99f6e4] bg-white px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-[#f0fdfa]"
           >
             <option value="more">더보기</option>
             <option value="기타">기타</option>
@@ -1171,7 +1171,7 @@ const resetFilters = () => {
               setCategoryFilter(e.target.value);
               setActiveCategory(e.target.value === "all" ? null : e.target.value);
             }}
-            className="h-8 w-[140px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[10px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
+            className="h-8 w-[120px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[10px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
           >
             <option value="all">카테고리</option>
             {categoryOptions.map((category) => (
