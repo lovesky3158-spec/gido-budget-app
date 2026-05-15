@@ -1098,7 +1098,12 @@ const resetFilters = () => {
               key={user.key}
               type="button"
               onClick={() => setUserFilter(user.key)}
-              className={filterButtonClass(userFilter === user.key, "user")}
+              className={[
+  "inline-flex h-7 items-center gap-1 rounded-full px-2 text-[10px] font-bold transition",
+  userFilter === user.key
+    ? "bg-[#facc15] text-[#3b2f00]"
+    : "bg-white/70 text-slate-600 hover:bg-white",
+].join(" ")}
             >
               {user.icon ? (
                 <span className={filterIconClass}>
@@ -1126,14 +1131,14 @@ const resetFilters = () => {
             type="button"
             onClick={() => setCardFilter(card.key)}
             className={[
-            "inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition",
+            "inline-flex h-7 items-center gap-1 rounded-full px-2 text-[10px] font-black transition",
             cardFilter === card.key
                 ? "bg-[#14b8a6] text-white shadow-sm"
                 : "bg-white/70 text-[#0f766e] hover:bg-white",
             ].join(" ")}
         >
-            <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-white/90">
-            <img src={card.icon} alt="" className="h-4 w-4 object-contain" />
+            <span className="grid h-4 w-4 place-items-center overflow-hidden rounded-full bg-white/90">
+            <img src={card.icon} alt="" className="h-3 w-3 object-contain" />
             </span>
 
             <span>{card.label}</span>
@@ -1164,7 +1169,7 @@ const resetFilters = () => {
               setCategoryFilter(e.target.value);
               setActiveCategory(e.target.value === "all" ? null : e.target.value);
             }}
-            className="h-10 w-[150px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[12px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
+            className="h-7 w-[128px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[10px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
           >
             <option value="all">전체 카테고리</option>
             {categoryOptions.map((category) => (
@@ -1179,14 +1184,15 @@ const resetFilters = () => {
         </div>
       </div>
 
-      <button
+        <button
         type="button"
         onClick={resetFilters}
         disabled={activeFilterCount === 0}
-        className="ml-auto h-10 rounded-full border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        초기화
-      </button>
+        className="ml-auto grid h-7 w-7 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        title="필터 초기화"
+        >
+        ↺
+        </button>
     </div>
   </div>
 </div>
