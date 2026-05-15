@@ -1084,10 +1084,11 @@ const resetFilters = () => {
 
 <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
   <div className="hidden rounded-[26px] border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:block">
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {/* 사용자 */}
       <div className="flex items-center gap-2">
-        <span className="text-[12px] font-black text-slate-500">사용자</span>
+        <span className="text-[11px] font-black text-slate-500">사용자</span>
+
         <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
           {[
             { key: "all", label: "전체", icon: null },
@@ -1098,12 +1099,7 @@ const resetFilters = () => {
               key={user.key}
               type="button"
               onClick={() => setUserFilter(user.key)}
-              className={[
-  "inline-flex h-7 items-center gap-1 rounded-full px-2 text-[10px] font-bold transition",
-  userFilter === user.key
-    ? "bg-[#facc15] text-[#3b2f00]"
-    : "bg-white/70 text-slate-600 hover:bg-white",
-].join(" ")}
+              className={filterButtonClass(userFilter === user.key, "user")}
             >
               {user.icon ? (
                 <span className={filterIconClass}>
@@ -1118,42 +1114,42 @@ const resetFilters = () => {
 
       {/* 결제수단 */}
       <div className="flex items-center gap-2">
-        <span className="text-[12px] font-black text-slate-500">결제수단</span>
-        <div className="inline-flex items-center gap-1 rounded-full bg-[#ecfdf5] p-1 ring-1 ring-[#99f6e4]/80">
-        {[
-        { key: "신한", label: "신한신용", icon: "/icons/sh.png" },
-        { key: "국민", label: "국민신용", icon: "/icons/kb.png" },
-        { key: "농협", label: "농협신용", icon: "/icons/nh.png" },
-        { key: "현금", label: "현금", icon: "/icons/cash.png" },
-        ].map((card) => (
-        <button
-            key={card.key}
-            type="button"
-            onClick={() => setCardFilter(card.key)}
-            className={[
-            "inline-flex h-7 items-center gap-1 rounded-full px-2 text-[10px] font-black transition",
-            cardFilter === card.key
-                ? "bg-[#14b8a6] text-white shadow-sm"
-                : "bg-white/70 text-[#0f766e] hover:bg-white",
-            ].join(" ")}
-        >
-            <span className="grid h-4 w-4 place-items-center overflow-hidden rounded-full bg-white/90">
-            <img src={card.icon} alt="" className="h-3 w-3 object-contain" />
-            </span>
+        <span className="text-[11px] font-black text-slate-500">결제수단</span>
 
-            <span>{card.label}</span>
-        </button>
-        ))}
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#ecfdf5] p-1 ring-1 ring-[#99f6e4]/80">
+          {[
+            { key: "all", label: "전체", icon: "/icons/card.png" },
+            { key: "신한", label: "신한신용", icon: "/icons/sh.png" },
+            { key: "국민", label: "국민신용", icon: "/icons/kb.png" },
+            { key: "농협", label: "농협신용", icon: "/icons/nh.png" },
+            { key: "현금", label: "현금", icon: "/icons/cash.png" },
+          ].map((card) => (
+            <button
+              key={card.key}
+              type="button"
+              onClick={() => setCardFilter(card.key)}
+              className={[
+                "inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition",
+                cardFilter === card.key
+                  ? "bg-[#14b8a6] text-white shadow-sm ring-1 ring-[#0f766e]/10"
+                  : "bg-white text-[#0f766e] hover:bg-[#f0fdfa]",
+              ].join(" ")}
+            >
+              <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-white/90">
+                <img src={card.icon} alt="" className="h-4 w-4 object-contain" />
+              </span>
+              <span>{card.label}</span>
+            </button>
+          ))}
 
           <select
-            value={["신한", "국민", "농협", "현금", "all"].includes(cardFilter) ? "more" : cardFilter}
+            value={["all", "신한", "국민", "농협", "현금"].includes(cardFilter) ? "more" : cardFilter}
             onChange={(e) => {
               if (e.target.value !== "more") setCardFilter(e.target.value);
             }}
-            className="h-8 w-[86px] rounded-full border-0 bg-white/80 px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-white"
+            className="h-8 w-[82px] rounded-full border border-dashed border-[#99f6e4] bg-white px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-[#f0fdfa]"
           >
             <option value="more">더보기</option>
-            <option value="all">전체</option>
             <option value="기타">기타</option>
           </select>
         </div>
@@ -1161,7 +1157,8 @@ const resetFilters = () => {
 
       {/* 카테고리 */}
       <div className="flex items-center gap-2">
-        <span className="text-[12px] font-black text-slate-500">카테고리</span>
+        <span className="text-[11px] font-black text-slate-500">카테고리</span>
+
         <div className="relative">
           <select
             value={categoryFilter}
@@ -1169,7 +1166,7 @@ const resetFilters = () => {
               setCategoryFilter(e.target.value);
               setActiveCategory(e.target.value === "all" ? null : e.target.value);
             }}
-            className="h-7 w-[128px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[10px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
+            className="h-8 w-[140px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[11px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
           >
             <option value="all">전체 카테고리</option>
             {categoryOptions.map((category) => (
@@ -1178,21 +1175,23 @@ const resetFilters = () => {
               </option>
             ))}
           </select>
+
           <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">
             ▼
           </span>
         </div>
       </div>
 
-        <button
+      {/* 초기화 */}
+      <button
         type="button"
         onClick={resetFilters}
         disabled={activeFilterCount === 0}
-        className="ml-auto grid h-7 w-7 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        className="ml-auto grid h-8 w-8 place-items-center rounded-full border border-slate-200 bg-white text-[13px] text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
         title="필터 초기화"
-        >
+      >
         ↺
-        </button>
+      </button>
     </div>
   </div>
 </div>
