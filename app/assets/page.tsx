@@ -74,6 +74,19 @@ const EMPTY_INCOME_DETAIL: IncomeDetail = {
 const INCOME_DETAIL_KEY = "asset_couple_income_detail_v1";
 const BASE_ASSET_KEY = "asset_couple_base_assets_v1";
 const MANUAL_CARD_KEY = "asset_couple_manual_cards_v1";
+const ASSET_SETTINGS_TABLE = "asset_settings";
+
+type AssetSettingsPayload = {
+  baseAssets: BaseAssets;
+  manualCards: ManualAdjustmentMap;
+  incomeDetails: IncomeDetailMap;
+};
+
+type AssetSettingsRow = {
+  key: string;
+  value: AssetSettingsPayload | null;
+  updated_at?: string | null;
+};
 
 function makeId() {
   return `asset-${Math.random().toString(36).slice(2, 10)}`;
@@ -117,9 +130,9 @@ function loadBaseAssets(): BaseAssets {
   }
 }
 
-function saveBaseAssets(next: BaseAssets) {
+function clearLegacyBaseAssets() {
   if (typeof window === "undefined") return;
-  localStorage.setItem(BASE_ASSET_KEY, JSON.stringify(next));
+  localStorage.removeItem(BASE_ASSET_KEY);
 }
 
 function loadManualCards(): ManualAdjustmentMap {
@@ -134,9 +147,9 @@ function loadManualCards(): ManualAdjustmentMap {
   }
 }
 
-function saveManualCards(next: ManualAdjustmentMap) {
+function clearLegacyManualCards() {
   if (typeof window === "undefined") return;
-  localStorage.setItem(MANUAL_CARD_KEY, JSON.stringify(next));
+  localStorage.removeItem(MANUAL_CARD_KEY);
 }
 function loadIncomeDetails(): IncomeDetailMap {
   if (typeof window === "undefined") return {};
@@ -151,9 +164,78 @@ function loadIncomeDetails(): IncomeDetailMap {
   }
 }
 
-function saveIncomeDetails(next: IncomeDetailMap) {
+function clearLegacyIncomeDetails() {
   if (typeof window === "undefined") return;
-  localStorage.setItem(INCOME_DETAIL_KEY, JSON.stringify(next));
+  localStorage.removeItem(INCOME_DETAIL_KEY);
+}
+
+function buildLocalAssetSettings(): AssetSettingsPayload {
+  return {
+    baseAssets: loadBaseAssets(),
+    manualCards: loadManualCards(),
+    incomeDetails: loadIncomeDetails(),
+  };
+}
+
+function hasAssetSettingsValue(value: AssetSettingsPayload) {
+  return (
+    Number(value.baseAssets?.기린 ?? 0) !== 0 ||
+    Number(value.baseAssets?.짱구 ?? 0) !== 0 ||
+    Object.keys(value.manualCards ?? {}).length > 0 ||
+    Object.keys(value.incomeDetails ?? {}).length > 0
+  );
+}
+
+function clearLegacyAssetSettings() {
+  clearLegacyBaseAssets();
+  clearLegacyManualCards();
+  clearLegacyIncomeDetails();
+}
+
+function normalizeAssetSettingsPayload(value: AssetSettingsPayload | null | undefined): AssetSettingsPayload {
+  return {
+    baseAssets: value?.baseAssets ?? { 기린: 0, 짱구: 0 },
+    manualCards: value?.manualCards ?? {},
+    incomeDetails: value?.incomeDetails ?? {},
+  };
+}
+
+async function loadRemoteAssetSettings(): Promise<AssetSettingsPayload | null> {
+  const { data, error } = await supabase
+    .from(ASSET_SETTINGS_TABLE)
+    .select("key, value, updated_at")
+    .eq("key", "asset_state")
+    .maybeSingle();
+
+  if (error) {
+    console.warn("[assets] asset_settings load skipped", error.message);
+    return null;
+  }
+
+  const row = data as AssetSettingsRow | null;
+  if (!row?.value) return null;
+
+  return normalizeAssetSettingsPayload(row.value);
+}
+
+async function saveRemoteAssetSettings(next: AssetSettingsPayload) {
+  const { error } = await supabase
+    .from(ASSET_SETTINGS_TABLE)
+    .upsert(
+      {
+        key: "asset_state",
+        value: next,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" }
+    );
+
+  if (error) {
+    console.warn("[assets] asset_settings save skipped", error.message);
+    return false;
+  }
+
+  return true;
 }
 
 function formatInputMoney(value: string) {
@@ -1017,21 +1099,37 @@ export default function AssetsPage() {
   const [loading, setLoading] = useState(true);
   
 
-  useEffect(() => {
-    setBaseAssets(loadBaseAssets());
-    setManualCards(loadManualCards());
-    setIncomeDetails(loadIncomeDetails());
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
 
-      const { data } = await supabase
-        .from("transactions")
-        .select("id, tx_date, description, type, amount, user_type, memo, created_at")
-        .order("tx_date", { ascending: false })
-        .order("created_at", { ascending: false });
+      const [{ data }, remoteSettings] = await Promise.all([
+        supabase
+          .from("transactions")
+          .select("id, tx_date, description, type, amount, user_type, memo, created_at")
+          .order("tx_date", { ascending: false })
+          .order("created_at", { ascending: false }),
+        loadRemoteAssetSettings(),
+      ]);
+
+      const nextSettings = (() => {
+        if (remoteSettings) return remoteSettings;
+
+        const legacySettings = buildLocalAssetSettings();
+        if (hasAssetSettingsValue(legacySettings)) {
+          void saveRemoteAssetSettings(legacySettings).then((ok) => {
+            if (ok) clearLegacyAssetSettings();
+          });
+          return legacySettings;
+        }
+
+        return normalizeAssetSettingsPayload(null);
+      })();
+
+      setBaseAssets(nextSettings.baseAssets);
+      setManualCards(nextSettings.manualCards);
+      setIncomeDetails(nextSettings.incomeDetails);
 
       setRows((data ?? []) as TransactionRow[]);
       setLoading(false);
@@ -1254,7 +1352,8 @@ export default function AssetsPage() {
 
     setBaseAssets((prev) => {
       const next = { ...prev, [name]: num };
-      saveBaseAssets(next);
+      const payload = { baseAssets: next, manualCards, incomeDetails };
+      void saveRemoteAssetSettings(payload);
       return next;
     });
   };
@@ -1290,7 +1389,8 @@ export default function AssetsPage() {
         },
       };
 
-      saveIncomeDetails(next);
+      const payload = { baseAssets, manualCards, incomeDetails: next };
+      void saveRemoteAssetSettings(payload);
       return next;
     });
   };
@@ -1307,7 +1407,8 @@ export default function AssetsPage() {
         },
       };
 
-      saveManualCards(next);
+      const payload = { baseAssets, manualCards: next, incomeDetails };
+      void saveRemoteAssetSettings(payload);
       return next;
     });
   };
@@ -1334,7 +1435,8 @@ export default function AssetsPage() {
         },
       };
 
-      saveManualCards(next);
+      const payload = { baseAssets, manualCards: next, incomeDetails };
+      void saveRemoteAssetSettings(payload);
       return next;
     });
   };
@@ -1352,7 +1454,8 @@ export default function AssetsPage() {
         },
       };
 
-      saveManualCards(next);
+      const payload = { baseAssets, manualCards: next, incomeDetails };
+      void saveRemoteAssetSettings(payload);
       return next;
     });
   };

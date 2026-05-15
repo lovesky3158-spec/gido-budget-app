@@ -217,6 +217,83 @@ function MetricCard({
   );
 }
 
+
+const SETTINGS_TABLE = "asset_settings";
+const BUDGET_SETTINGS_KEY = "dashboard_budget_map";
+const LEGACY_BUDGET_LS_KEY = "girin-dashboard-budget-map";
+
+type BudgetSettingsRow = {
+  key: string;
+  value: Record<string, number> | null;
+  updated_at?: string | null;
+};
+
+function normalizeBudgetMap(value: unknown): Record<string, number> {
+  if (!value || typeof value !== "object") return {};
+
+  const next: Record<string, number> = {};
+  for (const [month, amount] of Object.entries(value as Record<string, unknown>)) {
+    const num = Number(amount);
+    if (/^\d{4}-\d{2}$/.test(month) && Number.isFinite(num) && num > 0) {
+      next[month] = num;
+    }
+  }
+
+  return next;
+}
+
+function loadLegacyBudgetMap(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+
+  try {
+    return normalizeBudgetMap(JSON.parse(window.localStorage.getItem(LEGACY_BUDGET_LS_KEY) ?? "{}"));
+  } catch {
+    return {};
+  }
+}
+
+function clearLegacyBudgetMap() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(LEGACY_BUDGET_LS_KEY);
+}
+
+async function loadRemoteBudgetMap(): Promise<Record<string, number> | null> {
+  const { data, error } = await supabase
+    .from(SETTINGS_TABLE)
+    .select("key, value, updated_at")
+    .eq("key", BUDGET_SETTINGS_KEY)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("[dashboard] budget load skipped", error.message);
+    return null;
+  }
+
+  const row = data as BudgetSettingsRow | null;
+  if (!row?.value) return null;
+  return normalizeBudgetMap(row.value);
+}
+
+async function saveRemoteBudgetMap(next: Record<string, number>) {
+  const { error } = await supabase
+    .from(SETTINGS_TABLE)
+    .upsert(
+      {
+        key: BUDGET_SETTINGS_KEY,
+        value: next,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" }
+    );
+
+  if (error) {
+    console.warn("[dashboard] budget save skipped", error.message);
+    return false;
+  }
+
+  return true;
+}
+
 export default function DashboardPage() {
   const [rows, setRows] = useState<TransactionRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -227,7 +304,6 @@ export default function DashboardPage() {
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [budgetMap, setBudgetMap] = useState<Record<string, number>>({});
-  const [budgetLoaded, setBudgetLoaded] = useState(false);
   const expensePathRef = useRef<SVGPathElement | null>(null);
   const [expenseHoverIdx, setExpenseHoverIdx] = useState<number | null>(null);
   const [optionIcons, setOptionIcons] = useState<OptionIconMap>({});
@@ -287,28 +363,34 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem("girin-dashboard-budget-map");
+    let active = true;
 
-      if (saved) {
-        setBudgetMap(JSON.parse(saved) as Record<string, number>);
+    const fetchBudget = async () => {
+      const remoteBudget = await loadRemoteBudgetMap();
+      if (!active) return;
+
+      if (remoteBudget) {
+        setBudgetMap(remoteBudget);
+        clearLegacyBudgetMap();
+        return;
       }
-    } catch {
-      setBudgetMap({});
-    } finally {
-      setBudgetLoaded(true);
-    }
+
+      const legacyBudget = loadLegacyBudgetMap();
+      setBudgetMap(legacyBudget);
+
+      if (Object.keys(legacyBudget).length > 0) {
+        void saveRemoteBudgetMap(legacyBudget).then((ok) => {
+          if (ok) clearLegacyBudgetMap();
+        });
+      }
+    };
+
+    fetchBudget();
+
+    return () => {
+      active = false;
+    };
   }, []);
-
-  useEffect(() => {
-    if (!budgetLoaded) return;
-
-    try {
-      window.localStorage.setItem("girin-dashboard-budget-map", JSON.stringify(budgetMap));
-    } catch {
-      // localStorage 저장 실패는 화면 동작을 막지 않습니다.
-    }
-  }, [budgetMap, budgetLoaded]);
 
   const monthOptions = useMemo(() => {
     return Array.from(new Set(rows.map((row) => getMonthFromRow(row)).filter(Boolean))).sort((a, b) => (a < b ? 1 : -1));
@@ -737,6 +819,7 @@ const resetFilters = () => {
       const next = { ...prev };
       if (!nextBudget || nextBudget <= 0) delete next[monthFilter];
       else next[monthFilter] = nextBudget;
+      void saveRemoteBudgetMap(next);
       return next;
     });
   };
