@@ -99,6 +99,12 @@ function matchesCardFilter(row: TransactionRow, filter: string) {
 }
 
 
+function matchesCategoryFilter(row: TransactionRow, filter: string) {
+  if (filter === "all") return true;
+
+  const category = splitType(row.type).category || "기타";
+  return category === filter;
+}
 
 function amountTone(value: number) {
   if (value > 0) return "text-emerald-600";
@@ -301,6 +307,7 @@ export default function DashboardPage() {
   const [monthFilter, setMonthFilter] = useState("");
   const [userFilter, setUserFilter] = useState("all");
   const [cardFilter, setCardFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [budgetMap, setBudgetMap] = useState<Record<string, number>>({});
@@ -409,9 +416,9 @@ export default function DashboardPage() {
   const filtered = useMemo(() => {
     return rows.filter((row) => {
       const monthMatched = !monthFilter || getMonthFromRow(row) === monthFilter;
-      return monthMatched && matchesUserFilter(row, userFilter) && matchesCardFilter(row, cardFilter);
+      return monthMatched && matchesUserFilter(row, userFilter) && matchesCardFilter(row, cardFilter) && matchesCategoryFilter(row, categoryFilter);
     });
-  }, [rows, monthFilter, userFilter, cardFilter]);
+  }, [rows, monthFilter, userFilter, cardFilter, categoryFilter]);
 
   const expenseRows = useMemo(() => filtered.filter((row) => getNormalizedAmount(row) < 0), [filtered]);
   const incomeRows = useMemo(() => filtered.filter((row) => getNormalizedAmount(row) > 0), [filtered]);
@@ -553,6 +560,15 @@ export default function DashboardPage() {
     return Array.from(new Set([...base, ...rows.map((row) => normalizeAccountLabel(row.account_type) || "").filter(Boolean)]));
   }, [rows]);
 
+  const categoryOptions = useMemo(() => {
+    const base = ["식대", "카페", "장보기", "생활", "교통", "쇼핑", "여가", "병원", "보험", "자동이체", "금융", "주거", "기타"];
+    const dynamic = rows
+      .map((row) => splitType(row.type).category || "")
+      .filter(Boolean);
+
+    return Array.from(new Set([...base, ...dynamic]));
+  }, [rows]);
+
   const openEdit = (row: TransactionRow) => {
     setEditing(makeTransactionEditForm(row));
   };
@@ -647,7 +663,7 @@ export default function DashboardPage() {
     >();
 
     for (const row of rows) {
-      if (!matchesUserFilter(row, userFilter) || !matchesCardFilter(row, cardFilter)) continue;
+      if (!matchesUserFilter(row, userFilter) || !matchesCardFilter(row, cardFilter) || !matchesCategoryFilter(row, categoryFilter)) continue;
       if (getNormalizedAmount(row) >= 0) continue;
 
       const desc = (row.description ?? "").trim();
@@ -691,7 +707,7 @@ export default function DashboardPage() {
       }))
       .sort((a, b) => b.months - a.months || b.avgAmount - a.avgAmount)
       .slice(0, 5);
-  }, [rows, userFilter, cardFilter]);
+  }, [rows, userFilter, cardFilter, categoryFilter]);
 
   const recentExpenseRows = useMemo(() => {
     return [...expenseRows]
@@ -710,7 +726,7 @@ export default function DashboardPage() {
     const map = new Map<string, { expense: number; count: number }>();
 
     for (const row of rows) {
-      if (!matchesUserFilter(row, userFilter) || !matchesCardFilter(row, cardFilter)) continue;
+      if (!matchesUserFilter(row, userFilter) || !matchesCardFilter(row, cardFilter) || !matchesCategoryFilter(row, categoryFilter)) continue;
 
       const ym = getMonthFromRow(row);
       if (!ym) continue;
@@ -728,7 +744,7 @@ export default function DashboardPage() {
       .sort(([a], [b]) => (a < b ? -1 : 1))
       .slice(-6)
       .map(([ym, value]) => ({ ym, label: getMonthShort(ym), expense: value.expense, count: value.count }));
-  }, [rows, userFilter, cardFilter]);
+  }, [rows, userFilter, cardFilter, categoryFilter]);
 
   const chartWidth = 620;
   const chartHeight = 320;
@@ -784,14 +800,17 @@ const filterSummary = [
   getMonthLabel(monthFilter),
   userFilter !== "all" ? userFilter : null,
   cardFilter !== "all" ? cardFilter : null,
+  categoryFilter !== "all" ? categoryFilter : null,
 ]
   .filter(Boolean)
   .join(" · ");
 
-const activeFilterCount = [userFilter !== "all", cardFilter !== "all"].filter(Boolean).length;
+const activeFilterCount = [userFilter !== "all", cardFilter !== "all", categoryFilter !== "all"].filter(Boolean).length;
 const resetFilters = () => {
   setUserFilter("all");
   setCardFilter("all");
+  setCategoryFilter("all");
+  setActiveCategory(null);
 };
   const reportTitle = topCategory ? topCategory.category + " 중심 소비" : "분석할 지출 없음";
   const reportMessage = topCategory
@@ -830,12 +849,14 @@ const resetFilters = () => {
   const donutStroke = 17;
   let currentAngle = 0;
 
-  const filterButtonClass = (active: boolean, tone: "user" | "card") =>
+  const filterButtonClass = (active: boolean, tone: "user" | "card" | "category") =>
     [
       "inline-flex h-8 min-w-[64px] items-center justify-center gap-1 rounded-[15px] border px-2 text-[11px] font-black transition-all duration-200 sm:h-10 sm:min-w-[82px] sm:gap-1.5 sm:rounded-[18px] sm:px-3 sm:text-[13px]",
       active
         ? tone === "user"
           ? "border-[#ffbf1f] bg-[#ffbf1f] text-[#2a2112] shadow-[0_10px_20px_rgba(255,191,31,0.20)]"
+          : tone === "category"
+          ? "border-[#8b5cf6] bg-[#8b5cf6] text-white shadow-[0_10px_20px_rgba(139,92,246,0.20)]"
           : "border-[#14b8a6] bg-[#14b8a6] text-white shadow-[0_10px_20px_rgba(20,184,166,0.20)]"
         : "border-slate-200 bg-white text-slate-600 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-[0_8px_16px_rgba(15,23,42,0.08)]",
     ].join(" ");
@@ -1011,6 +1032,26 @@ const resetFilters = () => {
                 </div>
 
                 <div>
+                  <div className="mb-1.5 text-[11px] font-black text-slate-400">카테고리</div>
+                  <div className="flex max-h-[150px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+                    {[{ key: "all", label: "전체", emoji: "🧾" }, ...categoryOptions.map((category) => ({ key: category, label: category, emoji: getCategoryEmoji(category) }))].map((category) => (
+                      <button
+                        key={category.key}
+                        type="button"
+                        onClick={() => {
+                          setCategoryFilter(category.key);
+                          setActiveCategory(category.key === "all" ? null : category.key);
+                        }}
+                        className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition ${categoryFilter === category.key ? "bg-[#8b5cf6] text-white shadow-sm ring-2 ring-violet-200" : category.key === "all" ? "bg-violet-50 text-violet-700 ring-1 ring-violet-100" : "bg-slate-100 text-slate-500"}`}
+                      >
+                        <span>{category.emoji}</span>
+                        <span>{category.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
                   <div className="mb-1.5 text-[11px] font-black text-slate-400">결제수단</div>
                   <div className="flex max-h-[170px] flex-wrap gap-1.5 overflow-y-auto pr-1">
                     {[
@@ -1068,6 +1109,27 @@ const resetFilters = () => {
                 ))}
               </div>
             </div>
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="shrink-0 text-[12px] font-black text-slate-500">카테고리</span>
+
+            <div className="inline-flex max-w-[420px] items-center gap-1 overflow-x-auto rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
+              {[{ key: "all", label: "전체", emoji: "🧾" }, ...categoryOptions.map((category) => ({ key: category, label: category, emoji: getCategoryEmoji(category) }))].map((category) => (
+                <button
+                  key={category.key}
+                  type="button"
+                  onClick={() => {
+                    setCategoryFilter(category.key);
+                    setActiveCategory(category.key === "all" ? null : category.key);
+                  }}
+                  className={filterButtonClass(categoryFilter === category.key, "category")}
+                >
+                  <span className={filterIconClass}>{category.emoji}</span>
+                  <span>{category.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex items-center gap-2">
             <span className="text-[12px] font-black text-slate-500">결제수단</span>
 
@@ -1319,7 +1381,14 @@ const resetFilters = () => {
 
           <SectionCard title="결제수단별 지출현황" sub="선택 월 기준 결제수단 비중">
             <div className="space-y-2.5">
-              <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[#99f6e4] bg-[#ecfdf5] px-4 py-3 shadow-[0_10px_24px_rgba(20,184,166,0.10)]">
+              <button
+                type="button"
+                onClick={() => setCardFilter("all")}
+                className={[
+                  "flex w-full items-center justify-between gap-3 rounded-[20px] border px-4 py-3 text-left shadow-[0_10px_24px_rgba(20,184,166,0.10)] transition hover:-translate-y-0.5",
+                  cardFilter === "all" ? "border-[#99f6e4] bg-[#ecfdf5]" : "border-slate-200 bg-white",
+                ].join(" ")}
+              >
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-[13px] font-black text-[#2a2112]">
                     전체
@@ -1329,7 +1398,7 @@ const resetFilters = () => {
                 <span className="shrink-0 text-[14px] font-black text-[#2a2112]">
                   {formatAbsMoney(totalExpense)}
                 </span>
-              </div>
+              </button>
 
               {accountSummary.length === 0 ? (
                 <div className="rounded-full bg-slate-50 px-4 py-2 text-[12px] font-bold text-slate-500">
@@ -1341,9 +1410,14 @@ accountSummary.map((item) => {
   const accountIcon = resolveOptionIcon("accounts", accountName, optionIcons);
 
   return (
-    <div
+    <button
       key={item.account}
-      className="flex items-center justify-between gap-3 rounded-full bg-slate-50 px-4 py-1.5"
+      type="button"
+      onClick={() => setCardFilter(item.account)}
+      className={[
+        "flex w-full items-center justify-between gap-3 rounded-full px-4 py-1.5 text-left transition hover:-translate-y-0.5",
+        cardFilter === item.account ? "bg-[#ecfdf5] ring-2 ring-[#99f6e4]" : "bg-slate-50 hover:bg-slate-100",
+      ].join(" ")}
     >
       <div className="flex min-w-0 items-center gap-2">
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200">
@@ -1369,7 +1443,7 @@ accountSummary.map((item) => {
         {formatAbsMoney(item.amount)}
       </span>
 
-    </div>
+    </button>
   );
 })
               )}
@@ -1414,6 +1488,7 @@ accountSummary.map((item) => {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setActiveCategory(item.category);
+                                      setCategoryFilter(item.category);
                                     }}
                                   />
                                 );
@@ -1440,7 +1515,10 @@ accountSummary.map((item) => {
                                 <button
                                   key={item.category}
                                   type="button"
-                                  onClick={() => setActiveCategory(item.category)}
+                                  onClick={() => {
+                                    setActiveCategory(item.category);
+                                    setCategoryFilter(item.category);
+                                  }}
                                   className={[
                                     "flex min-w-0 items-center gap-2 rounded-[14px] px-2.5 py-2 text-left transition",
                                     selected ? "bg-white ring-1 ring-[#21bdb7]" : "bg-white/70 ring-1 ring-[#d8f3f1]",
@@ -1463,7 +1541,10 @@ accountSummary.map((item) => {
                       <div className="hidden sm:block" onClick={(e) => e.stopPropagation()}>
                       <button
                           type="button"
-                          onClick={() => setActiveCategory(null)}
+                          onClick={() => {
+                            setActiveCategory(null);
+                            setCategoryFilter("all");
+                          }}
                           className="mb-2 w-full rounded-[18px] bg-slate-100 px-4 py-3 ring-1 ring-slate-200"
                         >
                         <div className="flex items-center justify-between">
@@ -1484,7 +1565,10 @@ accountSummary.map((item) => {
                           <button
                             key={item.category}
                             type="button"
-                            onClick={() => setActiveCategory(item.category)}
+                            onClick={() => {
+                              setActiveCategory(item.category);
+                              setCategoryFilter(item.category);
+                            }}
                             className={[
                               "w-full rounded-[18px] px-4 py-3 text-left transition",
                               selected
