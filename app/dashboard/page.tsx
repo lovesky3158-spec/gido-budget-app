@@ -1115,26 +1115,30 @@ const resetFilters = () => {
       <div className="flex items-center gap-2">
         <span className="text-[12px] font-black text-slate-500">결제수단</span>
         <div className="inline-flex items-center gap-1 rounded-full bg-[#ecfdf5] p-1 ring-1 ring-[#99f6e4]/80">
-          {[
-            { key: "신한", label: "신한신용" },
-            { key: "국민", label: "국민신용" },
-            { key: "농협", label: "농협신용" },
-            { key: "현금", label: "현금" },
-          ].map((card) => (
-            <button
-              key={card.key}
-              type="button"
-              onClick={() => setCardFilter(card.key)}
-              className={[
-                "h-8 rounded-full px-3 text-[11px] font-black transition",
-                cardFilter === card.key
-                  ? "bg-[#14b8a6] text-white shadow-sm"
-                  : "bg-white/70 text-[#0f766e] hover:bg-white",
-              ].join(" ")}
-            >
-              {card.label}
-            </button>
-          ))}
+        {[
+        { key: "신한", label: "신한신용", icon: "/icons/sh.png" },
+        { key: "국민", label: "국민신용", icon: "/icons/kb.png" },
+        { key: "농협", label: "농협신용", icon: "/icons/nh.png" },
+        { key: "현금", label: "현금", icon: "/icons/cash.png" },
+        ].map((card) => (
+        <button
+            key={card.key}
+            type="button"
+            onClick={() => setCardFilter(card.key)}
+            className={[
+            "inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-black transition",
+            cardFilter === card.key
+                ? "bg-[#14b8a6] text-white shadow-sm"
+                : "bg-white/70 text-[#0f766e] hover:bg-white",
+            ].join(" ")}
+        >
+            <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-white/90">
+            <img src={card.icon} alt="" className="h-4 w-4 object-contain" />
+            </span>
+
+            <span>{card.label}</span>
+        </button>
+        ))}
 
           <select
             value={["신한", "국민", "농협", "현금", "all"].includes(cardFilter) ? "more" : cardFilter}
