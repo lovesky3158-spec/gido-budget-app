@@ -1082,90 +1082,110 @@ const resetFilters = () => {
           ) : null}
         </div>
 
-    <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
-    <div className="hidden rounded-[26px] border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:block">
-        <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-            <span className="text-[12px] font-black text-slate-500">사용자</span>
-            <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
-            {[
-                { key: "all", label: "전체", icon: null },
-                { key: "기린", label: "기린", icon: "/icons/girin.png" },
-                { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
-            ].map((user) => (
-                <button
-                key={user.key}
-                type="button"
-                onClick={() => setUserFilter(user.key)}
-                className={filterButtonClass(userFilter === user.key, "user")}
-                >
-                {user.icon ? (
-                    <span className={filterIconClass}>
-                    <img src={user.icon} alt="" className="h-4 w-4 object-contain" />
-                    </span>
-                ) : null}
-                <span>{user.label}</span>
-                </button>
+<div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-5">
+  <div className="hidden rounded-[26px] border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:block">
+    <div className="flex items-center gap-3">
+      {/* 사용자 */}
+      <div className="flex items-center gap-2">
+        <span className="text-[12px] font-black text-slate-500">사용자</span>
+        <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
+          {[
+            { key: "all", label: "전체", icon: null },
+            { key: "기린", label: "기린", icon: "/icons/girin.png" },
+            { key: "짱구", label: "짱구", icon: "/icons/zzangu.png" },
+          ].map((user) => (
+            <button
+              key={user.key}
+              type="button"
+              onClick={() => setUserFilter(user.key)}
+              className={filterButtonClass(userFilter === user.key, "user")}
+            >
+              {user.icon ? (
+                <span className={filterIconClass}>
+                  <img src={user.icon} alt="" className="h-4 w-4 object-contain" />
+                </span>
+              ) : null}
+              <span>{user.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 결제수단 */}
+      <div className="flex items-center gap-2">
+        <span className="text-[12px] font-black text-slate-500">결제수단</span>
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#ecfdf5] p-1 ring-1 ring-[#99f6e4]/80">
+          {[
+            { key: "신한", label: "신한신용" },
+            { key: "국민", label: "국민신용" },
+            { key: "농협", label: "농협신용" },
+            { key: "현금", label: "현금" },
+          ].map((card) => (
+            <button
+              key={card.key}
+              type="button"
+              onClick={() => setCardFilter(card.key)}
+              className={[
+                "h-8 rounded-full px-3 text-[11px] font-black transition",
+                cardFilter === card.key
+                  ? "bg-[#14b8a6] text-white shadow-sm"
+                  : "bg-white/70 text-[#0f766e] hover:bg-white",
+              ].join(" ")}
+            >
+              {card.label}
+            </button>
+          ))}
+
+          <select
+            value={["신한", "국민", "농협", "현금", "all"].includes(cardFilter) ? "more" : cardFilter}
+            onChange={(e) => {
+              if (e.target.value !== "more") setCardFilter(e.target.value);
+            }}
+            className="h-8 w-[86px] rounded-full border-0 bg-white/80 px-2 text-[11px] font-black text-[#0f766e] outline-none hover:bg-white"
+          >
+            <option value="more">더보기</option>
+            <option value="all">전체</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+      </div>
+
+      {/* 카테고리 */}
+      <div className="flex items-center gap-2">
+        <span className="text-[12px] font-black text-slate-500">카테고리</span>
+        <div className="relative">
+          <select
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setActiveCategory(e.target.value === "all" ? null : e.target.value);
+            }}
+            className="h-10 w-[150px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[12px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
+          >
+            <option value="all">전체 카테고리</option>
+            {categoryOptions.map((category) => (
+              <option key={category} value={category}>
+                {getCategoryEmoji(category)} {category}
+              </option>
             ))}
-            </div>
+          </select>
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">
+            ▼
+          </span>
         </div>
+      </div>
 
-        <div className="flex items-center gap-2">
-            <span className="text-[12px] font-black text-slate-500">카테고리</span>
-            <div className="relative">
-            <select
-                value={categoryFilter}
-                onChange={(e) => {
-                setCategoryFilter(e.target.value);
-                setActiveCategory(e.target.value === "all" ? null : e.target.value);
-                }}
-                className="h-10 w-[150px] appearance-none rounded-full border border-violet-100 bg-violet-50 px-4 pr-8 text-[12px] font-black text-violet-700 outline-none ring-1 ring-violet-100 transition hover:bg-violet-100"
-            >
-                <option value="all">전체 카테고리</option>
-                {categoryOptions.map((category) => (
-                <option key={category} value={category}>
-                    {getCategoryEmoji(category)} {category}
-                </option>
-                ))}
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-violet-500">
-                ▼
-            </span>
-            </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-            <span className="text-[12px] font-black text-slate-500">결제수단</span>
-            <div className="relative">
-            <select
-                value={cardFilter}
-                onChange={(e) => setCardFilter(e.target.value)}
-                className="h-10 w-[150px] appearance-none rounded-full border border-[#99f6e4] bg-[#ecfdf5] px-4 pr-8 text-[12px] font-black text-[#0f766e] outline-none ring-1 ring-[#99f6e4]/70 transition hover:bg-[#d1fae5]"
-            >
-                <option value="all">전체 결제수단</option>
-                <option value="신한">신한 신용</option>
-                <option value="국민">국민 신용</option>
-                <option value="농협">농협 체크</option>
-                <option value="현금">현금</option>
-                <option value="기타">기타</option>
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#0f766e]">
-                ▼
-            </span>
-            </div>
-        </div>
-
-        <button
-            type="button"
-            onClick={resetFilters}
-            disabled={activeFilterCount === 0}
-            className="ml-auto h-10 rounded-full border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-            초기화
-        </button>
-        </div>
+      <button
+        type="button"
+        onClick={resetFilters}
+        disabled={activeFilterCount === 0}
+        className="ml-auto h-10 rounded-full border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-500 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        초기화
+      </button>
     </div>
-    </div>
+  </div>
+</div>
         <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6 sm:pt-4">
           <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[32px] sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
